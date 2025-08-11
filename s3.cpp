@@ -1,25 +1,3 @@
-/*
-3 5
-1 1 R
-3 3 L
-3 2 D
-1 2 L
-2 1 U
-
-0
-0
-0
-2
-3
-
-RL?
-U??
-?DL
-
-RLR
-URR
-LDL
-*/
 #include<bits/stdc++.h>
 using namespace std;
 const int N=1000+10;
