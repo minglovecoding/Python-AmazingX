@@ -1,9 +1,25 @@
-tuple = ( 'runoob', 786 , 2.23, 'john', 70.2 )
-tinytuple = (123, 'john')
+str="abcdefg" #0 1 2 3 4 ... len(str)
+
+a : 0
+b : 1
+
+f : 5
+
+#print(str[0:5]) #abcde
+#print(str[0:5:2])  #ace
+
+#print(str)                 # 输出字符串
+#print(str[3])              # 输出字符串第一个字符
+#print(str[2:5])            # 输出从第三个开始到第六个的字符（不包含）
+#print(str[2:])             # 输出从第三个开始后的所有字符
+#print(str[1:5:2])          # 输出从第二个开始到第五个且每隔一个的字符（步长为2）
+#print(str[0:-1])           # 输出第一个到倒数第二个的所有字符
+#print(str * 2)             # 输出字符串两次
+#print(str + "123")         # 连接字符串
+#print(str,123)
+
+#print('------------------------------')
  
-print (tuple)               # 输出完整元组
-print (tuple[0])            # 输出元组的第一个元素
-print (tuple[1:3])          # 输出第二个至第四个（不包含）的元素 
-print (tuple[2:])           # 输出从第三个开始至列表末尾的所有元素
-print (tinytuple * 2)       # 输出元组两次
-print (tuple + tinytuple)   # 打印组合的元组
+#print('hello world')      # 使用反斜杠(\)+n转义特殊字符
+print(r'hello\nworld')     # 在字符串前面添加一个 r，表示原始字符串，不会发生转义
+print("helloasdadad")
