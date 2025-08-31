@@ -1,6 +1,7 @@
-var = 1
-while var == 1 :  # 该条件永远为true，循环将无限执行下去
-   num = input("Enter a number  :")
-   print("You entered: ", num)
- 
-print("Good bye!")
+fruits = ['banana', 'apple',  'mango']
+for index in range(len(fruits)):
+   print ('当前水果 :'+fruits[index])
+   print ('当前水果 :',fruits[index])
+   print ('当前水果 : %s' % fruits[index])
+   print ('当前水果的索引 : %d' % index)
+print ("Good bye!")
