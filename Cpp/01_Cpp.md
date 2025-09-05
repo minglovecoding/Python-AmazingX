@@ -102,7 +102,7 @@ int main ()
 {
    int i,j;
    // 设置种子
-   srand( (unsigned)time( NULL ) );
+   srand(time(0));
    /* 生成 10 个随机数 */
    for( i = 0; i < 10; i++ )
    {
@@ -110,6 +110,8 @@ int main ()
       j= rand();
       cout <<"随机数： " << j << endl;
    }
+  //比如生成 [a, b] 范围的随机整数：
+  //int x = a + rand() % (b - a + 1);
    return 0;
 }
 ```
@@ -120,7 +122,7 @@ int main ()
 #include <iostream>
 #include <cmath>
 #include <numbers>
-
+//using namspace std;
 int main() {
     std::cout << "pi: " << std::numbers::pi << std::endl;
     std::cout << "e: " << std::numbers::e << std::endl;
@@ -141,7 +143,11 @@ using namespace std;
 int main ()
 {
    // 一个带有 5 行 2 列的数组
-   int a[5][2] = { {0,0}, {1,2}, {2,4}, {3,6},{4,8}};
+   int a[5][2] = { {0,0}, 
+                  {1,2}, 
+                  {2,4}, 
+                  {3,6},
+                  {4,8}};
  
    // 输出数组中每个元素的值                      
    for ( int i = 0; i < 5; i++ )
@@ -541,12 +547,15 @@ int main ()
 //case 1
 #include <iostream>
 #include <ctime>
- 
 using namespace std;
- 
 // 在写函数时应习惯性的先声明函数，然后在定义函数
-void getSeconds(unsigned long *par);
- 
+void getSeconds(unsigned long *par)
+{
+   // 获取当前的秒数
+   *par = time( NULL );
+   return;
+}
+
 int main ()
 {
    unsigned long sec;
@@ -559,13 +568,6 @@ int main ()
  
    return 0;
 }
- 
-void getSeconds(unsigned long *par)
-{
-   // 获取当前的秒数
-   *par = time( NULL );
-   return;
-}
 ```
 
 ```c++
@@ -574,7 +576,20 @@ void getSeconds(unsigned long *par)
 using namespace std;
  
 // 函数声明
-double getAverage(int *arr, int size);
+double getAverage(int *arr, int size)
+{
+  int i,sum = 0;       
+  double avg;          
+ 
+  for (i = 0; i < size; ++i)
+  {
+    sum += arr[i];
+   }
+ 
+  avg = double(sum) / size;
+ 
+  return avg;
+}
  
 int main ()
 {
@@ -591,20 +606,7 @@ int main ()
    return 0;
 }
  
-double getAverage(int *arr, int size)
-{
-  int    i, sum = 0;       
-  double avg;          
- 
-  for (i = 0; i < size; ++i)
-  {
-    sum += arr[i];
-   }
- 
-  avg = double(sum) / size;
- 
-  return avg;
-}
+
 ```
 
 7. 从函数返回指针
@@ -700,9 +702,17 @@ int main ()
 #include <iostream>
 using namespace std;
  
-// 函数声明
-void swap(int& x, int& y);
- 
+// 函数定义
+void swap(int& x, int& y)
+{
+   int temp;
+   temp = x; /* 保存地址 x 的值 */
+   x = y;    /* 把 y 赋值给 x */
+   y = temp; /* 把 x 赋值给 y  */
+  
+   return;
+}
+
 int main ()
 {
    // 局部变量声明
@@ -720,17 +730,6 @@ int main ()
  
    return 0;
 }
- 
-// 函数定义
-void swap(int& x, int& y)
-{
-   int temp;
-   temp = x; /* 保存地址 x 的值 */
-   x = y;    /* 把 y 赋值给 x */
-   y = temp; /* 把 x 赋值给 y  */
-  
-   return;
-}
 ```
 
 2.把引用作为返回值
@@ -745,8 +744,7 @@ double vals[] = {10.1, 12.6, 33.1, 24.1, 50.0};
 double& setValues(int i) {  
    double& ref = vals[i];    
    return ref;   // 返回第 i 个元素的引用，ref 是一个引用变量，ref 引用 vals[i]
- 
- 
+
 }
  
 // 要调用上面定义函数的主函数
@@ -846,7 +844,6 @@ cin.tie(0);
 #include <cstring>
  
 using namespace std;
- 
 // 声明一个结构体类型 Books 
 struct Books
 {
