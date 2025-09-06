@@ -239,7 +239,9 @@ int main ()
 
 4. C++从函数返回数组
 
-1. 静态数组需要在函数内部创建一个静态数组，并将其地址返回，例如：
+   C++ 不支持在函数外返回局部变量的地址，除非定义局部变量为 **static** 变量。
+
+   为了避免以上情况，可以使用静态数组或者动态分配数组。静态数组需要在函数内部创建一个静态数组，并将其地址返回，例如：
 
 ```c++
 int* myFunction()
@@ -289,7 +291,7 @@ int main ()
 }
 ```
 
-2. 动态分配数组需要在函数内部使用 new 运算符来分配一个数组，并在函数结束时使用 delete 运算符释放该数组
+2. 或者使用动态分配数组，动态分配数组需要在函数内部使用 new 运算符来分配一个数组，并在函数结束时使用 delete 运算符释放该数组。
 
 ```c++
 #include <iostream>
@@ -350,8 +352,7 @@ int main ()
 2. C++的String
 
 ```c++
-#include <iostream>
-#include <string>
+#include<bits/stdc++.h>
  
 using namespace std;
  
@@ -561,7 +562,7 @@ int main ()
    unsigned long sec;
  
  
-   getSeconds( &sec );
+   getSeconds( sec );
  
    // 输出实际值
    cout << "Number of seconds :" << sec << endl;
@@ -744,7 +745,6 @@ double vals[] = {10.1, 12.6, 33.1, 24.1, 50.0};
 double& setValues(int i) {  
    double& ref = vals[i];    
    return ref;   // 返回第 i 个元素的引用，ref 是一个引用变量，ref 引用 vals[i]
-
 }
  
 // 要调用上面定义函数的主函数
@@ -913,7 +913,7 @@ int main() {
     std::cout << "Second element: " << myVector.at(1) << std::endl;
     // 获取向量的大小并输出
     std::cout << "Size of the vector: " << myVector.size() << std::endl;
-    // 删除向量中的第三个元素
+    // 删除向量中的第三个元素 
     myVector.erase(myVector.begin() + 2);
     // 输出删除元素后的向量
     std::cout << "Elements in the vector after erasing: ";
