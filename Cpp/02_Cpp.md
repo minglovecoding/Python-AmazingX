@@ -17,9 +17,16 @@ cout << arr[0]; // 输出第一个元素
 - 支持随机访问，时间复杂度为 O(1)。
 
 ```C++
-vector<int> v;
-v.push_back(1);
-v.push_back(2);
+vector<int> v1;              // 空vector
+vector<int> v2(5);           // 含5个元素，默认值0
+vector<int> v3(5, 10);       // 含5个元素，每个都是10
+vector<int> v4 = {1, 2, 3};  // 初始化列表
+
+v.push_back(10);       // 尾部添加
+v.pop_back();          // 删除最后一个
+v.insert(v.begin()+2, 5); // 在第3个位置插入 5
+v.erase(v.begin()+1);  // 删除第2个元素
+v.clear(); 
 cout << v[0]; // 输出 1
 ```
 
@@ -60,7 +67,27 @@ struct Node {
 };
 Node* head = nullptr;
 Node* newNode = new Node{10, nullptr};
+Node* newNode2 = new Node{10, nullptr};
 head = newNode; // 插入新节点
+head.next = newNode2;
+
+list<int> l1;                // 空list
+list<int> l2(5);             // 5个元素，默认值0
+list<int> l3(5, 10);         // 5个元素，每个是10
+list<int> l4 = {1, 2, 3, 4}; // 初始化列表
+
+l.push_back(10);        // 尾部添加
+l.push_front(20);       // 头部添加
+l.pop_back();           // 删除最后一个
+l.pop_front();          // 删除第一个
+
+auto it = l.begin();    // 迭代器
+++it;
+l.insert(it, 15);       // 在第2个位置插入15
+l.erase(it);            // 删除第2个位置的元素
+
+l.clear();              // 清空
+
 ```
 
 ### 📌 **栈（Stack）**
@@ -73,11 +100,11 @@ head = newNode; // 插入新节点
 - 时间复杂度为 O(1)。
 
 ```c++
-stack<int> s;
-s.push(1);
-s.push(2);
-cout << s.top(); // 输出 2
-s.pop();
+stack<int> s[0];
+s[0].push(1);
+s[0].push(2);
+cout << s[0].top(); // 输出 2
+s[0].pop();
 ```
 
 ### 📌 **队列（Queue）**
@@ -126,6 +153,8 @@ dq.pop_front();
 ```c++
 unordered_map<string, int> hashTable;
 hashTable["apple"] = 10;
+hashTable["orange"] = 10;
+
 cout << hashTable["apple"]; // 输出 10
 ```
 
@@ -141,6 +170,7 @@ cout << hashTable["apple"]; // 输出 10
 ```c++
 map<string, int> myMap;
 myMap["apple"] = 10;
+myMap["appla"] = 10;
 cout << myMap["apple"]; // 输出 10
 ```
 
@@ -157,13 +187,13 @@ cout << myMap["apple"]; // 输出 10
 ```C++
 set<int> s;
 s.insert(1);
-s.insert(2);
+s.insert(1);
 cout << *s.begin(); // 输出 1
 ```
 
 ---
 
-## C++类&对象
+## C++ 类&对象
 
 ```c++
 #include <iostream>
@@ -474,6 +504,12 @@ Line::Line( double len)
     cout << "Object is being created, length = " << len << endl;
     length = len;
 }
+/*Line::Line( double len): length(len)
+{
+    cout << "Object is being created, length = " << len << endl;
+}
+*/
+
 void Line::setLength( double len )
 {
     length = len;
