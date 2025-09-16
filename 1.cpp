@@ -1,41 +1,29 @@
 #include <iostream>
- 
 using namespace std;
  
-class Box
+int sum(int a, int b)
 {
-   public:
-      static int objectCount;
-      // 构造函数定义
-      Box(double l=2.0, double b=2.0, double h=2.0)
-      {
-         cout <<"Constructor called." << endl;
-         length = l;
-         breadth = b;
-         height = h;
-         // 每次创建对象时增加 1
-         objectCount++;
-      }
-      double Volume()
-      {
-         return length * breadth * height;
-      }
-   private:
-      double length;     // 长度
-      double breadth;    // 宽度
-      double height;     // 高度
-};
+  int result1;
  
-// 初始化类 Box 的静态成员
-int Box::objectCount = 0;
+  result1 = a + b;
+  
+  return result1;
+}
  
-int main(void)
+int main ()
 {
-   Box Box1(3.3, 1.2, 1.5);    // 声明 box1
-   Box Box2(8.5, 6.0, 2.0);    // 声明 box2
+   // 局部变量声明
+   int a = 100;
+   int b = 200;
+   int result;
  
-   // 输出对象的总数
-   cout << "Total objects: " << Box::objectCount << endl;
+   // 调用函数来添加值
+   result = sum(a, b);
+   cout << "Total value is :" << result << endl;
+ 
+   // 再次调用函数
+   //result = sum(a);
+   //cout << "Total value is :" << result << endl;
  
    return 0;
 }
