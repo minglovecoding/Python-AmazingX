@@ -68,6 +68,10 @@ T add(T a, T b) {
     return a + b;
 }
 
+int add(){}
+float add(){}
+double add(){}
+
 int main() {
     cout << add(3, 5) << endl;      // int
     cout << add(3.2, 4.8) << endl;  // double
@@ -173,6 +177,7 @@ struct compare {
 int main() {
     // 创建一个自定义类型的优先队列，使用最小堆
     std::priority_queue<int, std::vector<int>, compare> pq_min;
+   //std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min;
 
     // 向优先队列中添加元素
     pq_min.push(30);
@@ -228,7 +233,7 @@ int main() {
 
 | 函数         | 功能                       | 示例                    |
 | :----------- | :------------------------- | :---------------------- |
-| `abs(x)`     | 计算整数 `x` 的绝对值      | `abs(-5) // 5`          |
+| **`abs(x)`** | 计算整数 `x` 的绝对值      | `abs(-5) // 5`          |
 | `fabs(x)`    | 计算浮点数 `x` 的绝对值    | `fabs(-5.5) // 5.5`     |
 | `fmod(x, y)` | 计算 `x` 除以 `y` 的余数   | `fmod(5.3, 2) // 1.3`   |
 | `fmax(x, y)` | 返回 `x` 和 `y` 中的较大值 | `fmax(3.5, 4.2) // 4.2` |
@@ -238,8 +243,8 @@ int main() {
 | `sin(x)` | 计算 `x` 的正弦值，`x` 以弧度为单位 | `sin(3.14159 / 2) // 1` |
 | `cos(x)` | 计算 `x` 的余弦值，`x` 以弧度为单位 | `cos(3.14159) // -1`    |
 | `tan(x)` | 计算 `x` 的正切值，`x` 以弧度为单位 | `tan(0) // 0`           |
-| `ceil(x)`  | 返回不小于 `x` 的最小整数 | `ceil(2.3) // 3`  |
-| `floor(x)` | 返回不大于 `x` 的最大整数 | `floor(2.3) // 2` |
+| **`ceil(x)`** | 返回不小于 `x` 的最小整数 | `ceil(2.3) // 3`  |
+| **`floor(x)`** | 返回不大于 `x` 的最大整数 | `floor(2.3) // 2` |
 
 ```cpp
 #include <iostream>
@@ -252,7 +257,7 @@ int main() {
     double absValue = abs(-5.0); // 计算绝对值
   
     // 基本数学运算
-    std::cout << "abs(-5) = " << abs(-5) << std::endl;
+    cout << "abs(-5) = " << abs(-5) << endl;
 
     // 指数和对数函数
     cout << "exp(1) = " << exp(1) << endl;
@@ -571,7 +576,7 @@ int main() {
 }
 ```
 
-### 📌 C++ 标准库 `<bitset>`
+### 📌 **C++ 标准库 `<bitset>`**
 
 位集合是一个由位（bit）组成的数组，每个位可以是 0 或 1。
 
@@ -619,7 +624,7 @@ std::string str = bits.to_string();   // 转换为字符串："10101010"
 - `^`：按位异或
 - `~`：按位取反
 
-```
+```c++
 std::bitset<8> bits1("10101010");
 std::bitset<8> bits2("11110000");
 
@@ -660,7 +665,7 @@ int main() {
     std::bitset<8> b("10101010");
 
     // 循环遍历bitset中的位
-    for (size_t i = 0; i < b.size(); ++i) {
+    for (auto i = 0; i < b.size(); ++i) {
         std::cout << b[i];
     }
     std::cout << std::endl;
@@ -711,7 +716,7 @@ int main() {
     // 替换 'World' 为 'C++'
     std::string modified = greeting;
     std::string::size_type pos = modified.find("World");
-    if (pos != std::string::npos) {
+    if (pos != std::string::npos) { // std::string::npos 是 一个特殊常量，表示 “未找到”
         modified.replace(pos, 5, "C++"); // 从位置 pos 开始，替换 5 个字符为 "C++"
     }
     std::cout << "Modified greeting: " << modified << std::endl;
@@ -819,7 +824,7 @@ int main() {
 }
 ```
 
-### 📌 C++ 标准库 `<utility>`
+### **📌 C++ 标准库 `<utility>`**
 
 `<utility>` 头文件定义了多种工具类和函数，它们主要用于简化编程任务，提高代码的可读性和可维护性，这些工具类和函数包括：
 
@@ -833,16 +838,15 @@ int main() {
 ```c++
 #include <iostream>
 #include <utility>
-
 int main() {
     //pair<T1, T2> p; T1 和 T2 是两个不同的类型
+    //make_tuple(a, b, c); 存三个元素
     // 使用 make_pair 创建 pair 对象
     auto p = std::make_pair(10, 20);
     // p 是一个 pair 对象，包含两个元素：first 和 second。
     // 输出 pair 对象的元素
     std::cout << "First element: " << p.first << std::endl;
     std::cout << "Second element: " << p.second << std::endl;
-
     return 0;
 }
 ```
@@ -852,18 +856,13 @@ int main() {
 ```c++
 #include <iostream>
 #include <utility>
-
 int main() {
     int a = 5;
     int b = 10;
-
     std::cout << "Before swap: a = " << a << ", b = " << b << std::endl;
-
     // 使用 swap 函数交换 a 和 b 的值
     std::swap(a, b);
-
     std::cout << "After swap: a = " << a << ", b = " << b << std::endl;
-
     return 0;
 }
 ```
@@ -878,10 +877,12 @@ int main() {
 int main() {
     std::vector<int> v1 = {1, 2, 3, 4, 5};
     std::vector<int> v2 = std::move(v1);
-
     std::cout << "v1 size: " << v1.size() << std::endl; // v1 现在为空
     std::cout << "v2 size: " << v2.size() << std::endl; // v2 拥有 v1 的元素
-
     return 0;
 }
 ```
+
+### 📌 **课后作业**
+
+https://www.runoob.com/cplusplus/cpp-examples.html
