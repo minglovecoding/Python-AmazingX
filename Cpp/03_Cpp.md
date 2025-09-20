@@ -63,8 +63,8 @@ int main()
 using namespace std;
 
 // 定义一个函数模板
-template <typename T>
-T add(T a, T b) {
+template <typename Tn>
+Tn add(Tn a, Tn b) {
     return a + b;
 }
 
@@ -88,18 +88,18 @@ int main() {
 <fstream>: 文件输入输出流
 <sstream>: 字符串流
 <array>: 定长数组容器
-<vector>: 动态数组容器
-<deque>: 双端队列容器
-<list>: 双向链表容器
+**<vector>: 动态数组容器**
+**<deque>: 双端队列容器**
+**<list>: 双向链表容器**
 <forward_list>: 单向链表容器
 <stack>: 栈容器适配器
 <queue>: 队列容器适配器
-<priority_queue>: 优先队列容器适配器
+**<priority_queue>: 优先队列容器适配器**
 <set>: 集合容器（基于平衡二叉树）
 <unordered_set>: 无序集合容器（基于哈希表）
-`<map>`: 映射容器（键值对，基于平衡二叉树）
-<unordered_map>: 无序映射容器（基于哈希表）  
-<bitset>: 二进制位容器
+**`<map>`: 映射容器（键值对，基于平衡二叉树）**
+**<unordered_map>: 无序映射容器（基于哈希表）  
+<bitset>: 二进制位容器**
 <algorithm>: 常用算法（如排序、查找等）
 <iterator>: 迭代器
 <numeric>: 数值操作（如累计、乘积等）
@@ -109,7 +109,7 @@ int main() {
 <string>: 标准字符串类
 <regex>: 正则表达式
 
-`#include <bits/stdc++.h>`在很多 **竞赛代码（比如 USACO、Codeforces）** 里很常见，它是一次性把 C++ 标准库里几乎所有常用头文件都包含进来。
+`#include <bits/stdc++.h>`在很多 **竞赛代码（比如 USACO、Codeforces）** 里很常见，它是一次性把 C++ 标准库里几乎所有常用头文件都包含进来，缺点**编译慢**，因为它导入了几乎所有库。
 
 ### 📌  `priority_queue`
 
@@ -177,7 +177,7 @@ struct compare {
 int main() {
     // 创建一个自定义类型的优先队列，使用最小堆
     std::priority_queue<int, std::vector<int>, compare> pq_min;
-   //std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min;
+    //std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min;
 
     // 向优先队列中添加元素
     pq_min.push(30);
@@ -533,7 +533,7 @@ int main() {
     employees["Charlie"] = 35;
 
     // 遍历 map 并打印员工信息
-    for (std::map<std::string, int>::iterator it = employees.begin(); it != employees.end(); ++it) {
+    for (auto it = employees.begin(); it != employees.end(); ++it) {
         std::cout << it->first << " is " << it->second << " years old." << std::endl;
     }
 
@@ -576,7 +576,7 @@ int main() {
 }
 ```
 
-### 📌 **C++ 标准库 `<bitset>`**
+### 📌 **C++ 标准库 `<bitset>`** 
 
 位集合是一个由位（bit）组成的数组，每个位可以是 0 或 1。
 
@@ -838,17 +838,18 @@ int main() {
 ```c++
 #include <iostream>
 #include <utility>
+using namespace std;
+
 int main() {
-    //pair<T1, T2> p; T1 和 T2 是两个不同的类型
-    //make_tuple(a, b, c); 存三个元素
-    // 使用 make_pair 创建 pair 对象
-    auto p = std::make_pair(10, 20);
-    // p 是一个 pair 对象，包含两个元素：first 和 second。
-    // 输出 pair 对象的元素
-    std::cout << "First element: " << p.first << std::endl;
-    std::cout << "Second element: " << p.second << std::endl;
-    return 0;
+    pair<int, string> p(1, "hello");
+    //tuple<int, string, double> t(1, "hello", 3.14);
+    cout << p.first << " " << p.second << endl; // 1 hello
 }
+```
+
+```c++
+auto p = make_pair(1, "hello"); // 类型自动推导成 pair<int, const char*>
+cout << p.first << " " << p.second << endl;
 ```
 
 ### 使用 swap 函数

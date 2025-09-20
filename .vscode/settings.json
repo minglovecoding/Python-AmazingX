@@ -2,7 +2,9 @@
     "files.associations": {
         "ios": "cpp",
         "iostream": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "list": "cpp",
+        "string": "cpp"
     },
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.defaultPackageManager": "ms-python.python:pip",

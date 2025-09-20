@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <list>
 
 int main() {
     // 声明并初始化字符串
@@ -26,7 +27,7 @@ int main() {
     // 替换 'World' 为 'C++'
     std::string modified = greeting;
     std::string::size_type pos = modified.find("World");
-    if (pos != std::string::npos) {
+    if (pos != std::string::npos) { // std::string::npos 是 一个特殊常量，表示 “未找到”
         modified.replace(pos, 5, "C++"); // 从位置 pos 开始，替换 5 个字符为 "C++"
     }
     std::cout << "Modified greeting: " << modified << std::endl;
