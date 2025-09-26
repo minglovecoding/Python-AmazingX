@@ -4,7 +4,8 @@
         "iostream": "cpp",
         "__locale": "cpp",
         "list": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "numbers": "cpp"
     },
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.defaultPackageManager": "ms-python.python:pip",

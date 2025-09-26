@@ -19,12 +19,15 @@ Lambda 表达式本质上与函数声明非常类似。Lambda 表达式具体形
 ```c++
 #include <iostream>
 using namespace std;
-
+/*int add(int a,int b){
+  return a+b;
+}*/
 int main() {
     auto add = [](int a, int b) {
         return a + b;
     };
-    cout << add(3, 5) << endl;  // 输出 8
+    int c=add(3, 5)
+    cout << c << endl;  // 输出 8
 }
 ```
 
@@ -37,21 +40,18 @@ using namespace std;
 int main ()
 {
    // 数字定义
-   short  s;
    int    i;
    long   l;
    float  f;
    double d;
    
-   // 数字赋值
-   s = 10;      
+   // 数字赋值  
    i = 1000;    
    l = 1000000; 
    f = 230.47;  
    d = 30949.374;
    
    // 数字输出
-   cout << "short  s :" << s << endl;
    cout << "int    i :" << i << endl;
    cout << "long   l :" << l << endl;
    cout << "float  f :" << f << endl;
@@ -457,7 +457,7 @@ int main ()
 int main() {
     // 定义一个数组
     int arr[] = {10, 20, 30, 40, 50};
-    
+ 
     // 定义一个指向数组第一个元素的指针
     int* ptr = arr;
     
@@ -538,7 +538,7 @@ int main ()
 using namespace std;
 int main ()
 {
-    int  var;
+    int  var; 
     int  *ptr;
     int  **pptr;
     var = 3000;
@@ -573,8 +573,7 @@ int main ()
 {
    unsigned long sec;
  
- 
-   getSeconds( sec );
+   getSeconds( &sec );
  
    // 输出实际值
    cout << "Number of seconds :" << sec << endl;
@@ -630,7 +629,7 @@ int main ()
 #include <cstdlib>
 using namespace std;
 // 要生成和返回随机数的函数
-int * getRandom( )
+int *getRandom( )
 {
   static int  r[10];
   // 设置种子
@@ -716,7 +715,7 @@ int main ()
 using namespace std;
  
 // 函数定义
-void swap(int& x, int& y)
+void swap(int x, int y)
 {
    int temp;
    temp = x; /* 保存地址 x 的值 */
@@ -820,7 +819,6 @@ using namespace std;
 int main( )
 {
    char name[50];
- 
    cout << "请输入您的名称： ";
    cin >> name;
    cout << "您的名称是： " << name << endl;
