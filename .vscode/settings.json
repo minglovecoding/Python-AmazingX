@@ -5,7 +5,9 @@
         "__locale": "cpp",
         "list": "cpp",
         "string": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "vector": "cpp",
+        "cmath": "cpp"
     },
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.defaultPackageManager": "ms-python.python:pip",

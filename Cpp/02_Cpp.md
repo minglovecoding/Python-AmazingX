@@ -17,13 +17,13 @@ cout << arr[0]; // 输出第一个元素
 - 支持随机访问，时间复杂度为 O(1)。
 
 ```C++
-vector<int> v1;              // 空vector
+vector<int> v1;  []            // 空vector
 vector<int> v2(5);           // 含5个元素，默认值0
 vector<int> v3(5, 10);       // 含5个元素，每个都是10
 vector<int> v4 = {1, 2, 3};  // 初始化列表
 
-v.push_back(10);       // 尾部添加
-v.pop_back();          // 删除最后一个
+v1.push_back(10);       // 尾部添加
+v1.pop_back();          // 删除最后一个
 v.insert(v.begin()+2, 5); // 在第3个位置插入 5
 v.erase(v.begin()+1);  // 删除第2个元素
 v.clear(); 
@@ -153,9 +153,12 @@ dq.pop_front();
 ```c++
 unordered_map<string, int> hashTable;
 hashTable["apple"] = 10;
-hashTable["orange"] = 10;
+hashTable["a"]=1
+hashTable["b"]=2
 
-cout << hashTable["apple"]; // 输出 10
+hashTable["orange"] = 20;
+
+cout << hashTable; // 输出 10
 ```
 
 ### 📌 **映射（Map）**
@@ -170,8 +173,8 @@ cout << hashTable["apple"]; // 输出 10
 ```c++
 map<string, int> myMap;
 myMap["apple"] = 10;
-myMap["appla"] = 10;
-cout << myMap["apple"]; // 输出 10
+myMap["appla"] = 20;
+cout << myMap ; // 输出 10
 ```
 
 ### 📌 **集合（Set**）
