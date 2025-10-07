@@ -347,9 +347,11 @@ using namespace std;
 class Line
 {
    public:
-      double length;
+      //double length;
       void setLength( double len );
       double getLength( void );
+   private:
+      double length;
 };
  
 // 成员函数定义
@@ -612,6 +614,7 @@ class Line
 {
    public:
       int getLength( void );
+      void display(Line obj);
       Line( int len );             // 简单的构造函数
       Line( const Line &obj);      // 拷贝构造函数
       ~Line();                     // 析构函数
@@ -746,8 +749,8 @@ private:
     int value;
  
 public:
-    void setValue(int value) {
-        this->value = value;
+    void setValue(int val) {
+        this->value = val;
     }
  
     void printValue() {
