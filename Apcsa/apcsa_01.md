@@ -60,7 +60,7 @@ public class Main {
 //$ java Main.java Alice 123 "hello world"
 ```
 
-### 📌 编译 & 执行 C++ 程序
+### 📌 编译 & 执行 java 程序
 
 ```java
 $ java Main.java
