@@ -454,7 +454,10 @@ public class RunoobTest {
 public class RunoobTest {
     public static void main(String[] args) {
         int a = 10, b = 20;
-        swap(a, b); // 调用swap方法
+        //swap(a, b); 调用swap方法
+        int[] r = swap(a, b);
+        a = r[0];
+        b = r[1];
         System.out.println("a = " + a + ", b = " + b); // 输出a和b的值
     }
     
@@ -542,7 +545,7 @@ obj.count = 20; // 通过实例名访问
 
 静态变量（也称为类变量）的命名规范通常遵循驼峰命名法，并且通常使用全大写字母，单词之间用下划线分隔，并且要用 static 关键字明确标识。
 
-- **使用驼峰命名法：** 即首字母小写，后续每个单词的首字母大写。例如：`myStaticVariable`。
+- **使用驼峰命名法：** 即首字母小写，后续每个单词的首字母大写。例如：**`myStaticVariable`**。
 - **全大写字母：** 静态常量通常使用全大写字母，单词之间用下划线分隔。这被称为"大写蛇形命名法"（Upper Snake Case）。例如：`MY_STATIC_VARIABLE`。
 - **避免使用缩写：** 尽量避免使用缩写，以提高代码的可读性。如果使用缩写是必要的，确保广泛理解，并在注释中进行解释。
 - **避免关键字：** 不要使用 Java 关键字（例如，class、int、boolean等）作为变量名。
