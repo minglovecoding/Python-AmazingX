@@ -1,64 +1,79 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+using ll = long long;
+
+struct Restr {
+    ll r, l;
+    int t;
+    bool operator<(const Restr& o) const {
+        if (r != o.r) return r < o.r;
+        if (l != o.l) return l < o.l;
+        return t < o.t;
+    }
+};
+
+void solve() {
+    int N, K;
+    if (!(cin >> N >> K)) return;
+
+    vector<ll> A(N);
+    for (int i = 0; i < N; ++i) cin >> A[i];
+
+    vector<Restr> R(K);
+    for (int i = 0; i < K; ++i) {
+        ll l, r; int t;
+        cin >> l >> r >> t;
+        R[i] = {r, l, t}; // 与 Python: (r, l, t) 一致
+    }
+
+    sort(R.begin(), R.end()); // 按 r 递增
+    sort(A.begin(), A.end()); // 树位置排序
+
+    vector<ll> stk;      // 可选且 <= 当前 r 的树（栈，后进先出，保证尽量取靠右）
+    vector<ll> planted;  // 已“保留”的树，保持有序（用于区间计数）
+    planted.reserve(N);
+    stk.reserve(N);
+
+    int idx = 0; // 指向 A 中下一个 <= r 的位置
+
+    for (const auto& q : R) {
+        // 把所有 <= r 的树加入栈
+        while (idx < N && A[idx] <= q.r) {
+            stk.push_back(A[idx]);
+            ++idx;
+        }
+
+        // 计算 planted 中位于 [l, r] 的个数：upper_bound - lower_bound
+        auto itL = lower_bound(planted.begin(), planted.end(), q.l);
+        auto itR = upper_bound(planted.begin(), planted.end(), q.r);
+        int current_t = int(itR - itL);
+
+        // 需要补到 t：每次从 stk 末尾弹出（即尽可能靠右的树），并插入到 planted（有序）
+        while (current_t < q.t) {
+            if (stk.empty()) {
+                // 按题意“不应发生”（初始可行），这里防御性退出
+                // 你也可以改为 assert(false);
+                // cerr << "No available tree but constraint not satisfied\n";
+                break;
+            }
+            ll pos = stk.back();
+            stk.pop_back();
+            auto it = lower_bound(planted.begin(), planted.end(), pos);
+            planted.insert(it, pos); // 保持有序
+            ++current_t;
+        }
+    }
+
+    cout << (N - (int)planted.size()) << '\n';
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     int T;
     if (!(cin >> T)) return 0;
-    while (T--) {
-        int N, K;
-        cin >> N >> K;
-        vector<int> a(N);
-        for (int i = 0; i < N; ++i) cin >> a[i];
-
-        const int INF = 1e9;
-        vector<vector<int>> dp(N, vector<int>(N, INF));
-        vector<vector<bool>> allSame(N, vector<bool>(N, false));
-
-        // Precompute allSame
-        for (int l = 0; l < N; ++l) {
-            allSame[l][l] = true;
-            for (int r = l + 1; r < N; ++r) {
-                allSame[l][r] = allSame[l][r - 1] && (a[r] == a[l]);
-            }
-        }
-
-        // Helper to check if a[l..r] == k repeats of a[l..l+p-1]
-        auto isRepeat = [&](int l, int r, int p) -> bool {
-            int len = r - l + 1;
-            if (p <= 0 || len % p) return false;
-            for (int i = l + p; i <= r; ++i) {
-                if (a[i] != a[l + (i - l) % p]) return false;
-            }
-            return true;
-        };
-
-        for (int len = 1; len <= N; ++len) {
-            for (int l = 0; l + len - 1 < N; ++l) {
-                int r = l + len - 1;
-
-                // If all equal -> 1 PRINT with a REP
-                if (allSame[l][r]) {
-                    dp[l][r] = 1;
-                }
-
-                // Concatenation
-                for (int k = l; k < r; ++k) {
-                    dp[l][r] = min(dp[l][r], dp[l][k] + dp[k + 1][r]);
-                }
-
-                // Repetition (use smaller base pattern if it tiles the whole segment)
-                for (int p = 1; p < len; ++p) { // p = base pattern length
-                    if (isRepeat(l, r, p)) {
-                        dp[l][r] = min(dp[l][r], dp[l][l + p - 1]);
-                    }
-                }
-            }
-        }
-
-        cout << (dp[0][N - 1] <= K ? "YES" : "NO") << "\n";
-    }
+    while (T--) solve();
     return 0;
 }
