@@ -502,13 +502,13 @@ public class Main{
 
 #### 题目描述
 
-给出平面坐标上不在一条直线上三个点坐标 $(x_1,y_1),(x_2,y_2),(x_3,y_3)$，坐标值是实数，且绝对值不超过 100.00，求围成的三角形周长。保留两位小数。
+给出平面坐标上不在一条直线上三个点坐标 `(x_1,y_1),(x_2,y_2),(x_3,y_3)`，坐标值是实数，且绝对值不超过 100.00，求围成的三角形周长。保留两位小数。
 
-对于平面上的两个点 $(x_1,y_1),(x_2,y_2)$，则这两个点之间的距离 $dis=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$。
+对于平面上的两个点 `(x_1,y_1),(x_2,y_2)`，则这两个点之间的距离 `dis=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}`。
 
 #### 输入格式
 
-输入三行，第 $i$ 行表示坐标 $(x_i,y_i)$，以一个空格隔开。
+输入三行，第 `i` 行表示坐标 `(x_i,y_i)`，以一个空格隔开。
 
 #### 输出格式
 
@@ -530,7 +530,7 @@ public class Main{
 
 ## 说明/提示
 
-数据保证，坐标均为实数且绝对值不超过 $100$，小数点后最多仅有 $3$ 位。
+数据保证，坐标均为实数且绝对值不超过 `100`，小数点后最多仅有 `3` 位。
 
 ```java
 import java.util.*;
@@ -546,7 +546,7 @@ public class Main {
         double b = Math.hypot(x2 - x3, y2 - y3);
         double c = Math.hypot(x3 - x1, y3 - y1);
 
-        System.out.printf("%.2f%n", a + b + c);
+        System.out.printf("%.2f\n", a + b + c);
     }
 }
 ```
@@ -727,9 +727,9 @@ import java.util.*;
 
 public class Main {
     static long val(String s) {
-        long prod = 1;
+        long prod = 1; 
         for (int i = 0; i < s.length(); i++) {
-            prod *= (s.charAt(i) - 'A' + 1);
+            prod *= (s[i] - 'A' + 1);
         }
         return prod % 47;
     }
