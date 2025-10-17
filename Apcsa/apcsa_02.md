@@ -213,7 +213,15 @@ public Person(String name, int age) {
 import java.io.*;
 ```
 
-java.io 包是 Java 标准库中的一个核心包，提供了用于系统输入和输出的类，它包含了处理数据流（字节流和字符流）、文件读写、序列化以及数据格式化的工具。java.io 包中的流支持很多种格式，比如：基本类型、对象、本地化字符集等等。
+- 常见：`InputStream/OutputStream` 族、`Reader/Writer` 族、`File`、`BufferedReader/BufferedWriter`、`PrintWriter`、`ObjectInputStream/ObjectOutputStream` 等。
+- 用途：**字节/字符流 I/O、文件读写、序列化**。
+
+```java
+import java.util.*
+```
+
+- 常见：集合框架 `List/ArrayList`, `Map/HashMap`, `Set/HashSet`, `Collections`, `Arrays`，`Scanner`，`Random`，`Date/Calendar` 等。
+- 用途：**容器、工具类、随机数、时间（旧 API）**等。
 
 ```java
 import java.io.*;
@@ -283,7 +291,7 @@ Java 的控制台输入由 System.in 完成。为了获得一个绑定到控制�
 //使用 BufferedReader 在控制台读取字符
 import java.io.*;
  
-public class BRRead {
+public class Main {
     public static void main(String[] args) throws IOException {
         char c;
         // 使用 System.in 创建 BufferedReader
@@ -392,6 +400,7 @@ public class MyClass{
 	public static void strange(int x){
 	  		x = x + 1;
    		System.out.println("1. x = " + x);
+}
 }
 //The value of x in main did not change. 
 ```
