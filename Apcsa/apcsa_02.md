@@ -39,13 +39,15 @@ public class Main {
     public static void main(String[] args) {
         Animal a1 = new Animal();
         Animal a2 = new Dog();          // 多态：父类引用指向子类对象
-
+       
         a1.speak();                     // 调用 Animal.speak()
         a2.speak();                     // 调用 Dog.speak()（重写生效）
     }
 }
 
 class Animal {
+    //Animal(int x,int y){a=x,b=y}
+    //private int a,b;
     public void speak() {
         System.out.println("Animal: ...");
     }
@@ -115,8 +117,10 @@ public class Puppy{
 
 ```java
 public class Puppy{
+   private String name
    public Puppy(String name){
       //这个构造器仅有一个参数：name
+      this.name=name
       System.out.println("小狗的名字是 : " + name ); 
    }
    public static void main(String[] args){
@@ -136,6 +140,7 @@ public class Puppy {
     // 构造器
     public Puppy(String name) {
         this.name = name;
+        //this.age= age
         System.out.println("小狗的名字是 : " + name);
     }
  
@@ -157,7 +162,7 @@ public class Puppy {
     // 主方法
     public static void main(String[] args) {
         // 创建对象
-        Puppy myPuppy = new Puppy("Tommy");
+        Puppy myPuppy = new Puppy("Tommy",2);
  
         // 通过方法来设定 age
         myPuppy.setAge(2);

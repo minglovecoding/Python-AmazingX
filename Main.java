@@ -1,22 +1,42 @@
-public class Main {
+public class Puppy {
+    private int age;
+    private String name;
+ 
+    // 构造器
+    public Puppy(String name) {
+        this.name = name;
+        //this.age= age
+        System.out.println("小狗的名字是 : " + name);
+    }
+ 
+    // 设置 age 的值
+    public void setAge(int age) {
+        this.age = age;
+    }
+ 
+    // 获取 age 的值
+    public int getAge() {
+        return age;
+    }
+ 
+    // 获取 name 的值
+    public String getName() {
+        return name;
+    }
+ 
+    // 主方法
     public static void main(String[] args) {
-        Animal a1 = new Animal();
-        Animal a2 = new Dog();          // 多态：父类引用指向子类对象
-
-        a1.speak();                     // 调用 Animal.speak()
-        a2.speak();                     // 调用 Dog.speak()（重写生效）
-    }
-}
-
-class Animal {
-    public void speak() {
-        System.out.println("Animal: ...");
-    }
-}
-
-class Dog extends Animal {               // extend：Dog 继承 Animal
-    @Override                            // override：重写 speak()
-    public void speak() {
-        System.out.println("Dog: Woof!");
+        // 创建对象
+        Puppy myPuppy = new Puppy("Tommy");
+ 
+        // 通过方法来设定 age
+        myPuppy.setAge(2);
+ 
+        // 调用另一个方法获取 age
+        int age = myPuppy.getAge();
+        System.out.println("小狗的年龄为 : " + age);
+ 
+        // 也可以直接访问成员变量（通过 getter 方法）
+        System.out.println("变量值 : " + myPuppy.getAge());
     }
 }
