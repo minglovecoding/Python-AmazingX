@@ -1,30 +1,46 @@
-#include<cstdio>
-#include<algorithm>
-#include<iostream>
-#include<cstring>
+#include <bits/stdc++.h>
 using namespace std;
-int n,len=1,f[5003][5003];//f[k][i]--第k阶台阶所对应的走法数 
-void hp(int k)//高精度加法，k来存阶数 
-{    
-    int i;
-    for(i=1;i<=len;i++)
-     f[k][i]=f[k-1][i]+f[k-2][i];//套用公式 
-    for(i=1;i<=len;i++)             //进位 
-     if(f[k][i]>=10)
-     {
-         f[k][i+1]+=f[k][i]/10;
-         f[k][i]=f[k][i]%10;
-         if(f[k][len+1])len++;
+using int64 = long long; // 题目范围 1 ≤ a,b,c,d ≤ 1e18
+
+// 处理单个测试用例
+long long solve(long long a, long long b, long long c, long long d) {
+    long long ops = 0;
+    while (true) {
+        // 如果已经到达目标
+        if (a == c && b == d) return ops;
+
+        // 确保 c >= d，否则交换两堆（对应 Python 里的 if c < d: swap）
+        if (c < d) {
+            swap(a, b);
+            swap(c, d);
+        }
+
+        // 不可能情况
+        if (a > c || b > d || d == 0) return -1;
+
+        // 如果 b == d，可以直接检查 c 是否能通过加若干次 d 变成目标
+        if (b == d && (c - a) % d == 0) {
+            ops += (c - a) / d;
+            return ops;
+        }
+
+        // 否则，做一次类似 "c %= d" 的大步跳跃
+        ops += c / d;
+        c %= d;
     }
+    return ops;
 }
-int main()
-{
-    int i;
-    scanf("%d",&n);
-    f[1][1]=1; f[2][1]=2;         //初始化 
-    for(i=3;i<=n;i++)              //从3开始避免越界 
-     hp(i);                         
-    for(i=len;i>=1;i--)             //逆序输出 
-     printf("%d",f[n][i]);
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+    while (T--) {
+        long long a, b, c, d;
+        cin >> a >> b >> c >> d;
+        cout << solve(a, b, c, d) << "\n";
+    }
     return 0;
 }
