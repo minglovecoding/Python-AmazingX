@@ -1,102 +1,57 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 1000005;
-const int LOG = 21;
-
-int N;
-int p[MAXN];
-vector<int> g[MAXN];
-int depth[MAXN];
-int up[MAXN][LOG];
-int tin[MAXN], tout[MAXN], timer = 0;
-
-// DFS to compute tin/tout and depth
-void dfs(int v) {
-    tin[v] = ++timer;
-    for (int u : g[v]) {
-        depth[u] = depth[v] + 1;
-        up[u][0] = v;
-        for (int j = 1; j < LOG; j++)
-            up[u][j] = up[up[u][j - 1]][j - 1];
-        dfs(u);
-    }
-    tout[v] = ++timer;
-}
-
-// Check ancestor
-bool is_ancestor(int u, int v) {
-    return tin[u] <= tin[v] && tout[v] <= tout[u];
-}
-
-// LCA
-int lca(int u, int v) {
-    if (is_ancestor(u, v)) return u;
-    if (is_ancestor(v, u)) return v;
-    for (int j = LOG - 1; j >= 0; j--) {
-        if (!is_ancestor(up[u][j], v))
-            u = up[u][j];
-    }
-    return up[u][0];
-}
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
+    int N;
     cin >> N;
+
+    vector<int> P(N + 1);
+    for (int i = 1; i <= N; i++)
+        cin >> P[i];
+
+    vector<int> num_child(N + 1, 0);
+    vector<int> length(N + 1, 0);
+
+    // 计算每个节点的深度与子节点数
     for (int i = 1; i <= N; i++) {
-        cin >> p[i];
-        g[p[i]].push_back(i);
+        length[i] = length[P[i]] + 1;
+        num_child[P[i]]++;
     }
 
-    depth[0] = 0;
-    up[0][0] = 0;
-    dfs(0);
-
-    // find all leaves
-    vector<int> leaves;
+    // 统计叶子节点数
+    int M = 0;
     for (int i = 0; i <= N; i++) {
-        if (g[i].empty()) leaves.push_back(i);
+        if (num_child[i] == 0)
+            M++;
     }
 
-    int M = leaves.size();
-    vector<int> order(M);
-    for (int i = 0; i < M; i++) cin >> order[i];
+    // 模拟 M 次操作
+    for (int _ = 0; _ < M; _++) {
+        int x;
+        cin >> x;
 
-    // store (tin, node) for alive leaves
-    set<pair<int,int>> alive;
-    for (int x : leaves) alive.insert({tin[x], x});
+        while (true) {
+            assert(num_child[x] == 0);  // 必须是叶子
 
-    vector<int> ans(M);
+            if (x == 0) {  // 到达根节点
+                cout << 0 << "\n";
+                break;
+            }
 
-    for (int i = 0; i < M; i++) {
-        int x = order[i];
-        auto it = alive.find({tin[x], x});
+            if (num_child[P[x]] == 1) {
+                x = P[x];
+                num_child[x] = 0;
+                continue;
+            }
 
-        int bestLCAdepth = 0;
-        // check predecessor
-        if (it != alive.begin()) {
-            auto pre = prev(it);
-            int y = pre->second;
-            int L = lca(x, y);
-            bestLCAdepth = max(bestLCAdepth, depth[L]);
+            cout << length[x] << "\n";
+            num_child[P[x]]--;
+            break;
         }
-        // check successor
-        auto nxt = next(it);
-        if (nxt != alive.end()) {
-            int y = nxt->second;
-            int L = lca(x, y);
-            bestLCAdepth = max(bestLCAdepth, depth[L]);
-        }
-
-        ans[i] = depth[x] - bestLCAdepth;
-
-        alive.erase(it);
-        if (alive.size() == 0)
-            ans[i] = 0;  // only one word left => 0
     }
 
-    for (int x : ans) cout << x << "\n";
     return 0;
 }
