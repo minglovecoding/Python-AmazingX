@@ -157,7 +157,7 @@ int main() {
 ```
 
 ```c++
-#include<iostream>
+#include<bits/stdc++.h>
 using namespace std;
 long long n,m,rec,sqr;
 int main() {
@@ -253,7 +253,7 @@ long long ways(int n) {
     if (n <= 1) return 1;      // f[0]=1, f[1]=1
     long long a = 1, b = 1;    // a=f[i-2], b=f[i-1]
     for (int i = 2; i <= n; ++i) {
-        long long c = a + b;   // f[i] = f[i-1] + f[i-2]
+        long long c = b + a;   // f[i] = f[i-1] + f[i-2]
         a = b; b = c;
     }
     return b;
