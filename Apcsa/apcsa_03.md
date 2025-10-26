@@ -81,7 +81,7 @@ boolean flag = 1;  // ❌ 错误
 
 如果想转换，可手动写：
 
-```
+```c++
 int num = flag ? 1 : 0;   // 用三元运算符实现
 ```
 
@@ -96,7 +96,6 @@ public class Boolean_Class{
 	System.out.println(2 + 4 * 3 <= 15); // true
 	System.out.println(x > 5); // false
 	System.out.println(y >= 3); // true
-     
    }
 }
 
@@ -134,7 +133,8 @@ public class Main {
      System.out.println("a++   = " +  (a++) );
      System.out.println("a--   = " +  (a--) );
      // 查看  d++ 与 ++d 的不同
-     System.out.println("d++   = " +  (d++) );
+   
+     //System.out.println("d++   = " +  (d++) );
      System.out.println("++d   = " +  (++d) );
   }
 }
@@ -190,27 +190,27 @@ Java定义了位运算符，应用于整数类型(int)，长整型(long)，短�
 
 位运算符作用在所有的位上，并且按位运算。假设a = 60，b = 13;它们的二进制格式表示将如下：
 
-```
+```java
 A = 0011 1100
 B = 0000 1101
 -----------------
-A&B = 0000 1100
-A | B = 0011 1101
-A ^ B = 0011 0001
+A&B = 0000 1100 //位与
+A | B = 0011 1101 //位或
+A ^ B = 0011 0001 //位异
 ~A= 1100 0011
 ```
 
 下表列出了位运算符的基本运算，假设整数变量 A 的值为 60 和变量 B 的值为 13：
 
-| 操作符 | 描述                                                         | 例子                           |
-| :----- | :----------------------------------------------------------- | :----------------------------- |
-| ＆     | 如果相对应位都是1，则结果为1，否则为0                        | （A＆B），得到12，即0000 1100  |
-| \|     | 如果相对应位都是 0，则结果为 0，否则为 1                     | （A \| B）得到61，即 0011 1101 |
-| ^      | 如果相对应位值相同，则结果为0，否则为1                       | （A ^ B）得到49，即 0011 0001  |
-| 〜     | 按位取反运算符翻转操作数的每一位，即0变成1，1变成0。         | （〜A）得到-61，即1100 0011    |
-| <<     | 按位左移运算符。左操作数按位左移右操作数指定的位数。         | A << 2得到240，即 1111 0000    |
-| >>     | 按位右移运算符。左操作数按位右移右操作数指定的位数。         | A >> 2得到15即 1111            |
-| >>>    | 👉 **不保留符号位**（也叫“无符号右移”）。左操作数的值按右操作数指定的位数右移，移动得到的空位以零填充。 | A>>>2得到15即0000 1111         |
+| 操作符 | 描述                                                         | 例子                            |
+| :----- | :----------------------------------------------------------- | :------------------------------ |
+| ＆     | 如果相对应位都是1，则结果为1，否则为0                        | （A＆B），得到12，即0000 1100   |
+| \|     | 如果相对应位都是 0，则结果为 0，否则为 1                     | （A \| B）得到61，即 0011 1101  |
+| ^      | 如果相对应位值相同，则结果为0，否则为1                       | （A ^ B）得到49，即 0011 0001   |
+| 〜     | 按位取反运算符翻转操作数的每一位，即0变成1，1变成0。         | （〜A）得到-61，即1100 0011     |
+| <<     | 按位左移运算符。左操作数按位左移右操作数指定的位数。         | A << 2得到240，即 **1111 0000** |
+| >>     | 按位右移运算符。左操作数按位右移右操作数指定的位数。         | A >> 2得到15即 1111             |
+| >>>    | 👉 **不保留符号位**（也叫“无符号右移”）。左操作数的值按右操作数指定的位数右移，移动得到的空位以零填充。 | A>>>2得到15即0000 1111          |
 
 ```java
 public class Test {
@@ -400,7 +400,7 @@ Java中有三种主要的循环结构：
 public class Test {
    public static void main(String[] args) {
       int x = 10;
-      while( x < 20 ) {
+      while( x < 10 ) {
          System.out.print("value of x : " + x );
          x++;
          System.out.print("\n");
@@ -415,12 +415,11 @@ public class Test {
 public class Test {
    public static void main(String[] args){
       int x = 10;
- 
       do{
          System.out.print("value of x : " + x );
          x++;
          System.out.print("\n");
-      }while( x < 20 );
+      }while( x < 10 );
    }
 }
 ```
@@ -432,8 +431,7 @@ public class Test {
 ```java
 public class Test {
    public static void main(String[] args) {
- 
-      for(int x = 10; x < 20; x = x+1) {
+      for(int x = 10; x < 20; x++) {
          System.out.print("value of x : " + x );
          System.out.print("\n");
       }
@@ -468,13 +466,10 @@ public class Test {
 
 break 主要用在循环语句或者 switch 语句中，用来跳出整个语句块。
 
-break 跳出最里层的循环，并且继续执行该循环下面的语句。
-
 ```java
 public class Test {
    public static void main(String[] args) {
       int [] numbers = {10, 20, 30, 40, 50};
- 
       for(int x : numbers ) {
          // x 等于 30 时跳出循环
          if( x == 30 ) {
@@ -483,6 +478,7 @@ public class Test {
          System.out.print( x );
          System.out.print("\n");
       }
+      System.out.print("\n");
    }
 }
 ```
@@ -632,13 +628,11 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();  // 输入年份
-        
         if ((n % 4 == 0 && n % 100 != 0) || n % 400 == 0) {
             System.out.println(1);
         } else {
             System.out.println(0);
         }
-        
         sc.close();
     }
 }
@@ -657,7 +651,7 @@ public class Main {
         int a = sc.nextInt();
         int b = sc.nextInt();
         int c = sc.nextInt();
-        sc.close();
+        //sc.close();
 
         int[] d = {a, b, c};
         Arrays.sort(d);  // 从小到大排序
