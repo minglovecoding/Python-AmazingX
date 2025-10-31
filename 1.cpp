@@ -1,36 +1,39 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int N, Q;
-    cin >> N >> Q;
-
-    vector<long long> c(N), t(N);
-    for (int i = 0; i < N; i++) cin >> c[i];
-    for (int i = 0; i < N; i++) cin >> t[i];
-
-    vector<long long> deadline(N);
-    for (int i = 0; i < N; i++) {
-        deadline[i] = c[i] - t[i];  // 关键时间差
+using ll = long long;
+ 
+int main(){
+    int N, M; cin >> N >> M;
+    string S; cin >> S;
+    vector<ll> a(N);
+    for(ll& i: a) cin >> i;
+	
+    vector<bool> bad_L(N), bad_R(N);
+    for(int i = 0; i < N; i++){
+        if(S[i] == 'R' && S[(i + 1) % N] == 'L'){
+            bad_L[i] = true;
+            bad_R[(i + 1) % N] = true;
+        }
     }
-
-    sort(deadline.begin(), deadline.end());
-
-    while (Q--) {
-        long long V, S;
-        cin >> V >> S;
-
-        // upper_bound 返回第一个 > S 的位置
-        int pos = upper_bound(deadline.begin(), deadline.end(), S) - deadline.begin();
-        long long count = N - pos;  // 满足条件的数量
-
-        if (count >= V) cout << "YES\n";
-        else cout << "NO\n";
+        
+    ll ans = accumulate(a.begin(), a.end(), 0LL);
+    for(int i = 0; i < N; i++){
+        ll sum = 0;
+        if(bad_L[i]){
+            int j = (i - 1 + N) % N;
+            while(S[j] == 'R'){
+                sum += a[j--];
+                if(j < 0) j += N;
+            }
+        }
+        if(bad_R[i]){
+            int j = (i + 1) % N;
+            while(S[j] == 'L'){
+                sum += a[j++];
+                if(j >= N) j -= N;
+            }
+        }
+        ans -= min(sum, (ll) M);
     }
-
-    return 0;
+    cout << ans << endl;
 }
-//
