@@ -5,52 +5,30 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int N;
-    cin >> N;
+    int N, Q;
+    cin >> N >> Q;
 
-    vector<int> P(N + 1);
-    for (int i = 1; i <= N; i++)
-        cin >> P[i];
+    vector<long long> c(N), t(N);
+    for (int i = 0; i < N; i++) cin >> c[i];
+    for (int i = 0; i < N; i++) cin >> t[i];
 
-    vector<int> num_child(N + 1, 0);
-    vector<int> length(N + 1, 0);
-
-    // 计算每个节点的深度与子节点数
-    for (int i = 1; i <= N; i++) {
-        length[i] = length[P[i]] + 1;
-        num_child[P[i]]++;
+    vector<long long> deadline(N);
+    for (int i = 0; i < N; i++) {
+        deadline[i] = c[i] - t[i];  // 关键时间差
     }
 
-    // 统计叶子节点数
-    int M = 0;
-    for (int i = 0; i <= N; i++) {
-        if (num_child[i] == 0)
-            M++;
-    }
+    sort(deadline.begin(), deadline.end());
 
-    // 模拟 M 次操作
-    for (int _ = 0; _ < M; _++) {
-        int x;
-        cin >> x;
+    while (Q--) {
+        long long V, S;
+        cin >> V >> S;
 
-        while (true) {
-            assert(num_child[x] == 0);  // 必须是叶子
+        // upper_bound 返回第一个 > S 的位置
+        int pos = upper_bound(deadline.begin(), deadline.end(), S) - deadline.begin();
+        long long count = N - pos;  // 满足条件的数量
 
-            if (x == 0) {  // 到达根节点
-                cout << 0 << "\n";
-                break;
-            }
-
-            if (num_child[P[x]] == 1) {
-                x = P[x];
-                num_child[x] = 0;
-                continue;
-            }
-
-            cout << length[x] << "\n";
-            num_child[P[x]]--;
-            break;
-        }
+        if (count >= V) cout << "YES\n";
+        else cout << "NO\n";
     }
 
     return 0;
