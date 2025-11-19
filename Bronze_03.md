@@ -1,4 +1,4 @@
-## 📌25_Feb_b3-Maximizing Productivity
+## 📌24_Feb_b3-Maximizing Productivity
 
 ### 🧩 一、题目本质
 
@@ -13,8 +13,6 @@
 >
 > > 有多少个 `i` 满足 `S + t[i] < c[i]`
 > >  若这样的数量 ≥ `V`，输出 `YES`，否则 `NO`。
-
-------
 
 ### 🧠 二、考点分析
 
@@ -81,7 +79,6 @@ int main() {
     while (Q--) {
         long long V, S;
         cin >> V >> S;
-
         // upper_bound 返回第一个 > S 的位置
         int pos = upper_bound(deadline.begin(), deadline.end(), S) - deadline.begin();
         long long count = N - pos;  // 满足条件的数量
