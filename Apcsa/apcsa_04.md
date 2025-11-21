@@ -211,3 +211,235 @@ for(int i = 0; i < n; i++){
 
 ***
 
+[P5721](https://www.luogu.com.cn/problem/P5721)
+
+````java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        
+        int cur = 1; // 当前要输出的数字
+        for (int i = 0; i < n; ++i) {
+            int len = n - i; // 本行的数字个数
+            for (int j = 0; j < len; ++j) {
+                System.out.printf("%02d", cur); // 两位数字，不足补0
+                cur++;
+            }
+            if (i != n - 1) {
+                System.out.println();
+            }
+        }
+    }
+}
+````
+
+[P1217](https://www.luogu.com.cn/problem/P1217)
+
+```java
+import java.util.Scanner;
+
+public class Main {
+
+    // 判断是否为质数
+    static boolean isPrime(int s) {
+        if (s < 2) return false;
+        for (int i = 2; i * i <= s; i++) {
+            if (s % i == 0) return false;
+        }
+        return true;
+    }
+
+    // 判断是否为回文数
+    static boolean isPalindrome(int s) {
+        int b = 0, t = s;//`t` 保存原始数字 `s`（因为后面要把 `s` 变成 0）
+        //`b` 是反转后的数字（初始是 0）
+        while (s > 0) {
+            b = b * 10 + s % 10;
+            s /= 10;
+        }
+        return t == b;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+
+        for (int i = a; i <= b; i++) {
+            if ((i & 1) == 1 && isPalindrome(i) && isPrime(i)) {
+                System.out.println(i);
+            }
+        }
+    }
+}
+```
+
+### 🔍 **1）取出 s 的最后一位：**
+
+`s % 10`
+ 例如 s = 123 → 3
+
+### **2）把这位数字加到 b 的末尾：**
+
+```java
+b = b * 10 + (最后一位)
+```
+
+例如 b = 0：
+ 过程如下：
+
+| 循环 | s    | s % 10 | b 新值        | s 新值 |
+| ---- | ---- | ------ | ------------- | ------ |
+| 1    | 123  | 3      | 0*10+3 = 3    | 12     |
+| 2    | 12   | 2      | 3*10+2 = 32   | 1      |
+| 3    | 1    | 1      | 32*10+1 = 321 | 0      |
+
+得到 b = 321，就是原数字的反转。
+
+***
+
+[P5718](https://www.luogu.com.cn/problem/P5718)
+
+```java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int ans = Integer.MAX_VALUE;  // 等价于 C++ 的 INT_MAX
+
+        for (int i = 0; i < n; i++) {
+            int x = sc.nextInt();
+            ans = Math.min(ans, x);   // 取较小值
+        }
+
+        System.out.println(ans);
+    }
+}
+```
+
+### 🎯 **常见考试题型**
+
+##### **1. 遍历数组进行统计**
+
+```java
+int count = 0;
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] > 10)
+        count++;
+}
+```
+
+##### **2. ArrayList 遍历 + 删除元素**
+
+APCSA 强调：
+
+- **从后往前删** 才不会漏删
+
+```java
+for (int i = list.size() - 1; i >= 0; i--) {
+    if (list.get(i) < 0)
+        list.remove(i);
+}
+```
+
+##### **3. 字符串遍历**
+
+```java
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+}
+```
+
+##### **4. 找最大/最小 / sum**
+
+```java
+int max = arr[0];
+for (int x : arr) {
+    if (x > max)
+        max = x;
+}
+```
+
+##### **5. 双层循环输出 pattern**
+
+```java
+for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < i; j++) {
+        System.out.print("*");
+    }
+    System.out.println();
+}
+```
+
+##### **6. 2D array 遍历**
+
+```java
+for (int r = 0; r < grid.length; r++) {
+    for (int c = 0; c < grid[0].length; c++) {
+        System.out.println(grid[r][c]);
+    }
+}
+```
+
+### ⭐ APCSA 8 个iteration模板
+
+##### 1) 标准 for
+
+```java
+for (int i = 0; i < n; i++) {}
+```
+
+##### **2) for-each**
+
+```java
+for (int x : arr) {}
+```
+
+##### **3) 遍历 ArrayList**
+
+```java
+for (int i = 0; i < list.size(); i++) {}
+```
+
+##### **4) while 循环**
+
+```java
+while (condition) {
+    // update
+}
+```
+
+##### **5) 双层 for**
+
+```java
+for (int i = 0; i < r; i++)
+    for (int j = 0; j < c; j++)
+```
+
+##### **6) 过滤统计 count**
+
+```java
+int count = 0;
+for (int x : arr)
+    if (x == target) count++;
+```
+
+##### **7) 删除 ArrayList 元素**
+
+```java
+for (int i = list.size()-1; i >= 0; i--)
+    if (...) list.remove(i);
+```
+
+##### **8) 累加 sum**
+
+```java
+int sum = 0;
+for (int x : arr) sum += x;
+```
