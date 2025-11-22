@@ -225,7 +225,7 @@ int pow3[10];
 void precompute_win() {
     pow3[0] = 1;
     for (int i = 1; i <= 9; i++) pow3[i] = pow3[i-1] * 3;
-
+    //state = a0 + a1*3 + a2*3^2 + ... + a8*3^8
     for (int s = 0; s < MAXSTATE; s++) {
         int tmp = s;
         int a[9];
@@ -260,9 +260,9 @@ int main() {
     // 初始化
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
-            wall[i][j] = false;
-            moveIdx[i][j] = -1;
-            moveVal[i][j] = 0;
+            wall[i][j] = false; //不是墙
+            moveIdx[i][j] = -1; //没有棋盘落子 0~8 → （0 = 左上角，8 = 右下角）
+            moveVal[i][j] = 0; //没有棋盘落子内容，1 → 'M'，2 → 'O'
         }
     }
 
@@ -318,9 +318,9 @@ int main() {
             if (moveIdx[nx][ny] != -1) {
                 int idx = moveIdx[nx][ny];
                 int v = moveVal[nx][ny]; // 1 or 2
-                int cur = (state / pow3[idx]) % 3;
+                int cur = (state / pow3[idx]) % 3;  // 当前棋盘这个格子的内容
                 if (cur == 0) { // 空才会下
-                    newState = state + v * pow3[idx];
+                    newState = state + v * pow3[idx]; // 在这里落 M 或 O
                 }
             }
 
@@ -340,5 +340,9 @@ int main() {
     cout << winningBoards.size() << "\n";
     return 0;
 }
+
+//状态压缩
+//图搜索
+//预处理+去重
 ```
 
