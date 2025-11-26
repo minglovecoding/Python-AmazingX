@@ -45,6 +45,41 @@ while (!st.empty()) {
 - 易栈溢出（节点上限 2e5 时要注意）
 - 找最短路一般不用它（因为可能先走到很远的路径）
 
+>  全排列DFS算法
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> res;
+
+void dfs(vector<int>& nums, int idx) {
+    // 递归到最后一个位置，记录答案
+    if (idx == nums.size()) {
+        res.push_back(nums);
+        return;
+    }
+    
+    // 枚举 idx 位置放谁
+    for (int i = idx; i < nums.size(); i++) {
+        swap(nums[i], nums[idx]);       // 选择：把 num[i] 放到 idx
+        dfs(nums, idx + 1);             // 递归处理下一位
+        swap(nums[i], nums[idx]);       // 回溯：换回来
+    }
+}
+
+int main() {
+    vector<int> nums = {1, 2, 3};
+    dfs(nums, 0);
+
+    for (auto &v : res) {
+        for (int x : v) cout << x << " ";
+        cout << endl;
+    }
+}
+
+```
+
 ### 🚀 BFS（Breadth-First Search）广度优先搜索
 
 **核心思想：一圈一圈往外扩，像“水波纹”。**
@@ -76,24 +111,75 @@ while(!q.empty()) {
 - 需要队列
 - 不能像 DFS 那样方便地做回溯
 
+```c++
+//给你一个 n × m 的迷宫（0 = 路，1 = 墙），从 (0,0) 走到 (n-1,m-1)，只能向上下左右移动，每走一步距离 +1。求最短距离。
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m;
+int dx[4] = {1, -1, 0, 0};
+int dy[4] = {0, 0, 1, -1};
+
+int bfs(vector<vector<int>>& g) {
+    vector<vector<int>> dist(n, vector<int>(m, -1));
+    queue<pair<int,int>> q;
+
+    q.push({0, 0});
+    dist[0][0] = 0;
+
+    while (!q.empty()) {
+        auto [x, y] = q.front();
+        q.pop();
+
+        // 如果走到终点
+        if (x == n-1 && y == m-1) return dist[x][y];
+
+        for (int k = 0; k < 4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+
+            // 越界、遇到墙、走过的都跳过
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+            if (g[nx][ny] == 1) continue;
+            if (dist[nx][ny] != -1) continue;
+
+            dist[nx][ny] = dist[x][y] + 1;
+            q.push({nx, ny});
+        }
+    }
+
+    return -1; // 走不到终点
+}
+int main() {
+    vector<vector<int>> g = {
+        {0,0,1},
+        {1,0,0},
+        {0,0,0}
+    };
+    n = g.size();
+    m = g[0].size();
+    cout << bfs(g) << endl; // 输出最短距离
+}
+```
+
 ***
 
 [P1596](https://www.luogu.com.cn/problem/P1596)
 
 ```c++
-#include<cstdio>
+#include<bits/stdc++.h>
 using namespace std;
-char a[101][101];
+string a[105];
 int ans;
 int n,m;
 void dfs(int x,int y){
     a[x][y]='.';
     int dx,dy;
-    for(int i=-1;i<=1;i++){
+    for(int i=-1;i<=1;i++){ //8个方向
         for(int j=-1;j<=1;j++){
             dx=x+i;
             dy=y+j;
-            if(dx>=0&&dx<=n&&dy>=0&&dy<m&&a[dx][dy]=='W'){
+            if(dx>=0&&dx<=n&&dy>=0&&dy<=m&&a[dx][dy]=='W'){
                 dfs(dx,dy);
             }
         }
@@ -101,9 +187,10 @@ void dfs(int x,int y){
     return;
 } 
 int main(){
-    scanf("%d%d",&n,&m);
+    int n,m;
+    cin>>n>>m;
     for(int i=0;i<=n;i++){
-    	scanf("%s",a[i]);//避免换行带来问题这里直接读入字符串
+    	cin>>a[i];//避免换行带来问题这里直接读入字符串
     }
     for(int i=0;i<=n;i++){
         for(int j=0;j<m;j++){
@@ -113,7 +200,7 @@ int main(){
             }
         }
     }
-    printf("%d",ans);
+    cout<<ans<<endl;
     return 0;
 }
 ```

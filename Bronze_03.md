@@ -146,7 +146,7 @@ int main() {
 | **6️⃣ NOIP 2017 提高组 – 宝藏**               | 状态转移模拟     | 状态压缩           | NOIP          |
 | **7️⃣ Codeforces – Robots on a Grid**         | 按指令模拟       | 边界检查、方向控制 | CF #Round 879 |
 
-## 📌25_Feb_b2-Milk Exchange
+## 📌24_Feb_b2-Milk Exchange
 
 ### 🧩 一、题目核心理解
 
@@ -164,8 +164,6 @@ int main() {
 所以：
 
 > **真正导致损失的“危险点”只有那些 `R|L` 边界。**
-
-------
 
 ### 🧭 二、结构划分：从流向角度看整个圆
 
