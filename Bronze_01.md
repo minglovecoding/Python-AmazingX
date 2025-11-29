@@ -38,7 +38,8 @@ O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(n^3) < O(2^n) < O(n!)
  **时间**：O(n)（扫一遍） **空间**：O(1)
 
 ```c++
-int sum = 0; 1
+int sum = 0; 
+arr=[1,2,3,4];
 for (int x : arr) sum += x; 
 ```
 
@@ -180,31 +181,32 @@ int main() {
 [P3817 小A的糖果](https://www.luogu.com.cn/problem/P3817)
 
 ```c++
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-int main()
-{
-	long long sum=0//计数器,n,x;
-	cin>>n>>x;//输入
-	long long a[n+1];
-	cin>>a[1];//处理第一个单独超限。
-	if(a[1]>x)
-		{
-		sum+=a[1]-x;//增加吃的量
-		a[1]=x;//a[i]>=x,要吃的最少，即是a[i]=x;
-		}
-	for(int i=2;i<=n;i++)
-		{
-		cin>>a[i];//输入
-		if(a[i]+a[i-1]>x)//照例处理
-			{
-			sum+=a[i]+a[i-1]-x;
-			a[i]=x-a[i-1];
-			}
-		}
-	cout<<sum;//输出
-	return 0;//养成好习惯
-} 
+int main() {
+    long long n, x;
+    cin >> n >> x;   // 输入 n 和 x
+    long long sum = 0;     // 统计需要吃掉的最少数量
+    vector<long long> a(n + 1);   // 使用 vector 更安全
+    cin >> a[1];
+    // 处理第一个苹果数量是否超过 x
+    if (a[1] > x) {
+        sum += a[1] - x;
+        a[1] = x;   // 调整到不超过 x
+    }
+    // 从第二天开始处理
+    for (int i = 2; i <= n; i++) {
+        cin >> a[i];
+        // 若当前和前一天相邻和超过 x，则吃掉多余的
+        if (a[i] + a[i - 1] > x) {
+            long long excess = a[i] + a[i - 1] - x;
+            sum += excess;
+            a[i] -= excess;   // 或者 a[i] = x - a[i-1];
+        }
+    }
+    cout << sum << endl;
+    return 0;
+}
 ```
 
 #### case2： 排队接水
