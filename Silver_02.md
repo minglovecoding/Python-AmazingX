@@ -43,8 +43,16 @@ for (int x : arr) {
 统计字符串也一样：
 
 ```c++
-unordered_map<string, int> cnt;
-for (string s : arr) cnt[s]++;
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    vector<string>arr={"apple","orange","apple","banana"};
+    unordered_map<string, int> cnt;
+    for (string s : arr) cnt[s]++;
+    for (auto &pair : cnt) {
+        cout << pair.first << ": " << pair.second << endl;
+    }
+}
 ```
 
 ### ✅ **2. 判断某元素是否出现**
