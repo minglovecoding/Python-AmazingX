@@ -358,14 +358,43 @@ for (int x : arr) {
 用 **“最大堆 + 只存 K 个”**：
 
 ```c++
-priority_queue<int> pq; // 最大堆
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
-for (int x : arr) {
-    if ((int)pq.size() < K) pq.push(x);
-    else if (x < pq.top()) {   // 比当前最大的小
-        pq.pop();
-        pq.push(x);
+int main() {
+    // 示例数组
+    vector<int> arr = {3, 2, 8, 5, 1, 7, 4, 6};
+    int K = 4; // 要找前4小的元素
+    
+    // 最大堆（堆顶最大）
+    priority_queue<int> pq;
+    
+    for (int x : arr) {
+        if ((int)pq.size() < K) {
+            pq.push(x);
+        } else if (x < pq.top()) {   // 比当前最大的小
+            pq.pop();
+            pq.push(x);
+        }
     }
+    // 输出结果
+    cout << "前 " << K << " 小的元素是: ";
+    
+    // 注意：priority_queue 只能访问堆顶，要获取所有元素需要弹出
+    vector<int> result;
+    while (!pq.empty()) {
+        result.push_back(pq.top());
+        pq.pop();
+    }
+    // 由于是最大堆，弹出的顺序是从大到小，需要反转
+    reverse(result.begin(), result.end());
+    
+    for (int x : result) cout << x << " ";
+    cout<<endl;
+    return 0;
 }
 // 最后 pq 里是“前 K 小”，堆顶是“第 K 小里最大的那个”
 ```
