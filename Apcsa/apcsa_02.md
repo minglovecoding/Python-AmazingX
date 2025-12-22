@@ -66,10 +66,10 @@ class Dog extends Animal {               // extend：Dog 继承 Animal
 
 ```java
 public class Dog {
-    String breed;
-    int size;
-    String colour;
-    int age;
+    private String breed;
+    private int size;
+    private String colour;
+    private int age;
  
     void eat() {
     }
@@ -93,15 +93,15 @@ public class Dog {
 
 ```java
 public class Puppy{
-    String name;
-    int age;
+    private String name;
+    private int age;
     public Puppy(){
       System.out.println("Puppy对象已创建");
     }// 1、无参构造方法（默认构造方法）
  
-    public Puppy(String name, int age){
-        this.name = name;
-        this.age = age;
+    public Puppy(String name1, int age1){
+        this.name = name1;
+        this.age = age1;
         // 2、有参构造方法
     }
 }
@@ -162,7 +162,7 @@ public class Puppy {
     // 主方法
     public static void main(String[] args) {
         // 创建对象
-        Puppy myPuppy = new Puppy("Tommy",2);
+        Puppy myPuppy = new Puppy("Tommy");
  
         // 通过方法来设定 age
         myPuppy.setAge(2);
@@ -184,9 +184,9 @@ public class Puppy {
 **1、引用当前对象的属性或方法：**当构造方法的参数名与类属性名相同时，使用 this 来区分类属性和参数。例如：
 
 ```java
-public Person(String name, int age) {
-    this.name = name; // this.name 表示类的属性
-    this.age = age;
+public Person(String name1, int age1) {
+    this.name = name1; // this.name 表示类的属性
+    this.age = age1;
 }
 ```
 
@@ -202,6 +202,8 @@ public Person(String name, int age) {
     this.age = age;
 }
 ```
+
+***
 
 ### import 语句
 
@@ -340,7 +342,7 @@ public class EasyIn {
         String s = in.next();   // 遇空白就停
         in.nextLine();          // 若后面要整行，先吃掉残余换行
         String line = in.nextLine();
-        System.out.printf("n=%d, x=%.2f, s=%s, line=%s%n", n, x, s, line);
+        System.out.printf("n=%d, x=%.2f, s=%s, line=%s\n", n, x, s, line);
         in.close();
     }
 }
@@ -393,7 +395,7 @@ public class MyClass{
 ```java
 public class MyClass{
 	public static void main(String[] args){
-			int x = 23;
+			  int x = 23;
     		strange(x);
     		System.out.println("2. x = " + x);
 	}

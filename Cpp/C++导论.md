@@ -47,7 +47,7 @@ C++ 编程入门课
 using namespace std;
 int main()
 {
-    cout << "Hello, world!" << endl;
+   cout << "Hello, world!" << endl;
 
     //可以用 "\n" 代替以上代码里的 endl。
     return 0;
@@ -126,7 +126,7 @@ int age;
 | 浮点型   | float  | float A=1.23;       | 单精度浮点值，用于存储单精度浮点数。单精度是这样的格式，1 位符号，8 位指数，23 位小数，通常占用4个字节。![img](https://www.runoob.com/wp-content/uploads/2014/09/v2-749cc641eb4d5dafd085e8c23f8826aa_hd.png) |
 | 双浮点型 | double | double A=1.2345678; | 双精度浮点值，用于存储双精度浮点数。双精度是 1 位符号，11 位指数，52 位小数，通常占用 8 个字节。![img](https://www.runoob.com/wp-content/uploads/2014/09/v2-48240f0e1e0dd33ec89100cbe2d30707_hd.png) |
 | 无类型   | void   |                     |  |
-| `signed` | `signed`   | 表示有符号类型（默认） | `signed int x = -10;`                                        |
+| `signed` | `signed`   | 表示有符号类型（默认） | `signed int x = -10;`                                      |
 | `signed` | `unsigned` | 表示无符号类型         | `unsigned int y = 10;`                                       |
 | `short`  | `short`    | 表示短整型             | `short int z = 100;` |
 
@@ -241,9 +241,7 @@ using namespace std;
 const int abc=123; //const 定义常量，表示该变量的值不能被修改。
 int main()
 {
- 
    int area;  
-   
    area = LENGTH * WIDTH;
    cout << area;
    cout << NEWLINE;
