@@ -46,7 +46,7 @@ int main ()
    double d;
    
    // 数字赋值  
-   i = 1000;    
+   i = 1000;
    l = 1000000; 
    f = 230.47;  
    d = 30949.374;
@@ -109,6 +109,7 @@ int main ()
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <bits/stdc+.h>
 using namespace std;
 int main ()
 {
@@ -165,7 +166,7 @@ int main ()
    for ( int i = 0; i < 5; i++ )
       for ( int j = 0; j < 2; j++ )
       {
-         cout << "a[" << i << "][" << j << "]: ";
+         //cout << "a[" << i << "][" << j << "]: ";
          cout << a[i][j]<< endl;
       }
  
@@ -365,7 +366,6 @@ int main ()
 
 ```c++
 #include<bits/stdc++.h>
- 
 using namespace std;
  
 int main ()
@@ -456,7 +456,7 @@ int main ()
 #include <iostream>
 int main() {
     // 定义一个数组
-    int arr[] = {10, 20, 30, 40, 50};
+    int arr[5] = {10, 20, 30, 40, 50};
  
     // 定义一个指向数组第一个元素的指针
     int* ptr = arr;
@@ -481,7 +481,7 @@ int main() {
  
 int main() {
     // 定义一个数组
-    int arr[] = {10, 20, 30, 40, 50};
+    int arr[5] = {10, 20, 30, 40, 50};
     
     // 定义一个指向数组第一个元素的指针
     int* ptr = arr;
@@ -903,37 +903,33 @@ C++ 中的 vector 是一种序列容器，它允许你在运行时动态地插�
 ```c++
 #include <iostream>
 #include <vector>
-int main() {
-    // 创建一个空的整数向量
-    std::vector<int> myVector;
-    // 添加元素到向量中
-    myVector.push_back(3);
-    myVector.push_back(7);
-    myVector.push_back(11);
-    myVector.push_back(5);
-    // 访问向量中的元素并输出
-    std::cout << "Elements in the vector: ";
-    for (int element : myVector) {
-        std::cout << element << " ";
-    }
-    std::cout << std::endl;
-    // 访问向量中的第一个元素并输出
-    std::cout << "First element: " << myVector[0] << std::endl;
-    // 访问向量中的第二个元素并输出
-    std::cout << "Second element: " << myVector.at(1) << std::endl;
-    // 获取向量的大小并输出
-    std::cout << "Size of the vector: " << myVector.size() << std::endl;
-    // 删除向量中的第三个元素 
-    myVector.erase(myVector.begin() + 2);
-    // 输出删除元素后的向量
-    std::cout << "Elements in the vector after erasing: ";
-    for (int element : myVector) {
-        std::cout << element << " ";
-    }
-    std::cout << std::endl;
-    // 清空向量并输出
-    myVector.clear();
-    std::cout << "Size of the vector after clearing: " << myVector.size() << std::endl;
-    return 0;
+using namespace std;
+ 
+int main( )
+{
+   vector<int>prime;
+   prime.push_back(1);
+   prime.push_back(3);
+   prime.push_back(5);
+   prime.push_back(7);
+   for(int num:prime){
+      cout<<num<<" ";
+   }
+   cout<<endl;
+   cout<<"size is"<<prime.size()<<" and the 4th is"<<prime[3]<<endl;
+   prime.pop_back();
+   for(int num:prime){
+      cout<<num<<" ";
+   }
+   //
+   cout<<endl;
+   prime.erase(prime.begin(),prime.begin()+2);
+   for(int num:prime){
+      cout<<num<<" ";
+   }
+
+   cout<<endl;
+   //prime.clear();
+   return 0;
 }
 ```

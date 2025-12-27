@@ -46,7 +46,10 @@ cout << p.name << endl; // 输出 Alice
 ```c++
 class Person {
 public:
-    Person(string n, int a) : name(n), age(a) {}
+    Person(string n, int a) {
+      name=n;
+      age=a;
+    }
     void printInfo() {
         cout << "Name: " << name << ", Age: " << age << endl;
     }
@@ -54,6 +57,7 @@ private:
     string name;
     int age;
 };
+
 Person p("Bob", 30);
 p.printInfo(); // 输出: Name: Bob, Age: 30
 ```

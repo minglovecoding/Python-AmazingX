@@ -1,16 +1,11 @@
-#include <iostream>
+#include<iostream>
+#include<list>
 using namespace std;
- 
-int main()
-{
-   int a = 0;
-   int b = 20;
-   int c ;
- 
-   if ( a && b )
-   {
-      cout << "Line 1 - 条件为真"<< endl ;
+int main(){
+   list<int>prime={1,3,5,7};
+   prime.pop_back();
+   prime.push_back(9);
+   for(auto iter=prime.begin();iter!=prime.end();iter++){
+      cout<<*iter<<endl;
    }
-   return 0;
-
 }
