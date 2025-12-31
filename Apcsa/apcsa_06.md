@@ -7,16 +7,20 @@ arrayRefVar = new dataType[arraySize];
 ```
 
 ```java
+import java.util.Scanner;
 public class Main{
-  public static void main(String[] args){
-    int size=10;
-    double[] mylist=new double[size];
-    mylist[0]=1.0;
-    mylist[1]=2.0;
-    double average=0;
-    for(int i=0;i<size;i++){
-      average+=mylist[i];
-    }
+    public static void main(String[] agrs){
+        int size=3;
+        double[] li=new double[size];
+        Scanner sc=new Scanner(System.in);
+        li[0]=sc.nextDouble();
+        li[1]=sc.nextDouble();
+        li[2]=sc.nextDouble();
+        double average=0;
+        for(int i=0;i<size;i++){
+            average+=li[i];
+        }
+        average/=size;
     //index between 0 and size-1
     /*
     int i=0;
@@ -47,25 +51,47 @@ public class Main{
 ### **数组作为函数的参数**
 
 ```java
-public static void printArray(int[] array) {
-  for (int i = 0; i < array.length; i++) {
-    System.out.print(array[i] + " ");
+import java.util.*;
+
+public class Main{
+    public static void main(String[] agrs){
+        double[] li={1.0,2.0,3.0};
+        printArray(li);
+    }
+    public static void printArray(double[] array) {
+    for (int i = 0; i < array.length; i++) {
+        System.out.print(array[i] + " ");
+    }
+    System.out.print("\n");
   }
 }
-//printArray(new int[]{3, 1, 2, 6, 4, 2});
 ```
 
 ### **返回数组**
 
 ```java
-public static int[] reverse(int[] list) {
-  int[] result = new int[list.length];
- 
-  for (int i = 0, j = result.length - 1; i < list.length; i++, j--) {
-    result[j] = list[i];
+import java.util.*;
+
+public class Main{
+    public static void printArray(double[] array) {
+    for (int i = 0; i < array.length; i++) {
+        System.out.print(array[i] + " ");
+    }
+    System.out.print("\n");
+    }
+    public static double[] reverse(double[] array){
+        double[] result=new double[array.length];
+        for(int i=0,j=array.length-1;i<array.length;i++,j--){
+            result[i]=array[j];
+        }
+        return result;
+    }
+    public static void main(String[] agrs){
+        double[] li={1.0,2.0,3.0};
+        printArray(li);
+        printArray(reverse(li));
+    }
   }
-  return result;
-}
 ```
 
 ### 多维数组
@@ -96,7 +122,7 @@ public class Main{
 }
 ```
 
-2. 判断所有的数是否为偶数
+2. 判断所有的数是否有偶数
 
 ```java
 public class Main{
