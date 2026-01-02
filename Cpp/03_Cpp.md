@@ -94,7 +94,6 @@ int main() {
 <forward_list>: 单向链表容器
 <stack>: 栈容器适配器
 <queue>: 队列容器适配器
-**<priority_queue>: 优先队列容器适配器**
 **<set>: 集合容器（基于平衡二叉树）**
 <unordered_set>: 无序集合容器（基于哈希表）
 **`<map>`: 映射容器（键值对，基于平衡二叉树）**
@@ -138,61 +137,43 @@ priority_queue<int, vector<int>, compare> pq_min;
 
 ```cpp
 //最大堆
-#include <iostream>
-#include <queue>
-
-int main() {
-    // 创建一个整型优先队列
-    std::priority_queue<int> pq;
-
-    // 向优先队列中添加元素
-    pq.push(30);
-    pq.push(10);
-    pq.push(50);
-    pq.push(20);
-
-    // 输出队列中的元素
-    std::cout << "队列中的元素：" << std::endl;
-    while (!pq.empty()) {
-        std::cout << pq.top() << std::endl;
-        pq.pop();
-    }
-
-    return 0;
+#include<iostream>
+#include<queue>
+using namespace std;
+int main(){
+   priority_queue<int>pq;
+   pq.push(4);
+   pq.push(3);
+   pq.push(2);
+   pq.push(1);
+   cout<<pq.top()<<endl;
+   pq.pop();
+   cout<<pq.top()<<endl;
+   return 0;
 }
 ```
 
 ```cpp
 //最小堆
-#include <iostream>
-#include <queue>
-#include <vector>
-
-struct compare {
-    bool operator()(int a, int b) {
-        return a > b; // 定义最小堆
-    }
+#include<iostream>
+#include<queue>
+#include<vector>
+using namespace std;
+struct compare{
+   bool operator()(int a,int b){
+      return a>b;
+   }
 };
-
-int main() {
-    // 创建一个自定义类型的优先队列，使用最小堆
-    std::priority_queue<int, std::vector<int>, compare> pq_min;
-    //std::priority_queue<int, std::vector<int>, std::greater<int>> pq_min;
-
-    // 向优先队列中添加元素
-    pq_min.push(30);
-    pq_min.push(10);
-    pq_min.push(50);
-    pq_min.push(20);
-
-    // 输出队列中的元素
-    std::cout << "最小堆中的元素：" << std::endl;
-    while (!pq_min.empty()) {
-        std::cout << pq_min.top() << std::endl;
-        pq_min.pop();
-    }
-
-    return 0;
+int main(){
+   priority_queue<int,vector<int>,compare>pq_min;
+   pq_min.push(4);
+   pq_min.push(3);
+   pq_min.push(2);
+   pq_min.push(1);
+   cout<<pq_min.top()<<endl;
+   pq_min.pop();
+   cout<<pq_min.top()<<endl;
+   return 0;
 }
 ```
 
@@ -224,7 +205,6 @@ int main() {
         std::cout << elem << " ";
     }
     std::cout << std::endl;
-
     return 0;
 }
 ```
@@ -247,32 +227,19 @@ int main() {
 | **`floor(x)`** | 返回不大于 `x` 的最大整数 | `floor(2.3) // 2` |
 
 ```cpp
-#include <iostream>
-#include <cmath>
+#include<iostream>
+#include<cmath>
 using namespace std;
-int main() {
-    double num = 9.0;
-    double root = sqrt(num); // 计算平方根
-    double sinValue = sin(M_PI / 2); // 计算正弦值，M_PI 是 π 的近似值
-    double absValue = abs(-5.0); // 计算绝对值
-  
-    // 基本数学运算
-    cout << "abs(-5) = " << abs(-5) << endl;
-
-    // 指数和对数函数
-    cout << "exp(1) = " << exp(1) << endl;
-    cout << "log(2.71828) = " << log(2.71828) << endl;
-    cout << "pow(2, 3) = " << pow(2, 3) << endl;
-
-    // 三角函数
-    cout << "sin(3.14159 / 2) = " << sin(3.14159 / 2) << endl;
-    cout << "cos(3.14159) = " << cos(3.14159) << endl;
-
-    // 取整函数
-    cout << "ceil(2.3) = " << ceil(2.3) << endl;
-    cout << "floor(2.3) = " << floor(2.3) << endl;
-
-    return 0;
+int main(){
+   int a=-1;
+   cout<<abs(a)<<endl;
+   int b=4;
+   cout<<sqrt(b)<<endl;
+   float c=2.3,d=2.4;
+   cout<<ceil(2.3)<<" "<<floor(d)<<endl;
+   int f=4,g=2;
+   cout<<pow(f,g)<<endl;
+   return 0;
 }
 ```
 
@@ -464,22 +431,18 @@ int main() {
 **3、排序和去重**
 
 ```c++
-#include <iostream>
-#include <list>
-
-int main() {
-    std::list<int> lst = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
-    lst.sort();                    // 排序
-    lst.unique();                  // 删除相邻重复元素
-
-    // 输出链表内容
-    std::cout << "Sorted and unique list: ";
-    for (const auto& elem : lst) {
-        std::cout << elem << " ";
-    }
-    std::cout << std::endl;
-
-    return 0;
+#include<iostream>
+#include<list>
+using namespace std;
+int main(){
+   list<int>l1={1,2,3,5,4,4};
+   l1.sort();
+   l1.unique();
+   for(list<int>::iterator iter=l1.begin();iter!=l1.end();iter++){
+      cout<<*iter<<" ";
+   }
+   cout<<endl;
+   return 0;
 }
 ```
 
@@ -502,7 +465,6 @@ int main() {
         std::cout << elem << " ";
     }
     std::cout << std::endl;
-
     return 0;
 }
 ```
@@ -514,6 +476,10 @@ int main() {
 | **插入/删除性能** | 任意位置插入、删除快         | 末尾插入快，中间位置慢       | 头尾插入、删除快             |
 | **适用场景**      | 频繁在中间插入/删除          | 需要高效随机访问             | 需要在头尾快速插入/删除      |
 | **迭代器稳定性**  | 稳定，元素插入或删除不会失效 | 插入、删除可能导致迭代器失效 | 插入、删除可能导致迭代器失效 |
+
+***
+
+Lumos.
 
 ### 📌 C++ 标准库 `<map>`
 

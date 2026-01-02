@@ -104,11 +104,19 @@ l.clear();              // 清空
 - 时间复杂度为 O(1)。
 
 ```c++
-stack<int> s[0];
-s[0].push(1);
-s[0].push(2);
-cout << s[0].top(); // 输出 2
-s[0].pop();
+#include<iostream>
+using namespace std;
+int main(){
+   stack<double> s1;
+   s1.push(1.0);
+   s1.push(2.0);
+   s1.push(3.0);
+   s1.push(4.0);
+   cout<<s1.top()<<endl;
+   s1.pop();
+   cout<<s1.top()<<endl;
+   return 0;
+}
 ```
 
 ### 📌 **队列（Queue）**
@@ -121,11 +129,19 @@ s[0].pop();
 - 时间复杂度为 O(1)。
 
 ```c++
-queue<int> q;
-q.push(1);
-q.push(2);
-cout << q.front(); // 输出 1
-q.pop();
+#include<iostream>
+#include<string>
+using namespace std;
+int main(){
+   queue<string> str;
+   str.push("apple");
+   str.push("orange");
+   str.push("pineapple");
+   cout<<str.front()<<endl;
+   str.pop();
+   cout<<str.size()<<endl;
+   return 0;
+}
 ```
 
 ### 📌 双端队列（Deque）
@@ -138,11 +154,18 @@ q.pop();
 - 时间复杂度为 O(1)。
 
 ```c++
-deque<int> dq;
-dq.push_back(1);
-dq.push_front(2);
-cout << dq.front(); // 输出 2
-dq.pop_front();
+#include<iostream>
+#include<string>
+using namespace std;
+int main(){
+   deque<string> str;
+   str.push_back("apple");
+   str.push_front("orange");
+   cout<<str.front()<<endl;
+   str.pop_front();
+   cout<<str.front()<<endl;
+   return 0;
+}
 ```
 
 ### 📌 **哈希表（Hash Table）**
@@ -155,14 +178,18 @@ dq.pop_front();
 - 不保证元素的顺序。
 
 ```c++
-unordered_map<string, int> hashTable;
-hashTable["apple"] = 10;
-hashTable["a"]=1
-hashTable["b"]=2
-
-hashTable["orange"] = 20;
-
-cout << hashTable; // 输出 10
+#include<iostream>
+#include<string>
+#include<map>
+using namespace std;
+int main(){
+   unordered_map<string,int>goods;
+   goods["apple"]=10;
+   goods["orange"]=5;
+   cout<<goods["apple"]<<endl;
+   cout<<goods.size();
+   return 0;
+}
 ```
 
 ### 📌 **映射（Map）**
@@ -176,8 +203,8 @@ cout << hashTable; // 输出 10
 
 ```c++
 map<string, int> myMap;
-myMap["apple"] = 10;
-myMap["appla"] = 20;
+myMap["a"] = 10;
+myMap["b"] = 20;
 cout << myMap ; // 输出 10
 ```
 
@@ -192,10 +219,23 @@ cout << myMap ; // 输出 10
 - 时间复杂度为 O(log n)。
 
 ```C++
-set<int> s;
-s.insert(1);
-s.insert(1);
-cout << *s.begin(); // 输出 1
+#include<iostream>
+#include<string>
+#include<map>
+#include<set>
+using namespace std;
+int main(){
+   set<double>s1;
+   s1.insert(1.0);
+   s1.insert(3.0);
+   s1.insert(2.0);
+   for(auto iter=s1.begin();iter!=s1.end();iter++){
+      cout<<*iter<<endl;
+   }
+   //cout<<*s1.begin()<<endl;
+   //cout<<*s1.begin()+1<<endl;
+   //cout<<*s1.begin()+2<<endl;
+}
 ```
 
 ---
@@ -269,9 +309,7 @@ int main( )
 
 ```c++
 #include <iostream>
- 
 using namespace std;
- 
 class Box
 {
    public:
