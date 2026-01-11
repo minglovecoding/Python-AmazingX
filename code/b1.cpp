@@ -18,15 +18,15 @@ static inline i128 worstGuaranteedA(int64 A, int64 B, int64 cA, int64 cB, int64 
     cand.push_back(R);
 
     if (cA > cB) {
-        // Min q occurs at b in the same quotient as L, but with r as large as possible.
+
         int64 q0 = L / cB;
-        i128 endBlock = (i128)(q0 + 1) * (i128)cB - 1; // (q0+1)*cB - 1
+        i128 endBlock = (i128)(q0 + 1) * (i128)cB - 1; 
         int64 b1 = (endBlock > (i128)R) ? R : (int64)endBlock;
         cand.push_back(b1);
     } else {
-        // cA <= cB: compare R with the largest <= R having remainder cB-1
-        int64 delta = (R + 1) % cB;          // how far to step back to reach rem=cB-1
-        int64 b2 = R - delta;                // remainder becomes cB-1 (unless b2 < L)
+        
+        int64 delta = (R + 1) % cB;          
+        int64 b2 = R - delta;                
         if (b2 >= L) cand.push_back(b2);
     }
 

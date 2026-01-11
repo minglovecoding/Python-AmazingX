@@ -199,7 +199,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         long n = sc.nextLong();
 
-        ArrayList<Long> seq = new ArrayList<>();
+        ArrayList<Long> seq = new ArrayList<Long>();
         while (true) {
             seq.add(n);
             if (n == 1) break;
