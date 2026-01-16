@@ -1,27 +1,21 @@
 import java.util.*;
 public class Main{
     public static void main(String args[]){
-        ArrayList<Integer>a=new ArrayList<Integer>();
-        a.add(1);
-        a.add(2);
-        a.add(3);
-        a.add(4);
-        a.add(5);
-        System.out.println(a.toString());
-        int target=5;
-        int left=0,right=a.size()-1;
-        while(left<=right){
-            int mid=(left+right)/2;
-            if(a.get(mid)==target){
-                System.out.println("target's index is "+mid);
-                return;
+        int [][] mat={{1,2,3},{4,5,6},{7,8,9}};
+        for(int col=0;col<mat[0].length;col++){
+            for(int row=0;row<mat.length;row++){
+                System.out.print(mat[row][col]+" ");
             }
-            else if(a.get(mid)>target){
-                right=mid-1;
-            }
-            else{
-                left=mid+1;
-            }
+            System.out.println();
         }
+        System.out.println("Sum is "+sum(mat));
     }
+    public static int sum(int[][] a){
+        int sum=0;
+        for(int[] row:a){
+        for(int value:row)
+           sum+=value;
+   }
+   return sum;
+}
 }

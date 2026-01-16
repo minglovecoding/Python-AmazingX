@@ -155,14 +155,13 @@ int age;
 #include <iostream>
 using namespace std;
  
-// 全局变量声明
+// 全局变量
 int g = 20;
 int main ()
 {
-  // 局部变量声明
-  int g = 10;
+  // 局部变量
+  //int g = 10;
   cout << g;
- 
   return 0;
 }
 ```
@@ -200,7 +199,6 @@ float a=3.14159       // 合法的
 ```cpp
 #include <iostream>
 using namespace std;
- 
 int main()
 {
    
@@ -334,22 +332,24 @@ int main()
    int c;
  
    c = a + b;
-   cout << "Line 1 - c 的值是 " << c << endl ;
+   cout<< c << endl ;
    c = a - b;
-   cout << "Line 2 - c 的值是 " << c << endl ;
+   cout<< c << endl ;
    c = a * b;
-   cout << "Line 3 - c 的值是 " << c << endl ;
+   cout<< c << endl ;
    c = a / b;
-   cout << "Line 4 - c 的值是 " << c << endl ;
+   cout<< c << endl ;
    c = a % b;
-   cout << "Line 5 - c 的值是 " << c << endl ;
+   cout<< c << endl ;
  
    int d = 10;   //  测试自增、自减
-   c = d++;
-   cout << "Line 6 - c 的值是 " << c << endl ;
+   c = d++; //c=10 d=11
+   //c = ++d; //c=11 d=11
+  
+   cout << c << endl ;
  
    d = 10;    // 重新赋值
-   c = d--;
+   c = d--; //c=10 d=9
    cout << "Line 7 - c 的值是 " << c << endl ;
    return 0;
 }
@@ -381,38 +381,38 @@ int main()
  
    if( a == b )
    {
-      cout << "Line 1 - a 等于 b" << endl ;
+      cout << "a 等于 b" << endl ;
    }
    else
    {
-      cout << "Line 1 - a 不等于 b" << endl ;
+      cout << "a 不等于 b" << endl ;
    }
    if ( a < b )
    {
-      cout << "Line 2 - a 小于 b" << endl ;
+      cout << "a 小于 b" << endl ;
    }
    else
    {
-      cout << "Line 2 - a 不小于 b" << endl ;
+      cout << "a 不小于 b" << endl ;
    }
    if ( a > b )
    {
-      cout << "Line 3 - a 大于 b" << endl ;
+      cout << "a 大于 b" << endl ;
    }
    else
    {
-      cout << "Line 3 - a 不大于 b" << endl ;
+      cout << "a 不大于 b" << endl ;
    }
    /* 改变 a 和 b 的值 */
    a = 5;
    b = 20;
    if ( a <= b )
    {
-      cout << "Line 4 - a 小于或等于 b" << endl ;
+      cout << "a 小于或等于 b" << endl ;
    }
    if ( b >= a )
    {
-      cout << "Line 5 - b 大于或等于 a" << endl ;
+      cout << "b 大于或等于 a" << endl ;
    }
    return 0;
 }

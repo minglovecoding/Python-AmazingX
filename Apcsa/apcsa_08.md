@@ -17,8 +17,22 @@ int [][] mat={{1,2,3},{1,2},{3,4,5}};
 //mat[1]={1,2}
 //mat[2]={3,4,5}
 //mat.length、mat[0].length
-int [][] seatinginfo={{"America","Bob"},{"Jake","rose"}};
+String [][] seatinginfo={{"America","Bob"},{"Jake","rose"}};
+```
 
+```java
+import java.util.*;
+public class Main{
+    public static void main(String args[]){
+        int[][] mat={{1,2,3},{4,5,6},{7,8,9}};
+        for(int i=0;i<mat.length;i++){
+            for(int j=0;j<mat[0].length;j++){
+                System.out.print(mat[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+}
 ```
 
 2. 从最高维开始，分别为每一维分配空间，例如：
@@ -26,7 +40,7 @@ int [][] seatinginfo={{"America","Bob"},{"Jake","rose"}};
 ```java
 String[][] s = new String[2][];
 s[0] = new String[2];
-s[1] = new String[3];
+s[1] = new String[3]; 
 s[0][0] = new String("Good");
 s[0][1] = new String("Luck");
 s[1][0] = new String("to");
@@ -35,20 +49,6 @@ s[1][2] = new String("!");
 ```
 
 遍历2D数组
-
-```java
-import java.util.*;
-public class Main{
-    public static void main(String[] agrs){
-      int [][] mat={{1,2,3},{1,2},{3,4,5}};
-      for(int row=0;row<mat.length;row++){
-        for(int col=0;col<mat[row].length;col++)
-            System.out.print(mat[row][col]+" ");
-        System.out.println();
-      }
-    }
-  }
-```
 
 ```java
 import java.util.*;
@@ -85,7 +85,7 @@ public class Main{
 Returns the sum of a 2D array
 
 ```java
-public int sum(int[][] a){
+public static int sum(int[][] a){
    int sum=0;
    for(int[] row:a){
        for(int value:row)
@@ -95,12 +95,12 @@ public int sum(int[][] a){
 }
 ```
 
-2D Arrays of Obejects
+2D Arrays of Objects
 
-```
-for(Point[] row: pointMatrix){
-   for(Point pt:row)
-     pt.setX(1);
+```java
+for(Student[] row: st){
+   for(Student p:row)
+     p.getname();
 ```
 
 Case: 遍历每个学生的姓名
@@ -167,7 +167,7 @@ public class Main {
     public static int[] rowMaxes(int[][] grid) {
         int[] ans = new int[grid.length];
         for (int r = 0; r < grid.length; r++) {
-            int mx = grid[r][0];
+            int mx = grid[r][0]; 
             for (int c = 1; c < grid[r].length; c++) {
                 mx = Math.max(mx, grid[r][c]);
             }

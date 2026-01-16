@@ -1,9 +1,9 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
-int main()
-{
-	int a,b;
-	cin>>a>>b;
-	cout<<"a+b equals to "<<a+b<<endl;
-    return 0;
+int main(){
+	for(int a=1;a<=10;a++){
+		cout<<a<<"\n";
+	}
+	cout<<"\n";
+	return 0;
 }
