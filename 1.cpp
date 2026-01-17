@@ -1,21 +1,18 @@
-#include <iostream>
-#include <cmath>
-#include <numbers>
+#include<bits/stdc++.h>
 using namespace std;
-int main() {
-	//int a=10;
-	int a[10]={1,2,3,4,5,6,7,8,9,10};
-	int b[3][3]={{1,2,3},{4,5,6},{7,8,9}};
-	for(int i=0;i<10;i++){
-		cout<<a[i]<<" ";
+int main()
+{
+	//1 2 3 4
+	vector<int>nums={1,2,3,4};
+	//print every element
+	for(int i=0;i<4;i++){
+		cout<<nums[i]<<" ";
 	}
-    cout<<endl;
-
-    for(int i=0;i<3;i++){
-		for(int j=0;j<3;j++){
-			cout<<b[i][j]<<" ";
-		}
-		cout<<endl;
+	cout<<endl;
+	//for-each语句
+	for(int elem:nums){
+		cout<<elem<<" ";
 	}
-    return 0;
+	cout<<endl;
+	return 0;
 }

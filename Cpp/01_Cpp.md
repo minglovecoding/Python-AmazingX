@@ -453,6 +453,7 @@ int main ()
 
 ```c++
 #include <iostream>
+using namespace std;
 int main() {
     // 定义一个数组
     int arr[5] = {10, 20, 30, 40, 50};
@@ -461,13 +462,13 @@ int main() {
     int* ptr = arr;
     
     // 输出指针指向的元素
-    std::cout << "指针当前指向的元素: " << *ptr << std::endl;
+    cout << "指针当前指向的元素: " << *ptr << endl;
     
     // 递增指针
     ptr++;
     
     // 输出指针指向的元素
-    std::cout << "递增指针后指向的元素: " << *ptr << std::endl;
+    cout << "递增指针后指向的元素: " << *ptr << endl;
     
     return 0;
 }
@@ -712,34 +713,17 @@ int main ()
 ```c++
 #include <iostream>
 using namespace std;
- 
-// 函数定义
-void swap(int x, int y)
-{
-   int temp;
-   temp = x; /* 保存地址 x 的值 */
-   x = y;    /* 把 y 赋值给 x */
-   y = temp; /* 把 x 赋值给 y  */
-  
-   return;
+void swap(int &a,int &b){
+	int temp=a;
+	a=b;
+	b=temp;
+	return;
 }
-
-int main ()
-{
-   // 局部变量声明
-   int a = 100;
-   int b = 200;
- 
-   cout << "交换前，a 的值：" << a << endl;
-   cout << "交换前，b 的值：" << b << endl;
- 
-   /* 调用函数来交换值 */
-   swap(a, b);
- 
-   cout << "交换后，a 的值：" << a << endl;
-   cout << "交换后，b 的值：" << b << endl;
- 
-   return 0;
+int main() {
+	int a=10,b=20;
+	swap(a,b);
+	cout<<a<<" "<<b<<endl;
+	return 0;
 }
 ```
 
@@ -812,7 +796,6 @@ int main( )
 
 ```c++
 #include <iostream>
- 
 using namespace std;
  
 int main( )
@@ -849,86 +832,28 @@ cin.tie(0);
 ### 📌 C++ 结构体
 
 ```C++
-#include <iostream>
-#include <cstring>
- 
+#include<bits/stdc++.h>
 using namespace std;
-// 声明一个结构体类型 Books 
-struct Books
+struct Person{
+	char name[10];
+	int age;
+	char sex[5];
+	int height;
+	string school;
+}; 
+int main()
 {
-   char  title[50];
-   char  author[50];
-   char  subject[100];
-   int   book_id;
-};
- 
-int main( )
-{
-   Books Book1;        // 定义结构体类型 Books 的变量 Book1
-   Books Book2;        // 定义结构体类型 Books 的变量 Book2
- 
-   // Book1 详述
-   strcpy( Book1.title, "C++ 教程");
-   strcpy( Book1.author, "Runoob"); 
-   strcpy( Book1.subject, "编程语言");
-   Book1.book_id = 12345;
- 
-   // Book2 详述
-   strcpy( Book2.title, "CSS 教程");
-   strcpy( Book2.author, "Runoob");
-   strcpy( Book2.subject, "前端技术");
-   Book2.book_id = 12346;
- 
-   // 输出 Book1 信息
-   cout << "第一本书标题 : " << Book1.title <<endl;
-   cout << "第一本书作者 : " << Book1.author <<endl;
-   cout << "第一本书类目 : " << Book1.subject <<endl;
-   cout << "第一本书 ID : " << Book1.book_id <<endl;
- 
-   // 输出 Book2 信息
-   cout << "第二本书标题 : " << Book2.title <<endl;
-   cout << "第二本书作者 : " << Book2.author <<endl;
-   cout << "第二本书类目 : " << Book2.subject <<endl;
-   cout << "第二本书 ID : " << Book2.book_id <<endl;
- 
+   Person Johnson;
+   strcpy(Johnson.name,"Johnson");
+   Johnson.age=18;
+   strcpy(Johnson.sex,"male");
+   Johnson.height=175;
+   Johnson.school="shenzhen middle school";
+   cout<<Johnson.name<<" "<<Johnson.age<<" "<<Johnson.school<<endl;
    return 0;
 }
 ```
 
-### 📌 C++ Vector容器
+***
 
-C++ 中的 vector 是一种序列容器，它允许你在运行时动态地插入和删除元素。
 
-```c++
-#include <iostream>
-#include <vector>
-using namespace std;
- 
-int main( )
-{
-   vector<int>prime;
-   prime.push_back(1);
-   prime.push_back(3);
-   prime.push_back(5);
-   prime.push_back(7);
-   for(int num:prime){
-      cout<<num<<" ";
-   }
-   cout<<endl;
-   cout<<"size is"<<prime.size()<<" and the 4th is"<<prime[3]<<endl;
-   prime.pop_back();
-   for(int num:prime){
-      cout<<num<<" ";
-   }
-   //
-   cout<<endl;
-   prime.erase(prime.begin(),prime.begin()+2);
-   for(int num:prime){
-      cout<<num<<" ";
-   }
-
-   cout<<endl;
-   //prime.clear();
-   return 0;
-}
-```
