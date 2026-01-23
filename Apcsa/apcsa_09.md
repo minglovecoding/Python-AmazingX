@@ -30,15 +30,15 @@ class B extends A {
 
 ```java
 class A {
-  public A(int n) { }
+  public A(int n) {}
 }
 class B extends A {
   public B() {
     super(5); // 必须
   }
 }
-//子类构造器第一行若不写 super(...)，Java 会默认调用 无参的super()
-//如果父类只有有参构造器，子类必须显式写 super(参数...)
+//子类构造器第一行若不写 super(...)，Java 会默认调用无参的super()
+//如果父类只有有参构造器，子类必须显式写super(参数...)
 //super(...) 必须是子类构造器的第一条语句
 ```
 
@@ -86,7 +86,7 @@ class B extends A {
 public class Main {
   public static void main(String[] args) {
     A obj = new B();
-    obj.print(5); 
+    obj.print(5.0); 
   }
 }
 //overriding是相同的函数名，不同的函数参数
@@ -144,23 +144,26 @@ public class Main {
 }
 ```
 
-```java
-class A {
-  public void f() { System.out.println("A f"); }
-}
-class B extends A {
-  @Override
-  public void f() { System.out.println("B f"); }
-  public void g() { System.out.println("B g"); }
-}
-
-A x = new B();
-x.f();   // OK，A 有 f；运行时执行 B f
-// x.g(); // 编译错误：A 类型里没有 g
-
-```
-
 6. ##### Casting和instanceof
+
+```java
+public class Main {
+    static class A {
+        public void f() { System.out.println("A f"); }
+    }
+    static class B extends A {
+        @Override
+        public void f() { System.out.println("B f"); }
+        public void g() { System.out.println("B g"); }
+    }
+
+    public static void main(String[] args) {
+        A x = new B();
+        x.f();      // 输出: B f
+        // x.g();   // 编译错误：A 类型没有 g
+    }
+}
+```
 
 ```java
 A x = new B();
@@ -320,7 +323,14 @@ public class Main {
 ### 🎯 题 4：不安全转型（运行时错误）
 
 ```java
-class A { }
+class A {
+  public void m() { System.out.print("A"); }
+}
+class B extends A {
+  @Override
+  public void m() { System.out.print("B"); }
+  public void n() { System.out.print("N"); }
+}
 class B extends A { }
 public class Main {
   public static void main(String[] args) {
@@ -363,6 +373,7 @@ class A {
 }
 class B extends A {
   public B() {
+    //super(10)
     System.out.print("B ");
   }
 }
