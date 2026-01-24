@@ -48,8 +48,8 @@ C++ 编程入门课
 using namespace std;
 int main()
 {
+  
    cout << "Hello, world!" << endl;
-
     //可以用 "\n" 代替以上代码里的 endl。
     return 0;
 }
@@ -175,9 +175,6 @@ int a=85         // 十进制
 int a=0213       // 八进制 
 int a=0x4b       // 十六进制 
 int a=830         // 整数 
-int a=830u        // 无符号整数 
-int a=830l        // 长整数 
-int a=830ul       // 无符号长整数
 ```
 
 ### 📌 浮点常量
@@ -201,7 +198,6 @@ float a=3.14159       // 合法的
 using namespace std;
 int main()
 {
-   
    cout << "Hello\tWorld\n\n"<<endl;
    return 0;
 }
@@ -217,11 +213,11 @@ int main()
 using namespace std;
 
 int main() {
-    string greeting = "hello, runoob";
+    string greeting = "hello, world";
     cout << greeting;
     cout << "\n";     // 换行符
     string greeting2 = "hello, \
-                        runoob";
+                        world";
     cout << greeting2;
     return 0;
 }
@@ -236,7 +232,7 @@ using namespace std;
 #define LENGTH 10   
 #define WIDTH  5
 #define NEWLINE '\n'
- 
+
 const int abc=123; //const 定义常量，表示该变量的值不能被修改。
 int main()
 {
@@ -350,7 +346,7 @@ int main()
  
    d = 10;    // 重新赋值
    c = d--; //c=10 d=9
-   cout << "Line 7 - c 的值是 " << c << endl ;
+   cout << "Line 1 - c 的值是 " << c << endl ;
    return 0;
 }
 ```
