@@ -130,6 +130,7 @@ int main(){
 
 ```c++
 #include<iostream>
+#include<queue>
 #include<string>
 using namespace std;
 int main(){
@@ -156,6 +157,7 @@ int main(){
 ```c++
 #include<iostream>
 #include<string>
+#include<queue>
 using namespace std;
 int main(){
    deque<string> str;

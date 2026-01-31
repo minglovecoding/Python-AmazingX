@@ -204,6 +204,7 @@ int main() {
     for (int elem : vec) {
         std::cout << elem << " ";
     }
+    //
     std::cout << std::endl;
     return 0;
 }

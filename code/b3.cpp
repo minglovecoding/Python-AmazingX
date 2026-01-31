@@ -1,52 +1,43 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-long long square_sums[505][505]; 
-int grid[505][505];              
-
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    int N, K;
-    if (!(cin >> N >> K)) return 0;
+    int N, Q;
+    cin >> N >> Q;
+    const long long INF = (1LL<<62);
 
-    int Q;
-    cin >> Q;
-
-    long long current_max = 0;
-
-    for (int q = 0; q < Q; ++q) {
-        int r, c, v;
-        cin >> r >> c >> v;
-
-        r--; 
-        c--;
-
-        int diff = v - grid[r][c];
-        grid[r][c] = v;
-
-        int start_i = max(0, r - K + 1);
-        int end_i = min(N - K, r);
-
-        int start_j = max(0, c - K + 1);
-        int end_j = min(N - K, c);
-
-        for (int i = start_i; i <= end_i; ++i) {
-            for (int j = start_j; j <= end_j; ++j) {
-                square_sums[i][j] += diff;
-                
-                if (square_sums[i][j] > current_max) {
-                    current_max = square_sums[i][j];
-                }
-            }
-        }
-
-        cout << current_max << "\n";
+    vector<long long> c(31, INF);
+    for (int i = 0; i < N; i++) {
+        long long a;
+        cin >> a;
+        if (i <= 30) c[i] = min(c[i], a);
+        else c[30] = min(c[30], a);
     }
 
+    for (int i = 1; i <= 30; i++) {
+        c[i] = min(c[i], 2LL * c[i-1]);
+    }
+
+    while (Q--) {
+        long long x;
+        cin >> x;
+
+        long long rem = x;
+        long long cur = 0;
+        long long best = INF;
+
+        for (int i = 30; i >= 0; i--) {
+            long long sz = 1LL << i;
+            long long take = rem / sz;
+            cur += take * c[i];
+            rem -= take * sz;
+            best = min(best, cur + (rem > 0 ? c[i] : 0));
+        }
+
+        cout << best << "\n";
+    }
     return 0;
 }

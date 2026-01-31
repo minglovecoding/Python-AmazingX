@@ -1,95 +1,93 @@
 #include <iostream>
+#include <vector>
+#include <string>
 #include <algorithm>
 
 using namespace std;
 
-typedef long long ll;
+using i64 = long long;
 
-ll query_type_1(ll c, ll t) {
-    ll cur_t = c;
-    ll cur_pos = c;
-    
-    while (cur_t < t) {
-        ll next_step = cur_t + 1;
-        ll L = next_step / 2;
-        
-        if (cur_pos > L) {
-            ll target_time = 2 * cur_pos;
-            
-            if (target_time > t) {
-                return cur_pos;
-            }
-            
-            ll jump_to = target_time - 1;
-            if (jump_to > cur_t) {
-                cur_t = jump_to;
-            } else {
-                cur_t++;
-            }
+struct Edge {
+    int to, id;
+};
+
+int C;
+
+void solve() {
+    int n;
+    if (!(cin >> n)) return;
+
+    string sl, sr;
+    cin >> sl >> sr;
+
+    vector<int> l(n), r(n), in(2, 0), out(2, 0);
+    vector<Edge> adj[2];
+    int cnt_r1 = 0;
+
+    for (int i = 0; i < n; ++i) {
+        l[i] = (sl[i] == 'N');
+        r[i] = (sr[i] == 'N');
+        adj[l[i]].push_back({r[i], i + 1});
+        out[l[i]]++;
+        in[r[i]]++;
+        if (r[i]) cnt_r1++;
+    }
+
+    if (in[0] != out[0] || in[1] != out[1] || cnt_r1 % 2 != 0) {
+        cout << "NO\n";
+        return;
+    }
+
+    int start_node = adj[1].empty() ? 0 : 1;
+    vector<int> ans, stack = {start_node};
+    vector<int> path_ids;
+
+    while (!stack.empty()) {
+        int u = stack.back();
+        if (!adj[u].empty()) {
+            Edge e = adj[u].back();
+            adj[u].pop_back();
+            stack.push_back(e.to);
+            path_ids.push_back(e.id);
         } else {
-            if (cur_pos == 0) {
-                cur_t++;
-                cur_pos = cur_t / 2;
-            } else {
-                ll steps = cur_pos;
-                if (cur_t + steps > t) {
-                    steps = t - cur_t;
-                }
-                cur_pos -= steps;
-                cur_t += steps;
+            stack.pop_back();
+            if (!path_ids.empty()) {
+                ans.push_back(path_ids.back());
+                path_ids.pop_back();
             }
         }
     }
-    return cur_pos;
-}
 
-ll query_type_2(ll x, ll t) {
-    ll cur_t = t;
-    ll cur_pos = x;
-    
-    if (cur_pos == cur_t) return cur_pos;
+    if (ans.size() != (size_t)n) {
+        cout << "NO\n";
+        return;
+    }
 
-    while (true) {
-        ll L = cur_t / 2;
-        
-        if (cur_pos > L) {
-            return cur_pos;
+    cout << "YES\n";
+    if (C == 1) {
+        reverse(ans.begin(), ans.end());
+        for (int i = 0; i < n; ++i) {
+            cout << ans[i] << (i == n - 1 ? "" : " ");
         }
-        
-        if (cur_t == 0) return 0;
+        cout << "\n";
 
-        ll val = cur_t - 2 * cur_pos;
-        ll steps = val / 3;
-        
-        if (steps <= 0) {
-            if (cur_pos == L) {
-                cur_pos = 0;
-            } else {
-                cur_pos++;
-            }
-            cur_t--;
-        } else {
-            cur_t -= steps;
-            cur_pos += steps;
+        string res = "";
+        int current_state = 0;
+        for (int i = 0; i < n; ++i) {
+            res += (current_state == 0 ? 'J' : 'N');
+            current_state ^= r[ans[i] - 1];
         }
+        cout << res << "\n";
     }
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    
-    int Q;
-    if (cin >> Q) {
-        while (Q--) {
-            ll type, a, b;
-            cin >> type >> a >> b;
-            if (type == 1) {
-                cout << query_type_1(a, b) << "\n";
-            } else {
-                cout << query_type_2(a, b) << "\n";
-            }
-        }
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    if (cin >> T >> C) {
+        while (T--) solve();
     }
     return 0;
 }

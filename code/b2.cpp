@@ -5,91 +5,59 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int T, k;
-    if (!(cin >> T >> k)) return 0;
+    int N;
+    int K;
+    cin >> N >> K;
 
-    char pick[3][3] = {
-        {'C','C','W'},
-        {'C','C','O'},
-        {'W','O','C'}
-    };
+    int n2 = N - 1;
+    int SZ2 = 1 << n2;
+    int SZ = 1 << N;
 
-    int pos[3][3] = {
-        {0,1,2},
-        {2,0,1},
-        {1,2,0}
-    };
-
-    auto typ = [&](char c) -> int {
-        if (c == 'C') return 0;
-        if (c == 'O') return 1;
-        return 2;
-    };
-
-    while (T--) {
-        int FjString;
-        cin >> FjString;
-        int N = FjString;
-        string S;
-        cin >> S;
-        int L = 3 * N;
-
-        if (N % 2 == 1) {
-            cout << -1 << "\n";
-            continue;
+    vector<vector<int>> pos(N, vector<int>(N, -1));
+    for (int x = 0; x < N; x++) {
+        int idx = 0;
+        for (int j = 0; j < N; j++) {
+            if (j == x) continue;
+            pos[x][j] = idx++;
         }
-
-        int mid = L / 2;
-        bool square = true;
-        for (int i = 0; i < mid; i++) {
-            if (S[i] != S[mid + i]) { square = false; break; }
-        }
-
-        if (square) {
-            cout << 1 << "\n";
-            for (int i = 0; i < L; i++) {
-                if (i) cout << ' ';
-                cout << 1;
-            }
-            cout << "\n";
-            continue;
-        }
-
-        int half = N / 2;
-        vector<int> assign(L, 0);
-
-        for (int i = 0; i < half; i++) {
-            int lb = 3 * i;
-            int rb = 3 * (i + half);
-
-            int t1 = typ(S[lb]);
-            int t2 = typ(S[rb]);
-            char ch = pick[t1][t2];
-
-            int idx;
-            if (ch == 'C') idx = 0;
-            else if (ch == 'O') idx = 1;
-            else idx = 2;
-
-            int p1 = pos[t1][idx];
-            int p2 = pos[t2][idx];
-
-            assign[lb + p1] = 1;
-            assign[lb + (p1 + 1) % 3] = 2;
-            assign[lb + (p1 + 2) % 3] = 2;
-
-            assign[rb + p2] = 1;
-            assign[rb + (p2 + 1) % 3] = 2;
-            assign[rb + (p2 + 2) % 3] = 2;
-        }
-
-        cout << 2 << "\n";
-        for (int i = 0; i < L; i++) {
-            if (i) cout << ' ';
-            cout << assign[i];
-        }
-        cout << "\n";
     }
 
+    vector<vector<int>> baseAll(N, vector<int>(SZ2, 0));
+
+    for (int i = 0; i < K; i++) {
+        int x, y, z;
+        cin >> x >> y >> z;
+        --x; --y; --z;
+        int ry = pos[x][y];
+        int rz = pos[x][z];
+        int p = (1 << ry) | (1 << rz);
+        baseAll[x][p] += 1;
+    }
+
+    vector<int> score(SZ, 0);
+
+    for (int x = 0; x < N; x++) {
+        auto &dp = baseAll[x];
+
+        for (int b = 0; b < n2; b++) {
+            for (int m = 0; m < SZ2; m++) {
+                if (m & (1 << b)) dp[m] += dp[m ^ (1 << b)];
+            }
+        }
+
+        int lowMask = (1 << x) - 1;
+        for (int r = 0; r < SZ2; r++) {
+            int full = (r & lowMask) | ((r >> x) << (x + 1));
+            score[full] += dp[r];
+        }
+    }
+
+    int best = 0;
+    for (int m = 0; m < SZ; m++) best = max(best, score[m]);
+
+    long long cnt = 0;
+    for (int m = 0; m < SZ; m++) if (score[m] == best) cnt++;
+
+    cout << best << " " << cnt << "\n";
     return 0;
 }
