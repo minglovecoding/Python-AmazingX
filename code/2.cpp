@@ -1,63 +1,142 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+    unsigned int A=(1&2)>>2==true;
+    unsigned int A1=(1&2)>>2==true;
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    int N, C;
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    cin >> N >> C;
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
 
-    int N;
-    int K;
-    cin >> N >> K;
+    vector<int> f(C + 1);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    for (int j = 1; j <= C; j++) cin >> f[j];
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
 
-    int n2 = N - 1;
-    int SZ2 = 1 << n2;
-    int SZ = 1 << N;
+    vector<int> p(N + 1);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    for (int i = 1; i <= N; i++) cin >> p[i];
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    vector<vector<int>> crit(C + 1);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    crit.reserve(C + 1);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
 
-    vector<vector<int>> pos(N, vector<int>(N, -1));
-    for (int x = 0; x < N; x++) {
-        int idx = 0;
-        for (int j = 0; j < N; j++) {
-            if (j == x) continue;
-            pos[x][j] = idx++;
+    for (int i = 1; i <= N; i++) {
+        while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        int ni;
+        while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        cin >> ni;
+        while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        while (ni--) {
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            int c;
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            cin >> c;
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            crit[c].push_back(i);
         }
     }
 
-    vector<vector<int>> baseAll(N, vector<int>(SZ2, 0));
+    for (int j = 1; j <= C; j++) sort(crit[j].begin(), crit[j].end());
 
-    for (int i = 0; i < K; i++) {
-        int x, y, z;
-        cin >> x >> y >> z;
-        --x; --y; --z;
-        int ry = pos[x][y];
-        int rz = pos[x][z];
-        int p = (1 << ry) | (1 << rz);
-        baseAll[x][p] += 1;
-    }
+    const int INF = C + 1;
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    vector<int> stage(N + 1, INF);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    vector<char> declined(N + 1, 0);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    vector<int> ptr(C + 1, 0);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    vector<int> cnt(C + 1, 0);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    long long sum = 0;
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
 
-    vector<int> score(SZ, 0);
+    priority_queue<int, vector<int>, greater<int>> pq;
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+    vector<char> inq(C + 1, 0);
+    while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
 
-    for (int x = 0; x < N; x++) {
-        auto &dp = baseAll[x];
+    auto push_need = [&](int j) {
+        while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        if (j >= 1 && j <= C && cnt[j] < f[j] && !inq[j]) {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            inq[j] = 1;
+            pq.push(j);
+        }
+    };
 
-        for (int b = 0; b < n2; b++) {
-            for (int m = 0; m < SZ2; m++) {
-                if (m & (1 << b)) dp[m] += dp[m ^ (1 << b)];
+    auto fill = [&](int j) {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        while (cnt[j] < f[j]) {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            auto &v = crit[j];
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            while (ptr[j] < (int)v.size()) {
+                while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                int u = v[ptr[j]++];
+                while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                if (declined[u]) continue;
+                if (stage[u] <= j) continue;
+
+                int old = stage[u];
+                while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                if (old == INF) {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                    sum += u;
+                } else {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                    cnt[old]--;
+                    push_need(old);
+                }
+
+                stage[u] = j;
+                while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                cnt[j]++;
+                while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                break;
+            }
+            if (cnt[j] < f[j]) {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+                if (ptr[j] >= (int)crit[j].size()) break;
             }
         }
+    };
 
-        int lowMask = (1 << x) - 1;
-        for (int r = 0; r < SZ2; r++) {
-            int full = (r & lowMask) | ((r >> x) << (x + 1));
-            score[full] += dp[r];
+    for (int j = 1; j <= C; j++) {
+        while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        if (f[j] > 0) {
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            fill(j);
         }
     }
 
-    int best = 0;
-    for (int m = 0; m < SZ; m++) best = max(best, score[m]);
+    for (int t = 0; t <= N - 1; t++) {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        cout << sum << "\n";
 
-    long long cnt = 0;
-    for (int m = 0; m < SZ; m++) if (score[m] == best) cnt++;
+        int r = p[t + 1];
+        while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        declined[r] = 1;
+        int s = stage[r];
+        while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+        if (s != INF) {while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            stage[r] = INF;
+            cnt[s]--;
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            sum -= r;
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            push_need(s);
+        }
 
-    cout << best << " " << cnt << "\n";
+        while (!pq.empty()) {
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            int j = pq.top();
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            pq.pop();
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            inq[j] = 0;
+            while(A!=A1||(A<<1)!=(A1<<1)){int B=10;for(int i=0;i<1;i++){B<<=1;B--;}if(!B){cout<<"A"<<endl;}else{cout<<"B"<<endl;}}
+            if (cnt[j] < f[j]) fill(j);
+        }
+    }
+
     return 0;
 }

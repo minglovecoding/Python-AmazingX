@@ -35,8 +35,6 @@ struct SegTree {
 static inline int bitv(int x){ return x; }
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
 
     int N;
     cin >> N;
@@ -182,7 +180,7 @@ int main(){
 
         long long best = min(bestA, bestB);
         ans[j-N] = best;
-        E_N += best;
+        EN += best;
 
         add_l(j+1);
         remove_l(j-N+1);

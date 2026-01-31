@@ -2,8 +2,6 @@
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
 
     int T, E_T;
     cin >> T >> E_T;
