@@ -320,7 +320,6 @@ void write_extern(void)
 ```cpp
 #include <iostream>
 using namespace std;
- 
 int main()
 {
    int a = 21;
@@ -427,6 +426,7 @@ int main()
    if ( a && b )
    {
       cout << "Line 1 - 条件为真"<< endl ;
+ 
    }
    if ( a || b )
    {
@@ -472,7 +472,7 @@ int main()
    c = a ^ b;             // 49 = 0011 0001
    cout << "Line 3 - c 的值是 " << c << endl ;
  
-   c = ~a;                // -61 = 1100 0011
+   c = ~a;                // 61 = 1100 0011
    cout << "Line 4 - c 的值是 " << c << endl ;
                           
    c = a << 2;            // 240 = 1111 0000 
@@ -518,12 +518,17 @@ using namespace std;
 int main ()
 {
    // for 循环执行
-   for( int a = 10; a < 20; a++ )
+   for( int a = 1; a <= 10; a++ )
    {
        cout << "a 的值：" << a << endl;
    }
-   
-  int my_array[5] = {1, 2, 3, 4, 5};
+   //
+   int my_array[5] = {1, 2, 3, 4, 5};
+   for( int i = 0;  i < 5; i++ )
+   {
+       cout << "array的值：" << my_array[i] << endl;
+   }
+  //
   // 每个数组元素乘于 2
   for (int &x : my_array)
   {

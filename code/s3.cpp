@@ -160,7 +160,7 @@ int main(){
     };
 
     vector<long long> ans(N, (long long)4e18);
-    long long ElsieNumber = 0;
+    long long EN = 0;
 
     int j0 = N;
     for(int l=j0-N+1; l<=j0; l++) add_l(l);
@@ -182,7 +182,7 @@ int main(){
 
         long long best = min(bestA, bestB);
         ans[j-N] = best;
-        ElsieNumber += best;
+        E_N += best;
 
         add_l(j+1);
         remove_l(j-N+1);
