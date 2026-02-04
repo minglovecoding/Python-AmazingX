@@ -11,8 +11,6 @@ O(\log N)
 $$
 时间内找到答案。
 
-------
-
 ### ✅ 基本思路：
 
 假设有一个升序数组 `a[0...N-1]`，我们要查找一个目标值 `x`：
@@ -23,8 +21,6 @@ $$
    - 若 `a[mid] < x` → 搜右边；
    - 若 `a[mid] > x` → 搜左边；
    - 若相等 → 找到目标。
-
-------
 
 ### 🔁 动态示意图：
 
@@ -38,24 +34,35 @@ $$
 
 每一步搜索区间都减半。
 
-------
-
-## 🧱 二、模板代码（基础版）
+## 🧱 二、模板代码
 
 ```c++
+#include <bits/stdc++.h>
+using namespace std;
 int binary_search(vector<int>& a, int x) {
-    int l = 0, r = a.size() - 1;
+    int l = 0, r = (int)a.size() - 1;
     while (l <= r) {
-        int mid = (l + r) / 2;
-        if (a[mid] == x) return mid;   // 找到
-        else if (a[mid] < x) l = mid + 1;
-        else r = mid - 1;
+        int mid = l + (r - l) / 2; // 更安全的写法，避免溢出
+        if (a[mid] == x) return mid;      // 找到
+        else if (a[mid] < x) l = mid + 1; // 去右半边
+        else r = mid - 1;                 // 去左半边
     }
     return -1; // 没找到
 }
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) cin >> a[i];
+    int x;
+    cin >> x;
+    // 二分查找要求数组已排序（非降序）
+    // 如果你的输入数组不保证有序，可以先排序：
+    // sort(a.begin(), a.end());
+    cout << binary_search(a, x) << "\n";
+    return 0;
+}
 ```
-
-------
 
 ## 🧮 三、模板代码（查找“最小满足条件”）
 
@@ -75,8 +82,6 @@ cout << l; // l 即最小满足条件的值
 
 - `check(mid)` 表示“当前 mid 是否可行”；
 - 整个搜索空间必须**单调**（即可行性不会来回跳变）。
-
-***
 
 ### 🐮 USACO 2019 Dec Bronze
 
@@ -122,22 +127,18 @@ int main() {
 
 ## 🧭 USACO 双指针（Two Pointers）
 
-### 🥇 一、核心思想
+###  一、核心思想
 
 **双指针（Two Pointers）** 是一种常见的数组遍历与区间控制技巧。
  通过 **两个变量（指针）i, j** 同时在数组上移动，
  避免多重循环，从而把 O(N²) 降为 O(N)。
 
-------
-
-### ✅ 核心原理：
+###  核心原理：
 
 > 当数组或序列具有“**单调性**”时，我们可以让两个指针分别代表 **区间的左右端点**，
 >  通过调整它们的位置，动态维护一个满足条件的区间。
 
-------
-
-### 举个直观例子 👇
+### **举个直观例子** 👇
 
 要找所有满足 `a[j] - a[i] <= K` 的区间：
 
@@ -225,22 +226,20 @@ while (i < A.size() && j < B.size()) {
   给定一个**有序数组** `a[0…N−1]` 和一个目标值 `target`，
    判断数组中是否存在两个不同元素 `a[i] + a[j] == target`。
 
-  ------
-
   ## 💡 **思路分析**
 
   数组是 **升序** 的，这是关键。
    我们可以用两个指针：
-
+  
   - `l` 指向最左（最小值）；
   - `r` 指向最右（最大值）。
-
+  
   每次计算：
 
   ```c++
   sum = a[l] + a[r]
   ```
-
+  
   然后根据 sum 和 target 的关系移动指针：
 
   | 情况            | 说明       | 下一步操作        |
@@ -248,34 +247,45 @@ while (i < A.size() && j < B.size()) {
   | `sum == target` | 找到答案 ✅ | 返回 true         |
   | `sum < target`  | 当前和太小 | `l++`（让和变大） |
   | `sum > target`  | 当前和太大 | `r--`（让和变小） |
-
+  
   由于数组是升序的，
    当我们右移左指针或左移右指针时，`sum` 的变化是**单调可预测**的。
    这样可以在 **O(N)** 的时间内找到结果。
-
+  
   ------
 
   ## 💻 **代码实现**
 
   ```c++
+  #include <bits/stdc++.h>
+  using namespace std;
+  // 判断是否存在一对数之和等于 target（要求 a 已升序排序）
   bool pair_sum(vector<int>& a, int target) {
-      int l = 0, r = a.size() - 1;
+      int l = 0, r = (int)a.size() - 1;
       while (l < r) {
-          int sum = a[l] + a[r];
+          long long sum = (long long)a[l] + a[r]; // 防止 int 溢出
           if (sum == target) return true;
           else if (sum < target) l++;
           else r--;
       }
       return false;
+  }	
+  int main() {
+      int n;
+      cin >> n;
+      vector<int> a(n);
+      for (int i = 0; i < n; i++) cin >> a[i];
+      int target;
+      cin >> target;
+      cout << (pair_sum(a, target)?"yes":"no") << "\n";
+      return 0;
   }
   ```
 
-  ------
-
-  ## 🧠 **例子演示**
-
+  
+  
   假设：
-
+  
   ```
   a = [1, 3, 4, 6, 8, 10]
   target = 9
@@ -285,16 +295,16 @@ while (i < A.size() && j < B.size()) {
   | ---- | ---- | ---- | --------- | ---- | ------ |
   | 1    | 0    | 5    | 1+10=11   | >9   | r--    |
   | 2    | 0    | 4    | 1+8=9     | ==9  | ✅ 找到 |
-
+  
   结果：存在。
 
   ------
-
+  
   ## 📊 **复杂度分析**
-
+  
   | 项目       | 复杂度 | 说明                  |
   | ---------- | ------ | --------------------- |
   | 时间复杂度 | O(N)   | 每个指针最多移动 N 次 |
   | 空间复杂度 | O(1)   | 仅用常数空间          |
-
+  
   相比于暴力枚举 `O(N^2)`，效率显著提升。

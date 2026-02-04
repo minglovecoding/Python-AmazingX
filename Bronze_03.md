@@ -217,13 +217,12 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
- 
 int main(){
     int N, M; cin >> N >> M;
     string S; cin >> S;
     vector<ll> a(N);
     for(ll& i: a) cin >> i;
-	
+	 //找出溢出点“RL"
     vector<bool> bad_L(N), bad_R(N);
     for(int i = 0; i < N; i++){
         if(S[i] == 'R' && S[(i + 1) % N] == 'L'){
@@ -231,22 +230,22 @@ int main(){
             bad_R[(i + 1) % N] = true;
         }
     }
-        
+    //累积值    
     ll ans = accumulate(a.begin(), a.end(), 0LL);
     for(int i = 0; i < N; i++){
         ll sum = 0;
-        if(bad_L[i]){
+        if(bad_L[i]){//"RL"里的R
             int j = (i - 1 + N) % N;
             while(S[j] == 'R'){
                 sum += a[j--];
-                if(j < 0) j += N;
+                if(j < 0) j += N;//回到末点
             }
         }
-        if(bad_R[i]){
+        if(bad_R[i]){//"RL"里的L
             int j = (i + 1) % N;
             while(S[j] == 'L'){
                 sum += a[j++];
-                if(j >= N) j -= N;
+                if(j >= N) j -= N;///回到起点
             }
         }
         ans -= min(sum, (ll) M);

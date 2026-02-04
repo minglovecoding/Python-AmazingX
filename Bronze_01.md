@@ -284,7 +284,7 @@ using namespace std;
 
 long long fact(int n){
     if (n == 0) return 1;          // 基例（最小子问题）
-    return 1LL * n * fact(n - 1);  // 递归：把问题缩小为 n-1
+    return n * fact(n - 1);  // 递归：把问题缩小为 n-1
 }
 
 int main(){

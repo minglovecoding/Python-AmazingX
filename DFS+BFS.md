@@ -10,7 +10,7 @@ DFS 是典型的 **递归 + 回溯** 思想。
 
 ```c++
 void dfs(int u) {
-    vis[u] = true;
+    vis[u] = true; //标记u点已经访问过了
     for (int v : adj[u]) {
         if (!vis[v]) dfs(v);
     }
@@ -77,7 +77,6 @@ int main() {
         cout << endl;
     }
 }
-
 ```
 
 ### 🚀 BFS（Breadth-First Search）广度优先搜索
@@ -92,7 +91,7 @@ vis[start] = true;
 while(!q.empty()) {
     int u = q.front(); q.pop();
     for (int v : adj[u]) {
-        if (!vis[v]) {
+        if (!vis[v]) {//如果v点没有访问
             vis[v] = true;
             q.push(v);
         }
