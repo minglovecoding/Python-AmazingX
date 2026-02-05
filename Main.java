@@ -1,15 +1,12 @@
-class A{
-    public A(){System.out.print("1");}
-    public A(int n){System.out.print("2");}
-}
-class B extends A{
-    public B(){
-        super(2);
-        System.out.print("3");
-    }
-}
 public class Main{
+    //Fibonacci
+    public static int fib(int n) {
+    if (n == 0) return 0;   // base case
+    if (n == 1) return 1;   // base case
+    return fib(n - 1) + fib(n - 2); // recursive case
+}
     public static void main(String[] args){
-        new B();
+        
+        System.out.println(fib(10));
     }
 }

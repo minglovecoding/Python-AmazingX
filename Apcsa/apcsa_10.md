@@ -88,7 +88,7 @@ public static int max(int[] a) {
     return maxFrom(a, 0);
 }
 
-private static int maxFrom(int[] a, int i) {
+public static int maxFrom(int[] a, int i) {
     if (i == a.length - 1) return a[i];
     return Math.max(a[i], maxFrom(a, i + 1));
 }
@@ -116,7 +116,7 @@ public static void mystery(int n) {
     if (n == 0) return;
     System.out.print(n + " ");   // 打印在递归前
     mystery(n - 1);
-    System.out.print(n + " ");   // 打印在递归后
+    //System.out.print(n + " ");   // 打印在递归后
 }
 ```
 
