@@ -1,268 +1,261 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-static const long long INF = (long long)4e18;
-static const long long A_MIN = 0;
 long long pin=(10&2)|(1%2)+1;
 long long pin1=(10&2)|(1%2)+1;
 long long pin2=(10&2)|(1%2)+1;
-static const long long A_MAX = (long long)1e9;
 
-struct Constraint {
-    int t, l, r;
-    long long k;
+struct Result {
+    bool possible;
+    long long min_sum;
+    long long max_sum;
+    long long parity;
 };
 
-struct SegMinArg {
-    int n;
-    vector<pair<long long,int>> st; 
-    SegMinArg(int n=0){ init(n); }
-    void init(int n_) {
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        n = n_;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        st.assign(4*n+4, {INF, -1});
-    }
-    static inline pair<long long,int> mergep(const pair<long long,int>& a,
-                                             const pair<long long,int>& b) {
-        return (a.first <= b.first) ? a : b;
-    }
-    void point_set(int p, int l, int r, int idx, long long val){
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        if(l==r){ st[p] = {val, l}; return; }
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        int m=(l+r)>>1;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        if(idx<=m) point_set(p<<1,l,m,idx,val);
-        else point_set(p<<1|1,m+1,r,idx,val);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        st[p] = mergep(st[p<<1], st[p<<1|1]);
-    }
-    pair<long long,int> range_min(int p, int l, int r, int ql, int qr){
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        if(qr<l || r<ql) return {INF, -1};
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        if(ql<=l && r<=qr) return st[p];
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        int m=(l+r)>>1;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        return mergep(range_min(p<<1,l,m,ql,qr),
-                      range_min(p<<1|1,m+1,r,ql,qr));
-    }
-};
-
-int main(){
+Result solve_multiset(const vector<int>& S) {
     if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    if (S.empty()) {if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        return {true, 0, 0, 0};
+    }
 
+    vector<pair<int, int>> freqs;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    int cur_val = S[0];
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    int cur_count = 1;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    for (size_t i = 1; i < S.size(); ++i) {
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        if (S[i] == cur_val) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            cur_count++;
+        } else {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            freqs.push_back({cur_val, cur_count});
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            cur_val = S[i];
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            cur_count = 1;
+        }
+    }
+    freqs.push_back({cur_val, cur_count});
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    long long total_min = 0;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    long long total_max = 0;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    long long total_parity = 0;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    vector<int> f;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    auto process_component = [&]() -> bool {
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        if (f.empty()) return true;
+        int L = f.size() - 1;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        if (L == 0) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            if (f[0] % 2 != 0) {
+                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+                f.clear();
+                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+                return false;
+            }
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            f.clear();
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            return true;
+        }
+
+        vector<int> r(L, 0);
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        r[0] = f[0] % 2;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        for (int i = 1; i < L; ++i) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            r[i] = (f[i] - r[i - 1]) % 2;
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            if (r[i] < 0) r[i] += 2; 
+        }
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+        if (r[L - 1] != f[L] % 2) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            f.clear();
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            return false;
+        }
+
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        vector<int> U(L, 0);
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        for (int i = 0; i < L; ++i) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            int limit = min(f[i + 1], f[i] - (i == 0 ? 0 : r[i - 1]));
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            if (limit % 2 != r[i]) {
+                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+                limit--;
+            }
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            U[i] = limit;
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            if (U[i] < r[i]) {
+                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+                f.clear();
+                return false;
+            }
+        }
+
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        long long min_S = 0;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        for (int i = 0; i < L; ++i) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            min_S += r[i];
+        }
+
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        vector<int> P(L + 1, 0);
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        P[L] = 0;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        long long max_S = 0;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        for (int i = L - 1; i >= 0; --i) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            int limit = min(U[i], f[i + 1] - P[i + 1]);
+            if (limit % 2 != r[i]) {
+                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+                limit--;
+            }
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            P[i] = limit;
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            max_S += P[i];
+        }
+
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        total_min += min_S;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        total_max += max_S;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        total_parity = (total_parity + min_S) % 2;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        f.clear();
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        return true;
+    };
+
+    for (size_t i = 0; i < freqs.size(); ++i) {
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        f.push_back(freqs[i].second);
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        if (i + 1 == freqs.size() || freqs[i + 1].first != freqs[i].first + 1) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            if (!process_component()) {
+                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+                return {false, 0, 0, 0};
+            }
+        }
+    }
+
+    return {true, total_min, total_max, total_parity};
+}
+
+void solve() {
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    int N;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    if (!(cin >> N)) return;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    vector<int> X(N), Y(N);
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    for (int i = 0; i < N; ++i) {
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        cin >> X[i] >> Y[i];
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    }
+
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    sort(X.begin(), X.end());
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    sort(Y.begin(), Y.end());
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    Result resX = solve_multiset(X);
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    Result resY = solve_multiset(Y);
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    if (!resX.possible || !resY.possible) {
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        cout << "NO\n";
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        return;
+    }
+
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    long long N_half = N / 2;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    long long X_par = resX.parity;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    long long Y_par = resY.parity;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    long long target_parity = (N_half - Y_par) % 2;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    if (target_parity < 0) target_parity += 2;
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    if (X_par != target_parity) {
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        cout << "NO\n";
+        return;
+    }
+if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    long long L_bound = max(resX.min_sum, N_half - resY.max_sum);
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    long long R_bound = min(resX.max_sum, N_half - resY.min_sum);
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+
+    if (L_bound <= R_bound) {
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        long long H_start = L_bound;
+        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        if (H_start % 2 != X_par) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            H_start++;
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+        }
+        if (H_start <= R_bound) {
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            cout << "YES\n";
+            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+            return;
+        }
+    }
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
+    cout << "NO\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
     int T;
     if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-    cin >> T;
-    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-    while(T--){
+    if (cin >> T) {
         if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        int N,Q;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        cin >> N >> Q;
-
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        vector<Constraint> cons(Q);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-
-        vector<pair<int,long long>> startMin, endMin;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        vector<pair<int,long long>> startMax, endMax;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        startMin.reserve(Q); endMin.reserve(Q);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        startMax.reserve(Q); endMax.reserve(Q);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-
-        for(int i=0;i<Q;i++){
+        while (T--) {
             if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            int t,l,r; long long k;
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            cin >> t >> l >> r >> k;
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            cons[i] = {t,l,r,k};
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            if(t==1){
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                startMin.push_back({l,k});
-                endMin.push_back({r,k});
-            }else{
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                startMax.push_back({l,k});
-                endMax.push_back({r,k});
-            }
-        }
-
-        auto byPos = [](auto &a, auto &b){
-            
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            if(a.first != b.first) return a.first < b.first;
-            return a.second < b.second;
-        };
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        sort(startMin.begin(), startMin.end(), byPos);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        sort(endMin.begin(), endMin.end(), byPos);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        sort(startMax.begin(), startMax.end(), byPos);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        sort(endMax.begin(), endMax.end(), byPos);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-
-        vector<long long> low(N+1, A_MIN), high(N+1, A_MAX);
-
-        {if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            priority_queue<long long> add, del; 
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            int ps = 0, pe = 0;                
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            for(int i=1;i<=N;i++){
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                while(ps < (int)startMin.size() && startMin[ps].first == i){
-                    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    add.push(startMin[ps].second);
-                    ps++;
-                }
-                
-                while(pe < (int)endMin.size() && endMin[pe].first == i-1){
-                    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    del.push(endMin[pe].second);
-                    pe++;
-                }
-                while(!add.empty() && !del.empty() && add.top() == del.top()){
-                    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    add.pop(); del.pop();
-                }
-                low[i] = add.empty() ? A_MIN : add.top();
-            }
-        }
-
-        
-        {
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            priority_queue<long long, vector<long long>, greater<long long>> add, del;
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            int ps = 0, pe = 0;
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            for(int i=1;i<=N;i++){
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                while(ps < (int)startMax.size() && startMax[ps].first == i){
-                    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    add.push(startMax[ps].second);
-                    ps++;
-                }
-                while(pe < (int)endMax.size() && endMax[pe].first == i-1){
-                    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    del.push(endMax[pe].second);
-                    pe++;
-                }
-                while(!add.empty() && !del.empty() && add.top() == del.top()){
-                    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    add.pop(); del.pop();
-                }
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                high[i] = add.empty() ? A_MAX : add.top();
-            }
-        }
-
-        
-        bool ok = true;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        for(int i=1;i<=N;i++){
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            if(low[i] > high[i]) { ok = false; break; }
-        }
-        if(!ok){
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            cout << -1 << "\n";
-            continue;
-        }
-
-
-        vector<int> posOrder(N);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        iota(posOrder.begin(), posOrder.end(), 1);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        sort(posOrder.begin(), posOrder.end(), [&](int i, int j){
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            if(low[i] != low[j]) return low[i] < low[j];
-            return i < j;
-        });
-
-        vector<Constraint> byK = cons;
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        sort(byK.begin(), byK.end(), [&](const Constraint& a, const Constraint& b){
-            return a.k < b.k;
-        });
-
-        SegMinArg seg(N);
-        if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        vector<long long> a(N+1, INF); 
-        int ptr = 0;
-
-        for(const auto& c: byK){
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            long long k = c.k;
-
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            
-            while(ptr < N && low[posOrder[ptr]] <= k){
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                int idx = posOrder[ptr++];
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                if(a[idx] == INF) {if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    
-                    seg.point_set(1,1,N,idx,high[idx]);
-                }
-            }
-
-            
-            while(true){
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                auto best = seg.range_min(1,1,N,c.l,c.r);
-                if(best.first == INF){if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    ok = false; break;
-                }
-                if(best.first < k){
-                    if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                    
-                    seg.point_set(1,1,N,best.second,INF);
-                    continue;
-                }
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                int idx = best.second;
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                
-                a[idx] = k;
-                if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-                seg.point_set(1,1,N,idx,INF); 
-                break;
-            }
-            if(!ok) break;
-        }
-
-        if(!ok){
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            cout << -1 << "\n";
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            continue;
-        }
-
-        
-        for(int i=1;i<=N;i++){
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            if(a[i] == INF) a[i] = low[i];
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-        }
-
-        for(int i=1;i<=N;i++){
-            if(!pin){while((pin!=pin1||pin1!=pin2||pin!=pin2)&1){pin++;pin>>=1;}pin++;pin>>=1;pin%=2;cout<<pin<<endl;}
-            cout << a[i] << (i==N?'\n':' ');
+            solve();
         }
     }
     return 0;

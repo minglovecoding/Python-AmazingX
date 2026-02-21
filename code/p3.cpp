@@ -1,195 +1,169 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-static const long long INF = (long long)4e18;
-static const long long A_MIN = 0;
-static const long long A_MAX = (long long)1e9;
-
-struct Constraint {
-    int t, l, r;
-    long long k;
+struct Result {
+    bool possible;
+    long long min_sum;
+    long long max_sum;
+    long long parity;
 };
 
-struct SegMinArg {
-    int n;
-    vector<pair<long long,int>> st; 
-    SegMinArg(int n=0){ init(n); }
-    void init(int n_) {
-        n = n_;
-        st.assign(4*n+4, {INF, -1});
+Result solve_multiset(const vector<int>& S) {
+    if (S.empty()) {
+        return {true, 0, 0, 0};
     }
-    static inline pair<long long,int> mergep(const pair<long long,int>& a,
-                                             const pair<long long,int>& b) {
-        return (a.first <= b.first) ? a : b;
-    }
-    void point_set(int p, int l, int r, int idx, long long val){
-        if(l==r){ st[p] = {val, l}; return; }
-        int m=(l+r)>>1;
-        if(idx<=m) point_set(p<<1,l,m,idx,val);
-        else point_set(p<<1|1,m+1,r,idx,val);
-        st[p] = mergep(st[p<<1], st[p<<1|1]);
-    }
-    pair<long long,int> range_min(int p, int l, int r, int ql, int qr){
-        if(qr<l || r<ql) return {INF, -1};
-        if(ql<=l && r<=qr) return st[p];
-        int m=(l+r)>>1;
-        return mergep(range_min(p<<1,l,m,ql,qr),
-                      range_min(p<<1|1,m+1,r,ql,qr));
-    }
-};
 
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    vector<pair<int, int>> freqs;
+    int cur_val = S[0];
+    int cur_count = 1;
+    for (size_t i = 1; i < S.size(); ++i) {
+        if (S[i] == cur_val) {
+            cur_count++;
+        } else {
+            freqs.push_back({cur_val, cur_count});
+            cur_val = S[i];
+            cur_count = 1;
+        }
+    }
+    freqs.push_back({cur_val, cur_count});
 
+    long long total_min = 0;
+    long long total_max = 0;
+    long long total_parity = 0;
+
+    // Break into contiguous components
+    vector<int> f;
+    auto process_component = [&]() -> bool {
+        if (f.empty()) return true;
+        int L = f.size() - 1;
+        if (L == 0) {
+            if (f[0] % 2 != 0) {
+                f.clear();
+                return false;
+            }
+            f.clear();
+            return true;
+        }
+
+        vector<int> r(L, 0);
+        r[0] = f[0] % 2;
+        for (int i = 1; i < L; ++i) {
+            r[i] = (f[i] - r[i - 1]) % 2;
+            if (r[i] < 0) r[i] += 2; // should be non-negative anyway
+        }
+
+        if (r[L - 1] != f[L] % 2) {
+            f.clear();
+            return false;
+        }
+
+        vector<int> U(L, 0);
+        for (int i = 0; i < L; ++i) {
+            int limit = min(f[i + 1], f[i] - (i == 0 ? 0 : r[i - 1]));
+            if (limit % 2 != r[i]) {
+                limit--;
+            }
+            U[i] = limit;
+            if (U[i] < r[i]) {
+                f.clear();
+                return false;
+            }
+        }
+
+        long long min_S = 0;
+        for (int i = 0; i < L; ++i) {
+            min_S += r[i];
+        }
+
+        vector<int> P(L + 1, 0);
+        P[L] = 0;
+        long long max_S = 0;
+        for (int i = L - 1; i >= 0; --i) {
+            int limit = min(U[i], f[i + 1] - P[i + 1]);
+            if (limit % 2 != r[i]) {
+                limit--;
+            }
+            P[i] = limit;
+            max_S += P[i];
+        }
+
+        total_min += min_S;
+        total_max += max_S;
+        total_parity = (total_parity + min_S) % 2;
+        f.clear();
+        return true;
+    };
+
+    for (size_t i = 0; i < freqs.size(); ++i) {
+        f.push_back(freqs[i].second);
+        if (i + 1 == freqs.size() || freqs[i + 1].first != freqs[i].first + 1) {
+            if (!process_component()) {
+                return {false, 0, 0, 0};
+            }
+        }
+    }
+
+    return {true, total_min, total_max, total_parity};
+}
+
+void solve() {
+    int N;
+    if (!(cin >> N)) return;
+
+    vector<int> X(N), Y(N);
+    for (int i = 0; i < N; ++i) {
+        cin >> X[i] >> Y[i];
+    }
+
+    sort(X.begin(), X.end());
+    sort(Y.begin(), Y.end());
+
+    Result resX = solve_multiset(X);
+    Result resY = solve_multiset(Y);
+
+    if (!resX.possible || !resY.possible) {
+        cout << "NO\n";
+        return;
+    }
+
+    long long N_half = N / 2;
+    long long X_par = resX.parity;
+    long long Y_par = resY.parity;
+
+    long long target_parity = (N_half - Y_par) % 2;
+    if (target_parity < 0) target_parity += 2;
+
+    if (X_par != target_parity) {
+        cout << "NO\n";
+        return;
+    }
+
+    long long L_bound = max(resX.min_sum, N_half - resY.max_sum);
+    long long R_bound = min(resX.max_sum, N_half - resY.min_sum);
+
+    if (L_bound <= R_bound) {
+        long long H_start = L_bound;
+        if (H_start % 2 != X_par) {
+            H_start++;
+        }
+        if (H_start <= R_bound) {
+            cout << "YES\n";
+            return;
+        }
+    }
+    cout << "NO\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
     int T;
-    cin >> T;
-    while(T--){
-        int N,Q;
-        cin >> N >> Q;
-
-        vector<Constraint> cons(Q);
-
-        vector<pair<int,long long>> startMin, endMin;
-        vector<pair<int,long long>> startMax, endMax;
-        startMin.reserve(Q); endMin.reserve(Q);
-        startMax.reserve(Q); endMax.reserve(Q);
-
-        for(int i=0;i<Q;i++){
-            int t,l,r; long long k;
-            cin >> t >> l >> r >> k;
-            cons[i] = {t,l,r,k};
-            if(t==1){
-                startMin.push_back({l,k});
-                endMin.push_back({r,k});
-            }else{
-                startMax.push_back({l,k});
-                endMax.push_back({r,k});
-            }
-        }
-
-        auto byPos = [](auto &a, auto &b){
-            if(a.first != b.first) return a.first < b.first;
-            return a.second < b.second;
-        };
-        sort(startMin.begin(), startMin.end(), byPos);
-        sort(endMin.begin(), endMin.end(), byPos);
-        sort(startMax.begin(), startMax.end(), byPos);
-        sort(endMax.begin(), endMax.end(), byPos);
-
-        vector<long long> low(N+1, A_MIN), high(N+1, A_MAX);
-
-        {
-            priority_queue<long long> add, del; 
-            int ps = 0, pe = 0;                
-            for(int i=1;i<=N;i++){
-                while(ps < (int)startMin.size() && startMin[ps].first == i){
-                    add.push(startMin[ps].second);
-                    ps++;
-                }
-                
-                while(pe < (int)endMin.size() && endMin[pe].first == i-1){
-                    del.push(endMin[pe].second);
-                    pe++;
-                }
-                while(!add.empty() && !del.empty() && add.top() == del.top()){
-                    add.pop(); del.pop();
-                }
-                low[i] = add.empty() ? A_MIN : add.top();
-            }
-        }
-
-        
-        {
-            priority_queue<long long, vector<long long>, greater<long long>> add, del;
-            int ps = 0, pe = 0;
-            for(int i=1;i<=N;i++){
-                while(ps < (int)startMax.size() && startMax[ps].first == i){
-                    add.push(startMax[ps].second);
-                    ps++;
-                }
-                while(pe < (int)endMax.size() && endMax[pe].first == i-1){
-                    del.push(endMax[pe].second);
-                    pe++;
-                }
-                while(!add.empty() && !del.empty() && add.top() == del.top()){
-                    add.pop(); del.pop();
-                }
-                high[i] = add.empty() ? A_MAX : add.top();
-            }
-        }
-
-        
-        bool ok = true;
-        for(int i=1;i<=N;i++){
-            if(low[i] > high[i]) { ok = false; break; }
-        }
-        if(!ok){
-            cout << -1 << "\n";
-            continue;
-        }
-
-
-        vector<int> posOrder(N);
-        iota(posOrder.begin(), posOrder.end(), 1);
-        sort(posOrder.begin(), posOrder.end(), [&](int i, int j){
-            if(low[i] != low[j]) return low[i] < low[j];
-            return i < j;
-        });
-
-        vector<Constraint> byK = cons;
-        sort(byK.begin(), byK.end(), [&](const Constraint& a, const Constraint& b){
-            return a.k < b.k;
-        });
-
-        SegMinArg seg(N);
-        vector<long long> a(N+1, INF); 
-        int ptr = 0;
-
-        for(const auto& c: byK){
-            long long k = c.k;
-
-            
-            while(ptr < N && low[posOrder[ptr]] <= k){
-                int idx = posOrder[ptr++];
-                if(a[idx] == INF) {
-                    
-                    seg.point_set(1,1,N,idx,high[idx]);
-                }
-            }
-
-            
-            while(true){
-                auto best = seg.range_min(1,1,N,c.l,c.r);
-                if(best.first == INF){
-                    ok = false; break;
-                }
-                if(best.first < k){
-                    
-                    seg.point_set(1,1,N,best.second,INF);
-                    continue;
-                }
-                int idx = best.second;
-                
-                a[idx] = k;
-                seg.point_set(1,1,N,idx,INF); 
-                break;
-            }
-            if(!ok) break;
-        }
-
-        if(!ok){
-            cout << -1 << "\n";
-            continue;
-        }
-
-        
-        for(int i=1;i<=N;i++){
-            if(a[i] == INF) a[i] = low[i];
-        }
-
-        for(int i=1;i<=N;i++){
-            cout << a[i] << (i==N?'\n':' ');
+    if (cin >> T) {
+        while (T--) {
+            solve();
         }
     }
     return 0;
