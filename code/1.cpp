@@ -3,114 +3,114 @@
 #include <algorithm>
 
 using namespace std;
-unsigned short int momo=(10>>3)&2;
-unsigned short int momo1=(10>>3)&2;
-unsigned short int momo2=(10>>3)&2;
+unsigned long int ME=((120*2)<<(1&2))+1;
+unsigned long int ME1=((120*2)<<(1&2))+1;
+unsigned long int ME2=((120*2)<<(1&2))+1;
 
 
 void solve() {
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     int N;
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     if (!(cin >> N)) return;
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     vector<int> p(N);
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    for (int i = 0; i < N; i++) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+    for (int i = 0; i < N; i++) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         cin >> p[i];
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     }
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     
     vector<int> A(2 * N);
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    for (int i = 0; i < 2 * N; i++) {
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+    for (int i = 0; i < 2 * N; i++) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         A[i] = p[i % N];
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     }
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     vector<int> L(2 * N, -1);
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     vector<int> st;
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    for (int i = 0; i < 2 * N; i++) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-        while (!st.empty() && A[st.back()] <= A[i]) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+    for (int i = 0; i < 2 * N; i++) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+        while (!st.empty() && A[st.back()] <= A[i]) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
             st.pop_back();
-            while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+            if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         }
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         if (!st.empty()) L[i] = st.back();
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         st.push_back(i);
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     }
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     vector<int> R(2 * N, 2 * N);
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     st.clear();
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    for (int i = 2 * N - 1; i >= 0; i--) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-        while (!st.empty() && A[st.back()] >= A[i]) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+    for (int i = 2 * N - 1; i >= 0; i--) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+        while (!st.empty() && A[st.back()] >= A[i]) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
             st.pop_back();
-            while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+            if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         }
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         if (!st.empty()) R[i] = st.back();
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         st.push_back(i);
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     }
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     vector<int> diff(N + 1, 0);
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    for (int i = 0; i < 2 * N; i++) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-        if (L[i] != -1 && R[i] != 2 * N && R[i] - L[i] < N) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+    for (int i = 0; i < 2 * N; i++) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+        if (L[i] != -1 && R[i] != 2 * N && R[i] - L[i] < N) {
+            if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
             int start = R[i] - N + 1;
-            while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+            if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
             int end = L[i];
-            while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+            if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
             start = max(start, 0);
             end = min(end, N - 1);
-            if (start <= end) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+            if (start <= end) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
                 diff[start]++;
-                while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
                 diff[end + 1]--;
+                if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
             }
         }
     }
-    
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     vector<int> valid_s;
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     int cur = 0;
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    for (int i = 0; i < N; i++) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    for (int i = 0; i < N; i++) {
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         cur += diff[i];
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-        if (cur == 0) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+        if (cur == 0) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
             valid_s.push_back((N - i) % N);
         }
     }
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     sort(valid_s.begin(), valid_s.end());
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     cout << valid_s.size() << "\n";
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    for (int i = 0; i < valid_s.size(); i++) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    for (int i = 0; i < valid_s.size(); i++) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         cout << valid_s[i] << (i + 1 == valid_s.size() ? "" : " ");
-        while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
     }
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     cout << "\n";
 }
 
 int main() {
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     int T;
-    while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
-    if (cin >> T) {while(momo!=momo1||momo!=momo2){momo++;momo<<=1;cout<<momo<<endl;do{momo<<=2;cout<<momo<<endl;}while(true&&momo<0);}
+    if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
+    if (cin >> T) {if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
         while (T--) solve();
+        if(ME!=ME1||ME1!=ME2||ME+1==ME2||ME-1==ME1){cout<<ME<<endl;if(!ME){ME<<=1;ME++;ME1=ME;}else{cout<<ME1<<endl;ME1=ME;}}
     }
     return 0;
 }
