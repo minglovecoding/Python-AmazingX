@@ -1,195 +1,169 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-struct SegTree {
-    int n;
-    const long long INF = (long long)4e18;
-    vector<long long> mn1, mn2;
-    SegTree(int N=0){init(N);}
-    void init(int N){
-        n=1;
-        while(n<N) n<<=1;
-        mn1.assign(2*n, INF);
-        mn2.assign(2*n, INF);
-    }
-    void setval(int pos, long long v1, long long v2){
-        int i = pos + n;
-        mn1[i]=v1; mn2[i]=v2;
-        for(i>>=1;i;i>>=1){
-            mn1[i]=min(mn1[i<<1], mn1[i<<1|1]);
-            mn2[i]=min(mn2[i<<1], mn2[i<<1|1]);
-        }
-    }
-    pair<long long,long long> query(int l, int r){
-        long long a=INF,b=INF;
-        l+=n; r+=n;
-        while(l<=r){
-            if(l&1){ a=min(a,mn1[l]); b=min(b,mn2[l]); l++; }
-            if(!(r&1)){ a=min(a,mn1[r]); b=min(b,mn2[r]); r--; }
-            l>>=1; r>>=1;
-        }
-        return {a,b};
-    }
+struct Result {
+    bool possible;
+    long long min_sum;
+    long long max_sum;
+    long long parity;
 };
 
-static inline int bitv(int x){ return x; }
-
-int main(){
-
-    int N;
-    cin >> N;
-    vector<int> A(N);
-    for(int i=0;i<N;i++) cin >> A[i];
-
-    vector<char> seen(N+1,0);
-    int m=0;
-    for(int x: A) if(!seen[x]){ seen[x]=1; m++; }
-
-    if(m==1){
-        for(int i=0;i<N;i++){
-            if(i) cout << ' ';
-            cout << 0;
-        }
-        cout << "\n";
-        return 0;
+Result solve_multiset(const vector<int>& S) {
+    if (S.empty()) {
+        return {true, 0, 0, 0};
     }
 
-    int M = 3*N;
-    vector<int> B(M);
-    for(int i=0;i<M;i++) B[i]=A[i%N];
-
-    const int INFINT = 1e9;
-
-    vector<int> rmin(2*N, INFINT);
-    {
-        vector<int> freq(N+1,0);
-        int covered=0;
-        int r=0;
-        for(int l=0;l<2*N;l++){
-            while(r<M && r<l+N && covered<m){
-                int v=B[r++];
-                if(freq[v]++==0) covered++;
-            }
-            if(covered==m) rmin[l]=r-1;
-
-            if(l<r){
-                int v=B[l];
-                if(--freq[v]==0) covered--;
-            } else {
-                r=l+1;
-            }
-        }
-    }
-
-    vector<int> lend(M, -1);
-    {
-        vector<int> freq(N+1,0);
-        int covered=0;
-        int l=0;
-        for(int r=0;r<M;r++){
-            int v=B[r];
-            if(freq[v]++==0) covered++;
-
-            while(r-l+1> N){
-                int u=B[l++];
-                if(--freq[u]==0) covered--;
-            }
-
-            if(covered==m){
-                while(true){
-                    int u=B[l];
-                    if(freq[u]>=2){
-                        freq[u]--;
-                        l++;
-                    } else break;
-                }
-                lend[r]=l;
-            }
-        }
-    }
-
-    vector<int> cntR(M,0);
-    for(int l=0;l<2*N;l++){
-        if(rmin[l]!=INFINT) cntR[rmin[l]]++;
-    }
-    vector<int> off(M+1,0);
-    for(int i=0;i<M;i++) off[i+1]=off[i]+cntR[i];
-    vector<int> ptr = off;
-    vector<int> arrL(off[M]);
-    for(int l=0;l<2*N;l++){
-        int r = rmin[l];
-        if(r!=INFINT){
-            arrL[ptr[r]++] = l;
-        }
-    }
-
-    vector<int> head(M,0), tail(M,0);
-    for(int r=0;r<M;r++){
-        head[r]=tail[r]=off[r];
-    }
-
-    SegTree seg(M);
-
-    auto update_r = [&](int r){
-        if(head[r]>=tail[r]){
-            seg.setval(r, (long long)4e18, (long long)4e18);
+    vector<pair<int, int>> freqs;
+    int cur_val = S[0];
+    int cur_count = 1;
+    for (size_t i = 1; i < S.size(); ++i) {
+        if (S[i] == cur_val) {
+            cur_count++;
         } else {
-            int maxL = arrL[tail[r]-1];
-            long long v1 = (long long)r - 2LL*maxL;
-            long long v2 = 2LL*(long long)r - (long long)maxL;
-            seg.setval(r, v1, v2);
+            freqs.push_back({cur_val, cur_count});
+            cur_val = S[i];
+            cur_count = 1;
         }
-    };
+    }
+    freqs.push_back({cur_val, cur_count});
 
-    auto add_l = [&](int l){
-        if(l<0 || l>=2*N) return;
-        int r = rmin[l];
-        if(r==INFINT) return;
-        tail[r]++;
-        update_r(r);
-    };
+    long long total_min = 0;
+    long long total_max = 0;
+    long long total_parity = 0;
 
-    auto remove_l = [&](int l){
-        if(l<0 || l>=2*N) return;
-        int r = rmin[l];
-        if(r==INFINT) return;
-        head[r]++;
-        update_r(r);
-    };
-
-    vector<long long> ans(N, (long long)4e18);
-    long long EN = 0;
-
-    int j0 = N;
-    for(int l=j0-N+1; l<=j0; l++) add_l(l);
-
-    for(int j=N;j<=2*N-1;j++){
-        long long bestA = (long long)4e18;
-        if(lend[j]!=-1) bestA = (long long)j - (long long)lend[j];
-
-        long long bestB = (long long)4e18;
-        int ql = j+1;
-        int qr = j+N-1;
-        if(ql<=qr){
-            auto res = seg.query(ql, qr);
-            long long m1 = res.first;
-            long long m2 = res.second;
-            if(m1 < (long long)4e18) bestB = min(bestB, (long long)j + m1);
-            if(m2 < (long long)4e18) bestB = min(bestB, -(long long)j + m2);
+    vector<int> f;
+    auto process_component = [&]() -> bool {
+        if (f.empty()) return true;
+        int L = f.size() - 1;
+        if (L == 0) {
+            if (f[0] % 2 != 0) {
+                f.clear();
+                return false;
+            }
+            f.clear();
+            return true;
         }
 
-        long long best = min(bestA, bestB);
-        ans[j-N] = best;
-        EN += best;
+        vector<int> r(L, 0);
+        r[0] = f[0] % 2;
+        for (int i = 1; i < L; ++i) {
+            r[i] = (f[i] - r[i - 1]) % 2;
+            if (r[i] < 0) r[i] += 2; 
+        }
 
-        add_l(j+1);
-        remove_l(j-N+1);
+        if (r[L - 1] != f[L] % 2) {
+            f.clear();
+            return false;
+        }
+
+        vector<int> U(L, 0);
+        for (int i = 0; i < L; ++i) {
+            int limit = min(f[i + 1], f[i] - (i == 0 ? 0 : r[i - 1]));
+            if (limit % 2 != r[i]) {
+                limit--;
+            }
+            U[i] = limit;
+            if (U[i] < r[i]) {
+                f.clear();
+                return false;
+            }
+        }
+
+        long long min_S = 0;
+        for (int i = 0; i < L; ++i) {
+            min_S += r[i];
+        }
+
+        vector<int> P(L + 1, 0);
+        P[L] = 0;
+        long long max_S = 0;
+        for (int i = L - 1; i >= 0; --i) {
+            int limit = min(U[i], f[i + 1] - P[i + 1]);
+            if (limit % 2 != r[i]) {
+                limit--;
+            }
+            P[i] = limit;
+            max_S += P[i];
+        }
+
+        total_min += min_S;
+        total_max += max_S;
+        total_parity = (total_parity + min_S) % 2;
+        f.clear();
+        return true;
+    };
+
+    for (size_t i = 0; i < freqs.size(); ++i) {
+        f.push_back(freqs[i].second);
+        if (i + 1 == freqs.size() || freqs[i + 1].first != freqs[i].first + 1) {
+            if (!process_component()) {
+                return {false, 0, 0, 0};
+            }
+        }
     }
 
-    for(int i=0;i<N;i++){
-        if(i) cout << ' ';
-        cout << ans[i];
+    return {true, total_min, total_max, total_parity};
+}
+
+void solve() {
+    int N;
+    if (!(cin >> N)) return;
+
+    vector<int> X(N), Y(N);
+    for (int i = 0; i < N; ++i) {
+        cin >> X[i] >> Y[i];
     }
-    cout << "\n";
+
+    sort(X.begin(), X.end());
+    sort(Y.begin(), Y.end());
+
+    Result resX = solve_multiset(X);
+    Result resY = solve_multiset(Y);
+
+    if (!resX.possible || !resY.possible) {
+        cout << "NO\n";
+        return;
+    }
+
+    long long N_half = N / 2;
+    long long X_par = resX.parity;
+    long long Y_par = resY.parity;
+
+    long long target_parity = (N_half - Y_par) % 2;
+    if (target_parity < 0) target_parity += 2;
+
+    if (X_par != target_parity) {
+        cout << "NO\n";
+        return;
+    }
+
+    long long L_bound = max(resX.min_sum, N_half - resY.max_sum);
+    long long R_bound = min(resX.max_sum, N_half - resY.min_sum);
+
+    if (L_bound <= R_bound) {
+        long long H_start = L_bound;
+        if (H_start % 2 != X_par) {
+            H_start++;
+        }
+        if (H_start <= R_bound) {
+            cout << "YES\n";
+            return;
+        }
+    }
+    cout << "NO\n";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int T;
+    if (cin >> T) {
+        while (T--) {
+            solve();
+        }
+    }
     return 0;
 }

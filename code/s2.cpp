@@ -1,100 +1,94 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+static const long long LIM = (long long)1e18 + 5;
+
+static inline long long cap_mul(long long a, long long b) {
+    __int128 x = ( __int128 )a * b;
+    if (x > LIM) return LIM;
+    return (long long)x;
+}
+
+struct SegTree {
+    int n;
+    vector<long long> st;
+    SegTree(int n=0): n(n), st(4*n+4, 1) {}
+
+    void build(int p, int l, int r, const vector<long long>& arr) {
+        if (l == r) { st[p] = arr[l]; return; }
+        int m = (l + r) >> 1;
+        build(p<<1, l, m, arr);
+        build(p<<1|1, m+1, r, arr);
+        st[p] = cap_mul(st[p<<1], st[p<<1|1]);
+    }
+
+    void update(int p, int l, int r, int idx, long long val) {
+        if (l == r) { st[p] = val; return; }
+        int m = (l + r) >> 1;
+        if (idx <= m) update(p<<1, l, m, idx, val);
+        else update(p<<1|1, m+1, r, idx, val);
+        st[p] = cap_mul(st[p<<1], st[p<<1|1]);
+    }
+
+    long long query_all() const { return st[1]; }
+};
+
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    int N, C;
-    cin >> N >> C;
+    int N;
+    cin >> N;
+    vector<long long> a(N+1);
+    for (int i = 1; i <= N; i++) cin >> a[i];
 
-    vector<int> f(C + 1);
-    for (int j = 1; j <= C; j++) cin >> f[j];
+    vector<long long> f(N+1, 1);
 
-    vector<int> p(N + 1);
-    for (int i = 1; i <= N; i++) cin >> p[i];
-
-    vector<vector<int>> crit(C + 1);
-    crit.reserve(C + 1);
-
-    for (int i = 1; i <= N; i++) {
-        int ni;
-        cin >> ni;
-        while (ni--) {
-            int c;
-            cin >> c;
-            crit[c].push_back(i);
-        }
-    }
-
-    for (int j = 1; j <= C; j++) sort(crit[j].begin(), crit[j].end());
-
-    const int INF = C + 1;
-    vector<int> stage(N + 1, INF);
-    vector<char> declined(N + 1, 0);
-    vector<int> ptr(C + 1, 0);
-    vector<int> cnt(C + 1, 0);
-    long long sum = 0;
-
-    priority_queue<int, vector<int>, greater<int>> pq;
-    vector<char> inq(C + 1, 0);
-
-    auto push_need = [&](int j) {
-        if (j >= 1 && j <= C && cnt[j] < f[j] && !inq[j]) {
-            inq[j] = 1;
-            pq.push(j);
+    auto calc_factor = [&](int idx) -> long long {
+        if (idx == 1) {
+            long long v = a[1] + 1;
+            if (v > LIM) v = LIM;
+            return v;
+        } else {
+            long long num = a[idx];
+            long long den = a[idx-1];
+            long long v = (num + den - 1) / den;
+            if (v > LIM) v = LIM;
+            return v;
         }
     };
 
-    auto fill = [&](int j) {
-        while (cnt[j] < f[j]) {
-            auto &v = crit[j];
-            while (ptr[j] < (int)v.size()) {
-                int u = v[ptr[j]++];
-                if (declined[u]) continue;
-                if (stage[u] <= j) continue;
+    for (int i = 1; i <= N; i++) f[i] = calc_factor(i);
 
-                int old = stage[u];
-                if (old == INF) {
-                    sum += u;
-                } else {
-                    cnt[old]--;
-                    push_need(old);
-                }
+    SegTree st(N);
+    st.build(1, 1, N, f);
 
-                stage[u] = j;
-                cnt[j]++;
-                break;
-            }
-            if (cnt[j] < f[j]) {
-                if (ptr[j] >= (int)crit[j].size()) break;
-            }
-        }
-    };
+    int Q;
+    cin >> Q;
+    while (Q--) {
+        int i;
+        long long v, t;
+        cin >> i >> v >> t;
+        a[i] = v;
 
-    for (int j = 1; j <= C; j++) {
-        if (f[j] > 0) {
-            fill(j);
-        }
-    }
+        f[i] = calc_factor(i);
+        st.update(1, 1, N, i, f[i]);
 
-    for (int t = 0; t <= N - 1; t++) {
-        cout << sum << "\n";
-
-        int r = p[t + 1];
-        declined[r] = 1;
-        int s = stage[r];
-        if (s != INF) {
-            stage[r] = INF;
-            cnt[s]--;
-            sum -= r;
-            push_need(s);
+        if (i+1 <= N) {
+            f[i+1] = calc_factor(i+1);
+            st.update(1, 1, N, i+1, f[i+1]);
         }
 
-        while (!pq.empty()) {
-            int j = pq.top();
-            pq.pop();
-            inq[j] = 0;
-            if (cnt[j] < f[j]) fill(j);
+        long long P = st.query_all(); 
+        long long shift = (long long)(N - 1);
+
+        long long dumps = 0;
+        if (t > shift) {
+            long long x = t - shift;
+            dumps = x / P;
         }
+        __int128 ans = ( __int128 )dumps * a[N];
+        cout << (long long)ans << "\n";
     }
 
     return 0;

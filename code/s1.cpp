@@ -1,92 +1,121 @@
 #include <iostream>
 #include <vector>
-#include <string>
-#include <algorithm>
-
+#include <queue>
 using namespace std;
-
-using i64 = long long;
-
-struct Edge {
-    int to, id;
-};
-
-int C;
-
 void solve() {
-    int n;
-    if (!(cin >> n)) return;
+    int N, H;
+    if (!(cin >> N >> H)) return;
 
-    string sl, sr;
-    cin >> sl >> sr;
-
-    vector<int> l(n), r(n), in(2, 0), out(2, 0);
-    vector<Edge> adj[2];
-    int cnt_r1 = 0;
-
-    for (int i = 0; i < n; ++i) {
-        l[i] = (sl[i] == 'N');
-        r[i] = (sr[i] == 'N');
-        adj[l[i]].push_back({r[i], i + 1});
-        out[l[i]]++;
-        in[r[i]]++;
-        if (r[i]) cnt_r1++;
+    vector<long long> a(N + 1);
+    for (int i = 1; i <= N; ++i) {
+        cin >> a[i];
     }
-
-    if (in[0] != out[0] || in[1] != out[1] || cnt_r1 % 2 != 0) {
-        cout << "NO\n";
-        return;
+    int K;
+    cin >> K;
+    vector<bool> is_wc(N + 1, false);
+    for (int i = 0; i < K; ++i) {
+        int x;
+        cin >> x;
+        is_wc[x] = true;
     }
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> hand_wc;
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> hand_non;
 
-    int start_node = adj[1].empty() ? 0 : 1;
-    vector<int> ans, stack = {start_node};
-    vector<int> path_ids;
-
-    while (!stack.empty()) {
-        int u = stack.back();
-        if (!adj[u].empty()) {
-            Edge e = adj[u].back();
-            adj[u].pop_back();
-            stack.push_back(e.to);
-            path_ids.push_back(e.id);
+    for (int i = 1; i <= H; ++i) {
+        if (is_wc[i]) {
+            hand_wc.push({a[i], i});
         } else {
-            stack.pop_back();
-            if (!path_ids.empty()) {
-                ans.push_back(path_ids.back());
-                path_ids.pop_back();
+            hand_non.push({a[i], i});
+        }
+    }
+    queue<int> q;
+    for (int i = H + 1; i <= N; ++i) {
+        q.push(i);
+    }
+
+    int L = 2 * N;
+    int C = N - H + 1;
+    int total_steps = L + C;
+
+    vector<long long> T(total_steps + 1, 0);
+    vector<int> W(total_steps + 1, 0);
+    vector<long long> prefix_T(total_steps + 1, 0);
+    vector<long long> prefix_W(total_steps + 1, 0);
+
+    for (int step = 1; step <= total_steps; ++step) {
+        pair<long long, int> played;
+        if (!hand_wc.empty()) {
+            played = hand_wc.top();
+            hand_wc.pop();
+        } else {
+            played = hand_non.top();
+            hand_non.pop();
+        }
+        T[step] = played.first;
+        W[step] = is_wc[played.second] ? 1 : 0;
+
+        prefix_T[step] = prefix_T[step - 1] + T[step];
+        prefix_W[step] = prefix_W[step - 1] + W[step];
+
+        q.push(played.second);
+        int drawn = q.front();
+        q.pop();
+
+        if (is_wc[drawn]) {
+            hand_wc.push({a[drawn], drawn});
+        } else {
+            hand_non.push({a[drawn], drawn});
+        }
+    }
+    int Q;
+    cin >> Q;
+    while (Q--) {
+        long long t;
+        cin >> t;
+
+        if (t <= prefix_T[total_steps]) {
+            int low = 0, high = total_steps;
+            int ans_idx = 0;
+            while (low <= high) {
+                int mid = low + (high - low) / 2;
+                if (prefix_T[mid] <= t) {
+                    ans_idx = mid;
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
             }
-        }
-    }
+            cout << prefix_W[ans_idx] << "\n";
+        } else {
+            long long time_after_prefix = t - prefix_T[L];
+            long long cycle_T = prefix_T[L + C] - prefix_T[L];
+            long long cycle_W = prefix_W[L + C] - prefix_W[L];
 
-    if (ans.size() != (size_t)n) {
-        cout << "NO\n";
-        return;
-    }
+            long long num_cycles = time_after_prefix / cycle_T;
+            long long rem_time = time_after_prefix % cycle_T;
 
-    cout << "YES\n";
-    if (C == 1) {
-        reverse(ans.begin(), ans.end());
-        for (int i = 0; i < n; ++i) {
-            cout << ans[i] << (i == n - 1 ? "" : " ");
-        }
-        cout << "\n";
+            long long total_wc = prefix_W[L] + num_cycles * cycle_W;
 
-        string res = "";
-        int current_state = 0;
-        for (int i = 0; i < n; ++i) {
-            res += (current_state == 0 ? 'J' : 'N');
-            current_state ^= r[ans[i] - 1];
+            int low = 0, high = C;
+            int ans_j = 0;
+            while (low <= high) {
+                int mid = low + (high - low) / 2;
+                if (prefix_T[L + mid] - prefix_T[L] <= rem_time) {
+                    ans_j = mid;
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+
+            total_wc += (prefix_W[L + ans_j] - prefix_W[L]);
+            cout << total_wc << "\n";
         }
-        cout << res << "\n";
     }
 }
-
 int main() {
-
-
-    int T;
-    if (cin >> T >> C) {
-        while (T--) solve();
-    }
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
     return 0;
 }

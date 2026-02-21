@@ -1,61 +1,60 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+static const long long MOD = 1000000007LL;
+
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    int N;
-    int K;
-    cin >> N >> K;
+    int T;
+    cin >> T;
+    while (T--) {
+        string s;
+        cin >> s;
 
-    int n2 = N - 1;
-    int SZ2 = 1 << n2;
-    int SZ = 1 << N;
-
-    vector<vector<int>> pos(N, vector<int>(N, -1));
-    for (int x = 0; x < N; x++) {
-        int idx = 0;
-        for (int j = 0; j < N; j++) {
-            if (j == x) continue;
-            pos[x][j] = idx++;
+        bool all01 = true;
+        for (char c : s) {
+            if (c != '0' && c != '1') { all01 = false; break; }
         }
-    }
 
-    vector<vector<int>> baseAll(N, vector<int>(SZ2, 0));
+        auto binValueMod = [&](const string& b, int upto) -> long long {
+            long long v = 0;
+            for (int i = 0; i < upto; i++) {
+                v = (v * 2 + (b[i] - '0')) % MOD;
+            }
+            return v;
+        };
 
-    for (int i = 0; i < K; i++) {
-        int x, y, z;
-        cin >> x >> y >> z;
-        --x; --y; --z;
-        int ry = pos[x][y];
-        int rz = pos[x][z];
-        int p = (1 << ry) | (1 << rz);
-        baseAll[x][p] += 1;
-    }
+        long long ans = 0;
 
-    vector<int> score(SZ, 0);
+        if (all01) {
+            int L = (int)s.size();
+            long long V = binValueMod(s, L);
+            long long half = (L >= 2) ? binValueMod(s, L - 1) : 0; 
+            ans = (V + half) % MOD;
+        } else {
+            string p = s;
+            for (int i = 0; i < (int)p.size(); i++) {
+                int d = p[i] - '0';
+                p[i] = (d & 1) ? '1' : '0';
+            }
 
-    for (int x = 0; x < N; x++) {
-        auto &dp = baseAll[x];
+            int pos = 0;
+            while (pos < (int)p.size() && p[pos] == '0') pos++;
 
-        for (int b = 0; b < n2; b++) {
-            for (int m = 0; m < SZ2; m++) {
-                if (m & (1 << b)) dp[m] += dp[m ^ (1 << b)];
+            if (pos == (int)p.size()) {
+                ans = 1;
+            } else {
+                string b = p.substr(pos);
+                int L = (int)b.size();
+                long long V = binValueMod(b, L);
+                long long half = (L >= 2) ? binValueMod(b, L - 1) : 0;
+                ans = (1 + V + half) % MOD;
             }
         }
 
-        int lowMask = (1 << x) - 1;
-        for (int r = 0; r < SZ2; r++) {
-            int full = (r & lowMask) | ((r >> x) << (x + 1));
-            score[full] += dp[r];
-        }
+        cout << ans << "\n";
     }
-
-    int best = 0;
-    for (int m = 0; m < SZ; m++) best = max(best, score[m]);
-
-    long long cnt = 0;
-    for (int m = 0; m < SZ; m++) if (score[m] == best) cnt++;
-
-    cout << best << " " << cnt << "\n";
     return 0;
 }

@@ -1,42 +1,73 @@
 #include <bits/stdc++.h>
 using namespace std;
-
+struct Op {
+    int type;
+    int x, y, p, q, k;
+};
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
+    int T;
+    cin >> T;
+    while (T--) {
+        int N, M;
+        cin >> N >> M;
+        string t;
+        cin >> t;
 
-    int N, Q;
-    cin >> N >> Q;
-    const long long INF = (1LL<<62);
+        vector<string> s(N + 1);
+        for (int i = 1; i <= N; i++) cin >> s[i];
 
-    vector<long long> c(31, INF);
-    for (int i = 0; i < N; i++) {
-        long long a;
-        cin >> a;
-        if (i <= 30) c[i] = min(c[i], a);
-        else c[30] = min(c[30], a);
-    }
+        vector<Op> ops;
+        ops.reserve(2 * M);
 
-    for (int i = 1; i <= 30; i++) {
-        c[i] = min(c[i], 2LL * c[i-1]);
-    }
+        for (int i = 0; i < M; i++) {
+            if (s[1][i] == t[i]) continue;
 
-    while (Q--) {
-        long long x;
-        cin >> x;
+            char need = t[i];
+            int best_r = -1, best_j = -1;
 
-        long long rem = x;
-        long long cur = 0;
-        long long best = INF;
+            for (int r = 2; r <= N && best_r == -1; r++) {
+                for (int j = 0; j < M; j++) {
+                    if (s[r][j] == need) {
+                        best_r = r;
+                        best_j = j;
+                        break;
+                    }
+                }
+            }
 
-        for (int i = 30; i >= 0; i--) {
-            long long sz = 1LL << i;
-            long long take = rem / sz;
-            cur += take * c[i];
-            rem -= take * sz;
-            best = min(best, cur + (rem > 0 ? c[i] : 0));
+            if (best_r != -1) {
+                int r = best_r, j = best_j;
+
+                if (j != i) {
+                    ops.push_back({1, r, 0, i + 1, j + 1, 0});
+                    swap(s[r][i], s[r][j]);
+                }
+
+                ops.push_back({2, 1, r, 0, 0, i + 1});
+                swap(s[1][i], s[r][i]);
+
+            } else {
+                int j = -1;
+                for (int jj = i; jj < M; jj++) {
+                    if (s[1][jj] == need) { j = jj; break; }
+                }
+                if (j != i) {
+                    ops.push_back({1, 1, 0, i + 1, j + 1, 0});
+                    swap(s[1][i], s[1][j]);
+                }
+            }
         }
-
-        cout << best << "\n";
+        cout << ops.size() << "\n";
+        for (auto &op : ops) {
+            if (op.type == 1) {
+                cout << "1 " << op.x << " " << op.p << " " << op.q << "\n";
+            } else {
+                cout << "2 " << op.x << " " << op.y << " " << op.k << "\n";
+            }
+        }
     }
     return 0;
 }
