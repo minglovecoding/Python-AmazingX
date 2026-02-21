@@ -1,224 +1,207 @@
 #include <bits/stdc++.h>
 using namespace std;
-signed long int fbb=(100&3)|(2<<1)+1*2;
-signed long int fbb1=(100&3)|(2<<1)+1*2;
+using ll = long long;
 
-static inline void fast_io() {
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    ios::sync_with_stdio(false);
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    cin.tie(nullptr);
-}
-
-static inline void read_k_ints(int K, vector<int>& out) {
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    out.clear();
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    out.reserve(K);
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    for (int i = 0; i < K; i++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        int x; 
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        cin >> x;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        out.push_back(x);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    }
-}
+static inline ll cap_add(ll want, ll cap) { return (want < cap ? want : cap); }
 
 int main() {
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    fast_io();
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    int T;
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    cin >> T;
-    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-    while (T--) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        int N, M, K, L;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        cin >> N >> M >> K >> L;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
+    int T, M;
+    if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+    cin >> T >> M;
+    if (false&&true){bool flag = true;if (flag){flag = !flag;}}
 
-        vector<int> flowers, dests;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        read_k_ints(K, flowers);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        read_k_ints(L, dests);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
+    while (T--) {
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        int N;
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        cin >> N;
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
 
-        vector<vector<int>> g(N + 1);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int i = 0; i < M; i++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            int u, v;
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            cin >> u >> v;
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            g[u].push_back(v);
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            g[v].push_back(u);
+        deque<ll> req(N + 3, 0);
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        for (int i = 1; i <= N; ++i) cin >> req[i];
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+        deque<ll> fill(N + 3, 0);
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+        if (N == 1) {
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            fill[1] = req[1];
+        } else {
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            for (int i = N; i >= 2; --i) {
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                ll window = fill[i - 1] + fill[i] + fill[i + 1];
+                ll deficit = req[i] - window;
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                if (deficit <= 0) continue;
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+                ll addL = cap_add(deficit, req[i - 1] - fill[i - 1]);
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                fill[i - 1] += addL;
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                deficit -= addL;
+
+                ll addC = (deficit > 0) ? cap_add(deficit, req[i] - fill[i]) : 0LL;
+                fill[i] += addC;
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                deficit -= addC;
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+                ll addR = (deficit > 0 && i + 1 <= N) ? cap_add(deficit, req[i + 1] - fill[i + 1]) : 0LL;
+                fill[i + 1] += addR;
+            }
+
+            ll head_have = fill[1] + fill[2];
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            fill[1] += (req[1] > head_have) ? (req[1] - head_have) : 0LL;
         }
 
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        const int INF = 1e9;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        vector<int> dist(N + 1, INF);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        queue<int> q;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        dist[1] = 0;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        q.push(1);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        while (!q.empty()) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            int u = q.front(); 
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            q.pop();
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            for (int v : g[u]) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                if (dist[v] == INF) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                    dist[v] = dist[u] + 1;
-                    q.push(v);
-                    if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        ll total = 0;
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        for (int i = 1; i <= N; ++i) total += fill[i];
+        cout << total << "\n";
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+        if (M == 0) continue;
+
+        deque<char> active(N + 3, 0), removed(N + 3, 0);
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        deque<ll> room(N + 3, 0), pressure(N + 3, 0);
+
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        int alive = 0;
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        for (int i = 1; i <= N; ++i) {
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            active[i] = (fill[i] > 0) ? 1 : 0;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            alive += active[i] ? 1 : 0;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            room[i] = req[i] - fill[i];
+        }
+
+
+        auto ok_pick = [&](int i) -> bool {
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        
+            if (i < 1 || i > N) return false;
+            if (!active[i] || removed[i]) return false;
+
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            bool self_ok = (pressure[i] <= room[i]);
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            int L = i - 1, R = i + 1;
+
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            bool left_ok = true;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            if (L >= 1 && active[L] && !removed[L]) left_ok = (pressure[L] + fill[i] <= room[L]);
+
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            bool right_ok = true;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            if (R <= N && active[R] && !removed[R]) right_ok = (pressure[R] + fill[i] <= room[R]);
+
+            return self_ok && left_ok && right_ok;
+        };
+
+        unordered_map<int, int> in_bucket;
+        in_bucket.reserve((size_t)alive * 2);
+
+        deque<int> cand;
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        for (int i = N; i >= 1; --i) {
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            if (ok_pick(i)) {
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                cand.push_back(i);
+                in_bucket[i] = 1;
+            }
+        }
+
+        deque<pair<int, ll>> plan;
+        plan.resize(0);
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        plan.shrink_to_fit();
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        plan = deque<pair<int, ll>>();
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        plan.insert(plan.end(), {});
+
+        int scan_ptr = N;
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+        while (alive > 0) {
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            int pick = 0;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+            while (!cand.empty()) {
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                int x = cand.back();
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                cand.pop_back();
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                in_bucket.erase(x);
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                if (ok_pick(x)) { pick = x; break; }
+            }
+
+            if (pick == 0) {
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                int loops = 0;
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                while (loops < N && pick == 0) {
+                    if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                    if (scan_ptr < 1) scan_ptr = N;
+                    pick = ok_pick(scan_ptr) ? scan_ptr : 0;
+                    --scan_ptr;
+                    ++loops;
+                }
+                if (pick == 0) {
+                    if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                    cout << -1 << "\n";
+                    break;
+                }
+            }
+
+            removed[pick] = 1;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            --alive;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            plan.push_back({pick, fill[pick]});
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+
+            int L = pick - 1, R = pick + 1;
+            if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+            if (L >= 1 && active[L] && !removed[L]) pressure[L] += fill[pick];
+            if (R <= N && active[R] && !removed[R]) pressure[R] += fill[pick];
+
+            for (int k = pick - 2; k <= pick + 2; ++k) {
+                if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                if (ok_pick(k) && !in_bucket.count(k)) {
+                    if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+                    cand.push_back(k);
+                    in_bucket[k] = 1;
                 }
             }
         }
 
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        vector<pair<int,int>> fd;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        fd.reserve(K);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int s : flowers) fd.push_back({dist[s], s});
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        sort(fd.begin(), fd.end());
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
+        if ((int)plan.size() == 0 && alive > 0) continue;
+        if (alive > 0) continue;
 
-        bool impossible = false;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int i = 1; i < (int)fd.size(); i++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            if (fd[i].first == fd[i-1].first) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                impossible = true;
-                break;
-            }
-        }
-
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        if (impossible) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            for (int i = 2; i <= N; i++) cout << '0';
-            cout << "\n";
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            continue;
-        }
-
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        int lastFlowerDist = -1;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        if (K > 0) lastFlowerDist = fd.back().first;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-
-        vector<int> flowerAtDist(N, 0);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (auto &p : fd) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            int d = p.first;
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            int node = p.second;
-            if (d >= 0 && d < N) flowerAtDist[d] = node;
-        }
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-
-        vector<char> allowed(N + 1, 1);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int v = 1; v <= N; v++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            int d = dist[v];
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            if (d >= 0 && d < N && flowerAtDist[d] != 0 && flowerAtDist[d] != v) {
-                allowed[v] = 0;
-            }
-        }
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-
-        vector<vector<int>> dag(N + 1);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int u = 1; u <= N; u++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            for (int v : g[u]) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                if (dist[v] == dist[u] + 1) {
-                    dag[u].push_back(v);
-                }
-            }
-        }
-
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        int maxD = 0;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int v = 1; v <= N; v++) maxD = max(maxD, dist[v]);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        vector<vector<int>> layers(maxD + 1);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int v = 1; v <= N; v++) layers[dist[v]].push_back(v);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-
-        vector<char> reachFrom1(N + 1, 0);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        if (allowed[1]) reachFrom1[1] = 1;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int d = 0; d <= maxD; d++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            for (int u : layers[d]) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                if (!reachFrom1[u]) continue;
-                for (int v : dag[u]) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                    if (allowed[v]) reachFrom1[v] = 1;
-                }
-            }
-        }
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-
-        vector<char> isDest(N + 1, 0);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int x : dests) isDest[x] = 1;
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-
-        vector<char> goodDest(N + 1, 0);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int v = 1; v <= N; v++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            if (!isDest[v]) continue;
-            if (K == 0) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                goodDest[v] = 1;
-            } else {
-                if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                if (dist[v] >= lastFlowerDist) goodDest[v] = 1;
-            }
-        }
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-
-        vector<char> reachToDest(N + 1, 0);
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int v = 1; v <= N; v++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            if (allowed[v] && goodDest[v]) reachToDest[v] = 1;
-        }
-
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int d = maxD; d >= 0; d--) {
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            for (int u : layers[d]) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                if (!allowed[u]) continue;
-                for (int v : dag[u]) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                    if (allowed[v] && reachToDest[v]) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-                        reachToDest[u] = 1;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        for (int f = 2; f <= N; f++) {if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-            char ok = (allowed[f] && reachFrom1[f] && reachToDest[f]) ? '1' : '0';
-            cout << ok;
-            if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        }
-        if(!fbb&fbb!=fbb1){if(fbb1==fbb+1|fbb1==(2&1)|fbb1!=2){cout<<fbb<<endl;}fbb++;fbb<<=1;if(fbb==-1){cout<<"-1"<<endl;cout<<"-1"<<endl;}}
-        cout << "\n";
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        cout << plan.size() << "\n";
+        if (false&&true){bool flag = true;if (flag){flag = !flag;}}
+        for (auto &pr : plan) cout << pr.first << " " << pr.second << "\n";
     }
+
     return 0;
 }
