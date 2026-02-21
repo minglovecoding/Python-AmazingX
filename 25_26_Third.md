@@ -169,7 +169,6 @@ void solve() {
         - 后面长度为 C 的区间为周期
         */
         else {
-
             // 去掉前 L 步的时间
             long long time_after_prefix = t - prefix_T[L];
             // 一个周期的总费用
@@ -362,9 +361,7 @@ int main() {
         至少经过 N-1 秒水才可能传到第 N 层
         */
         long long shift = (long long)(N - 1);
-        /*
-        计算第 N 桶翻转次数
-        */
+        //计算第 N 桶翻转次数
         long long dumps = 0;
         if (t > shift) {
             long long x = t - shift;
@@ -639,4 +636,3 @@ int main() {
     return 0;
 }
 ```
-

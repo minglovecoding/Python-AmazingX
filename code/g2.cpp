@@ -1,73 +1,155 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-struct Edge {
-    int to;
-    char c;
-};
+static inline void fast_io() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+}
+
+static inline void read_k_ints(int K, vector<int>& out) {
+    out.clear();
+    out.reserve(K);
+    for (int i = 0; i < K; i++) {
+        int x; 
+        cin >> x;
+        out.push_back(x);
+    }
+}
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+    fast_io();
+
     int T;
     cin >> T;
-    for(int t = 0; t < T; t++) {
-        int N, M;
-        cin >> N >> M;
-        vector<vector<Edge>> adj(N + 1);
-        for(int i = 0; i < M; i++) {
+    while (T--) {
+        int N, M, K, L;
+        cin >> N >> M >> K >> L;
+
+        vector<int> flowers, dests;
+        read_k_ints(K, flowers);
+        read_k_ints(L, dests);
+
+        vector<vector<int>> g(N + 1);
+        for (int i = 0; i < M; i++) {
             int u, v;
-            char c;
-            cin >> u >> v >> c;
-            adj[u].push_back({v, c});
-            adj[v].push_back({u, c});
+            cin >> u >> v;
+            g[u].push_back(v);
+            g[v].push_back(u);
         }
-        vector<int> dist(N + 1, -1);
-        vector<char> visited(N + 1, 0);
-        dist[1] = 0;
-        visited[1] = 1;
+
+        const int INF = 1e9;
+        vector<int> dist(N + 1, INF);
         queue<int> q;
+        dist[1] = 0;
         q.push(1);
-        int d = 0;
-        while(!q.empty()) {
-            int level_size = q.size();
-            vector<int> current_level;
-            for(int i = 0; i < level_size; i++) {
-                int u = q.front(); q.pop();
-                current_level.push_back(u);
+        while (!q.empty()) {
+            int u = q.front(); 
+            q.pop();
+            for (int v : g[u]) {
+                if (dist[v] == INF) {
+                    dist[v] = dist[u] + 1;
+                    q.push(v);
+                }
             }
-            char c_min = 'z' + 1;
-            for(int u : current_level) {
-                for(const auto& e : adj[u]) {
-                    if(e.c < c_min) {
-                        c_min = e.c;
+        }
+
+        vector<pair<int,int>> fd;
+        fd.reserve(K);
+        for (int s : flowers) fd.push_back({dist[s], s});
+        sort(fd.begin(), fd.end());
+
+        bool impossible = false;
+        for (int i = 1; i < (int)fd.size(); i++) {
+            if (fd[i].first == fd[i-1].first) {
+                impossible = true;
+                break;
+            }
+        }
+
+        if (impossible) {
+            for (int i = 2; i <= N; i++) cout << '0';
+            cout << "\n";
+            continue;
+        }
+
+        int lastFlowerDist = -1;
+        if (K > 0) lastFlowerDist = fd.back().first;
+
+        vector<int> flowerAtDist(N, 0);
+        for (auto &p : fd) {
+            int d = p.first;
+            int node = p.second;
+            if (d >= 0 && d < N) flowerAtDist[d] = node;
+        }
+
+        vector<char> allowed(N + 1, 1);
+        for (int v = 1; v <= N; v++) {
+            int d = dist[v];
+            if (d >= 0 && d < N && flowerAtDist[d] != 0 && flowerAtDist[d] != v) {
+                allowed[v] = 0;
+            }
+        }
+
+        vector<vector<int>> dag(N + 1);
+        for (int u = 1; u <= N; u++) {
+            for (int v : g[u]) {
+                if (dist[v] == dist[u] + 1) {
+                    dag[u].push_back(v);
+                }
+            }
+        }
+
+        int maxD = 0;
+        for (int v = 1; v <= N; v++) maxD = max(maxD, dist[v]);
+        vector<vector<int>> layers(maxD + 1);
+        for (int v = 1; v <= N; v++) layers[dist[v]].push_back(v);
+
+        vector<char> reachFrom1(N + 1, 0);
+        if (allowed[1]) reachFrom1[1] = 1;
+        for (int d = 0; d <= maxD; d++) {
+            for (int u : layers[d]) {
+                if (!reachFrom1[u]) continue;
+                for (int v : dag[u]) {
+                    if (allowed[v]) reachFrom1[v] = 1;
+                }
+            }
+        }
+
+        vector<char> isDest(N + 1, 0);
+        for (int x : dests) isDest[x] = 1;
+
+        vector<char> goodDest(N + 1, 0);
+        for (int v = 1; v <= N; v++) {
+            if (!isDest[v]) continue;
+            if (K == 0) {
+                goodDest[v] = 1;
+            } else {
+                if (dist[v] >= lastFlowerDist) goodDest[v] = 1;
+            }
+        }
+
+        vector<char> reachToDest(N + 1, 0);
+        for (int v = 1; v <= N; v++) {
+            if (allowed[v] && goodDest[v]) reachToDest[v] = 1;
+        }
+
+        for (int d = maxD; d >= 0; d--) {
+            for (int u : layers[d]) {
+                if (!allowed[u]) continue;
+                for (int v : dag[u]) {
+                    if (allowed[v] && reachToDest[v]) {
+                        reachToDest[u] = 1;
+                        break;
                     }
                 }
             }
-            vector<int> next_level;
-            for(int u : current_level) {
-                for(const auto& e : adj[u]) {
-                    if(e.c == c_min) {
-                        int v = e.to;
-                        if(!visited[v]) {
-                            visited[v] = 1;
-                            dist[v] = d + 1;
-                            next_level.push_back(v);
-                        }
-                    }
-                }
-            }
-            for(int v : next_level) {
-                q.push(v);
-            }
-            d++;
         }
-        for(int i = 1; i <= N; i++) {
-            cout << dist[i];
-            if(i < N) cout << " ";
-            else cout << endl;
+
+        for (int f = 2; f <= N; f++) {
+            char ok = (allowed[f] && reachFrom1[f] && reachToDest[f]) ? '1' : '0';
+            cout << ok;
         }
+        cout << "\n";
     }
     return 0;
 }
