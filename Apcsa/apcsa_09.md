@@ -470,3 +470,43 @@ public class Main {
 ```
 
 问题：能否编译？若能，输出是什么？
+
+## 📚Interface
+
+```java
+public interface Shape {
+    double getArea();
+    int compareTo(Shape other);
+}
+```
+
+```java
+public class Circle implements Shape {
+
+    private double radius;
+
+    public Circle(double r) {
+        radius = r;
+    }
+
+    public double getArea() {
+        return Math.PI * radius * radius;
+    }
+
+    public int compareTo(Shape other) {
+        if (this.getArea() > other.getArea())
+            return 1;
+        else if (this.getArea() < other.getArea())
+            return -1;
+        else
+            return 0;
+    }
+}
+```
+
+```java
+Shape s = new Circle(5);
+System.out.println(s.getArea());
+//Shape s = new Shape(); // ❌ 错误
+```
+
