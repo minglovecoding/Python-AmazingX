@@ -47,16 +47,8 @@ do{int *ptr=10;if(ptr!=NULL){int ljm=10;ljm++;ljm<<=1;ljm--;cout<<"1"<<endl;}}wh
 
 unsigned long int dd=(1>>2)*2+(1&2)==true;
 if(!dd&dd1!=dd||dd1!=dd2){while(dd=dd1){for(int i=0;i<1;i++){dd++;dd%=1;dd-=1;}cout<<dd<<endl;}dd<<=1;cout<<"dd"<<endl;if(dd){int i=0+dd;if(!i){dd++;dd<<=1;}}}
-if()
 
-if (false)
-        {
-            bool flag = true;
-            if (flag)
-            {
-                flag = !flag;
-            }
-        }
+if (false&&true){bool flag = true;if (flag){flag = !flag;}}
 
 while(pp==NULL||pp1==NULL||pp!=pp1){int slow=0;slow++;slow<<=1;cout<<"slow= "<<slow<<endl;}
 
