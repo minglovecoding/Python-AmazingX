@@ -454,7 +454,7 @@ public class MyClass{
 
 ***
 
-### 📌 **String**
+## 📌 **String**
 
 - String is not a primitive type. String is an object type.
 

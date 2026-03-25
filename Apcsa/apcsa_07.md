@@ -81,7 +81,6 @@ public int sequentialSearch(int[] array, int target) {
             return i;
         }
     }
-
     // target not in array
     return -1;
 }
