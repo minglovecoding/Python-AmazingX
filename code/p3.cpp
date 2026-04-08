@@ -1,160 +1,168 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <set>
+#include <queue>
 
 using namespace std;
 
-struct Result {
-    bool possible;
-    long long min_sum;
-    long long max_sum;
-    long long parity;
+struct Constraint {
+    int t, l, r, k, id;
 };
 
-Result solve_multiset(const vector<int>& S) {
-    if (S.empty()) {
-        return {true, 0, 0, 0};
-    }
-
-    vector<pair<int, int>> freqs;
-    int cur_val = S[0];
-    int cur_count = 1;
-    for (size_t i = 1; i < S.size(); ++i) {
-        if (S[i] == cur_val) {
-            cur_count++;
-        } else {
-            freqs.push_back({cur_val, cur_count});
-            cur_val = S[i];
-            cur_count = 1;
-        }
-    }
-    freqs.push_back({cur_val, cur_count});
-
-    long long total_min = 0;
-    long long total_max = 0;
-    long long total_parity = 0;
-
-    // Break into contiguous components
-    vector<int> f;
-    auto process_component = [&]() -> bool {
-        if (f.empty()) return true;
-        int L = f.size() - 1;
-        if (L == 0) {
-            if (f[0] % 2 != 0) {
-                f.clear();
-                return false;
-            }
-            f.clear();
-            return true;
-        }
-
-        vector<int> r(L, 0);
-        r[0] = f[0] % 2;
-        for (int i = 1; i < L; ++i) {
-            r[i] = (f[i] - r[i - 1]) % 2;
-            if (r[i] < 0) r[i] += 2; // should be non-negative anyway
-        }
-
-        if (r[L - 1] != f[L] % 2) {
-            f.clear();
-            return false;
-        }
-
-        vector<int> U(L, 0);
-        for (int i = 0; i < L; ++i) {
-            int limit = min(f[i + 1], f[i] - (i == 0 ? 0 : r[i - 1]));
-            if (limit % 2 != r[i]) {
-                limit--;
-            }
-            U[i] = limit;
-            if (U[i] < r[i]) {
-                f.clear();
-                return false;
-            }
-        }
-
-        long long min_S = 0;
-        for (int i = 0; i < L; ++i) {
-            min_S += r[i];
-        }
-
-        vector<int> P(L + 1, 0);
-        P[L] = 0;
-        long long max_S = 0;
-        for (int i = L - 1; i >= 0; --i) {
-            int limit = min(U[i], f[i + 1] - P[i + 1]);
-            if (limit % 2 != r[i]) {
-                limit--;
-            }
-            P[i] = limit;
-            max_S += P[i];
-        }
-
-        total_min += min_S;
-        total_max += max_S;
-        total_parity = (total_parity + min_S) % 2;
-        f.clear();
-        return true;
-    };
-
-    for (size_t i = 0; i < freqs.size(); ++i) {
-        f.push_back(freqs[i].second);
-        if (i + 1 == freqs.size() || freqs[i + 1].first != freqs[i].first + 1) {
-            if (!process_component()) {
-                return {false, 0, 0, 0};
-            }
-        }
-    }
-
-    return {true, total_min, total_max, total_parity};
-}
-
 void solve() {
-    int N;
-    if (!(cin >> N)) return;
+    int N, Q;
+    if (!(cin >> N >> Q)) return;
 
-    vector<int> X(N), Y(N);
-    for (int i = 0; i < N; ++i) {
-        cin >> X[i] >> Y[i];
-    }
+    vector<Constraint> constrs(Q + 1);
+    vector<vector<int>> add1(N + 2), rem1(N + 2);
+    vector<vector<int>> add2(N + 2), rem2(N + 2);
 
-    sort(X.begin(), X.end());
-    sort(Y.begin(), Y.end());
-
-    Result resX = solve_multiset(X);
-    Result resY = solve_multiset(Y);
-
-    if (!resX.possible || !resY.possible) {
-        cout << "NO\n";
-        return;
-    }
-
-    long long N_half = N / 2;
-    long long X_par = resX.parity;
-    long long Y_par = resY.parity;
-
-    long long target_parity = (N_half - Y_par) % 2;
-    if (target_parity < 0) target_parity += 2;
-
-    if (X_par != target_parity) {
-        cout << "NO\n";
-        return;
-    }
-
-    long long L_bound = max(resX.min_sum, N_half - resY.max_sum);
-    long long R_bound = min(resX.max_sum, N_half - resY.min_sum);
-
-    if (L_bound <= R_bound) {
-        long long H_start = L_bound;
-        if (H_start % 2 != X_par) {
-            H_start++;
+    for (int i = 1; i <= Q; i++) {
+        cin >> constrs[i].t >> constrs[i].l >> constrs[i].r >> constrs[i].k;
+        constrs[i].id = i;
+        if (constrs[i].t == 1) {
+            add1[constrs[i].l].push_back(i);
+            rem1[constrs[i].r + 1].push_back(i);
+        } else {
+            add2[constrs[i].l].push_back(i);
+            rem2[constrs[i].r + 1].push_back(i);
         }
-        if (H_start <= R_bound) {
-            cout << "YES\n";
+    }
+
+    set<pair<int, int>> set1;
+    set<pair<int, int>> set2;
+
+    vector<int> L(N + 1, 0), U(N + 1, 1000000000);
+    vector<int> edge_u(N + 1, 0), edge_v(N + 1, 0);
+    vector<vector<int>> adj(Q + 1);
+    vector<int> deg(Q + 1, 0);
+
+    for (int j = 1; j <= N; j++) {
+        for (int id : add1[j]) set1.insert({constrs[id].k, id});
+        for (int id : rem1[j]) set1.erase({constrs[id].k, id});
+        for (int id : add2[j]) set2.insert({constrs[id].k, id});
+        for (int id : rem2[j]) set2.erase({constrs[id].k, id});
+
+        int u = 0, v = 0;
+        if (!set1.empty()) {
+            auto it = set1.rbegin();
+            L[j] = it->first;
+            u = it->second;
+        }
+        if (!set2.empty()) {
+            auto it = set2.begin();
+            U[j] = it->first;
+            v = it->second;
+        }
+
+        if (L[j] > U[j]) {
+            cout << -1 << "\n";
             return;
         }
+
+        edge_u[j] = u;
+        edge_v[j] = v;
+
+        if (u != 0) {
+            adj[u].push_back(j);
+            deg[u]++;
+        }
+        if (v != 0) {
+            adj[v].push_back(j);
+            deg[v]++;
+        }
     }
-    cout << "NO\n";
+
+    queue<int> q;
+    for (int i = 1; i <= Q; i++) {
+        if (deg[i] == 0) {
+            cout << -1 << "\n";
+            return;
+        }
+        if (deg[i] == 1) {
+            q.push(i);
+        }
+    }
+
+    vector<bool> used_edge(N + 1, false);
+    vector<int> assigned(Q + 1, 0);
+    int num_assigned = 0;
+    int unassigned_ptr = 1;
+
+    while (num_assigned < Q) {
+        if (!q.empty()) {
+            int curr = q.front();
+            q.pop();
+            if (assigned[curr]) continue;
+
+            int e = 0;
+            for (int j : adj[curr]) {
+                if (!used_edge[j]) {
+                    e = j;
+                    break;
+                }
+            }
+            if (e == 0) {
+                cout << -1 << "\n";
+                return;
+            }
+
+            assigned[curr] = e;
+            used_edge[e] = true;
+            num_assigned++;
+
+            int w = (edge_u[e] == curr) ? edge_v[e] : edge_u[e];
+            if (w != 0 && !assigned[w]) {
+                deg[w]--;
+                if (deg[w] == 1) {
+                    q.push(w);
+                }
+            }
+        } else {
+            while (unassigned_ptr <= Q && assigned[unassigned_ptr]) {
+                unassigned_ptr++;
+            }
+            if (unassigned_ptr > Q) break;
+
+            int curr = unassigned_ptr;
+            int e = 0;
+            for (int j : adj[curr]) {
+                if (!used_edge[j]) {
+                    e = j;
+                    break;
+                }
+            }
+            if (e == 0) {
+                cout << -1 << "\n";
+                return;
+            }
+
+            assigned[curr] = e;
+            used_edge[e] = true;
+            num_assigned++;
+
+            int w = (edge_u[e] == curr) ? edge_v[e] : edge_u[e];
+            if (w != 0 && !assigned[w]) {
+                deg[w]--;
+                if (deg[w] == 1) {
+                    q.push(w);
+                }
+            }
+        }
+    }
+
+    vector<int> ans(N + 1);
+    for (int j = 1; j <= N; j++) {
+        ans[j] = L[j];
+    }
+    for (int i = 1; i <= Q; i++) {
+        ans[assigned[i]] = constrs[i].k;
+    }
+
+    for (int j = 1; j <= N; j++) {
+        cout << ans[j] << (j == N ? "" : " ");
+    }
+    cout << "\n";
 }
 
 int main() {

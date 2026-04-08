@@ -1,3 +1,26 @@
+## 📌 2026考点变化
+
+删除：继承（Inheritance）不再考 ❌
+
+## ✅ 新增：文件处理
+
+- 读取文本文件（file reading）
+- 基本数据处理
+
+## 📊 选择题
+
+- 题目数：**40 → 42题**
+- 选项数：**5个 → 4个**
+
+## 🔄 考点内容
+
+1. 基础语法 + 控制结构
+2. 类与对象
+3. 数组 / ArrayList
+4. 数据处理（含文件）
+
+***
+
 ## 📚 文件处理
 
 ### ⭐ 1️⃣ 用 Scanner 读取文件
@@ -178,10 +201,9 @@ public class Main {
             count++;
         }
 
-        sc.close();
-
         double avg = (double) sum / count;
         System.out.println(avg);
+        sc.close();
     }
 }
 ```

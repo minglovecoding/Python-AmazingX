@@ -1,29 +1,17 @@
-class Dog {
-    public void act() {
-        System.out.print("run ");
-        eat();
-    }
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
-    public void eat() {
-        System.out.print("eat ");
-    }
-}
 
-class UnderDog extends Dog {
-    public void act() {
-        super.act();
-        System.out.print("sleep ");
-    }
-
-    public void eat() {
-        super.eat();
-        System.out.print("bark ");
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Dog fido = new UnderDog();
-        fido.act();
+public class Main{
+    public static void main(String[] args) throws FileNotFoundException{
+        File file = new File("data.txt");
+        Scanner sc= new Scanner(file);
+        int sum=0;
+        while (sc.hasNextInt()){
+            sum+=sc.nextInt();      
+        }
+        System.out.println(sum);
+        sc.close();
     }
 }
