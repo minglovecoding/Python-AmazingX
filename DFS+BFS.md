@@ -48,6 +48,8 @@ while (!st.empty()) {
 >  全排列DFS算法
 
 ```c++
+//题目描述
+//给定一个整数 n，请按照字典序输出数字 1 ~ n 的所有全排列。
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -69,7 +71,7 @@ void dfs(vector<int>& nums, int idx) {
 }
 
 int main() {
-    vector<int> nums = {1, 2, 3};
+    vector<int> nums = {1, 2, 3, 4};
     dfs(nums, 0);
 
     for (auto &v : res) {
