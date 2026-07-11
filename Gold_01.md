@@ -2,6 +2,22 @@
 
 ### 🧠 1) 线段树的核心概念
 
+```C++
+                         st[1] = 52
+                           [1,6] 
+                     /               \
+             st[2] = 20            st[3] = 32
+                [1,3]                  [4,6]
+              /       \              /       \
+      st[4] = 9   st[5] = 11  st[6] = 29  st[7] = 3
+         [1,2]       [3,3]       [4,5]       [6,6]
+         /   \                    /   \
+   st[8]=3  st[9]=6       st[12]=21 st[13]=8
+     [1,1]    [2,2]          [4,4]    [5,5]
+     //a = {0, 3, 6, 11, 21, 8, 3};
+     //        1  2   3   4  5  6
+```
+
 给你一个数组 `a[1..N]`，要反复做两类操作：
 
 1. 查询一个区间 [L, R] 的信息
@@ -27,7 +43,7 @@
    [1]    [2]  [3]     [4]  [5]     [6]  [7]     [8]
 ```
 
-线段树是一棵“把数组区间不断二分”的二叉树：
+线段树是一棵**“把数组区间不断二分”的二叉树**：
 
 - 根节点管 `[1, N]`
 - 左儿子管 `[1, mid]`
@@ -70,6 +86,10 @@ struct SegTree {
 
     // 建树：把原数组 a[1..n] 建到 st 里
     void build(int p, int l, int r, const vector<long long>& a) {
+      //p：当前线段树节点的编号
+      //l：当前节点管理区间的左端点
+      //r：当前节点管理区间的右端点
+      //a：需要建立线段树的原数组
         if (l == r) {
             st[p] = a[l];
             return;
@@ -80,7 +100,7 @@ struct SegTree {
         st[p] = mergeVal(st[p<<1], st[p<<1|1]);
     }
 
-    // 单点修改：a[idx] = val
+    // 单点修改idx：a[idx] = val
     void update(int p, int l, int r, int idx, long long val) {
         if (l == r) {   //如果是叶子节点，直接更新
             st[p] = val;
@@ -94,7 +114,11 @@ struct SegTree {
 
     // 区间查询：求 [ql, qr] 的区间和
     long long query(int p, int l, int r, int ql, int qr) {//线段树节点 p管[l, r]区间
-        if (ql <= l && r <= qr) return st[p]; // [l,r] 被 [ql,qr]完全覆盖，直接返回
+      //p 当前线段树节点编号
+      //[l,r] 当前节点 p 管理的原数组区间
+      //[ql,qr] 用户真正想查询的区间
+        if (ql <= l && r <= qr) return st[p]; 
+     // [l,r] 被 [ql,qr]完全覆盖，能整段使用，就不继续访问叶子节点。
         int m = (l + r) >> 1;
         long long ans = 0;
         //如果查询区间左端 ql 不在右半边之外（即查询和左儿子有交集）
@@ -102,7 +126,7 @@ struct SegTree {
         //如果查询区间右端 qr 覆盖到右半边（即查询和右儿子有交集）
         if (qr >  m) ans = mergeVal(ans, query(p<<1|1, m+1, r, ql, qr));
         return ans;
-    }
+    }//例query(1, 0, 5, 2, 4);
 };
 
 int main() {
@@ -283,7 +307,27 @@ int main() {
     }
     return 0;
 }
+//a={0, 3, 6, 11, 21, 8, 3};
+//1：[4,6] +1
+//2: [4,5] +1
 ```
+```C++
+                          st[1]=55
+                           [1,6]
+                     /                 \
+               st[2]=20               st[3]=35
+                [1,3]                [4,6]
+              lazy=0                 lazy=1
+              /       \              /       \
+         st[4]=9    st[5]=11    st[6]=29   st[7]=3
+          [1,2]       [3,3]       [4,5]      [6,6]
+          lazy=0      lazy=0       lazy=0     lazy=0
+          /   \                    /   \
+     st[8]=3 st[9]=6        st[12]=21 st[13]=8
+       [1,1]   [2,2]           [4,4]    [5,5]
+```
+
+// [SegTree_Video](https://www.bilibili.com/video/BV1vhPoeXEFf/?spm_id_from=333.337.search-card.all.click&vd_source=1161690079eded438f62622c2b6c537f)
 
 > 2026 Third Contest-Problem 2. Milk Buckets
 
