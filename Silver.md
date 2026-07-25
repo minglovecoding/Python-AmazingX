@@ -65,3 +65,20 @@
 | 模拟     | Stuck in a Rut, Cowntagion    |
 | 离散化   | Haybale Stacking              |
 | 贪心排序 | Convention II                 |
+
+***
+
+最大连续子序列和
+
+```C++
+//a[4]={-2,1,-3,4}
+//Kadane算法
+int ans=a[0];
+int dp=a[0];
+for(int i=1;i<n;i++){
+  dp=max(a[i],dp+a[i]);
+  ans=max(ans,dp);
+}
+cout<<ans<<endl;
+```
+
