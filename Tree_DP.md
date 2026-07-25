@@ -191,8 +191,7 @@ int main() {
     cin >> n;
     for (int i = 0; i < n; i++) {
         int u, k;
-        char ch;
-        cin >> u >> ch >> ch >> k >> ch;
+        cin >> u;
         for (int j = 0; j < k; j++) {
             int v;
             cin >> v;
@@ -259,7 +258,7 @@ int main() {
    int n, m;
    int score[MAXN];
    int dp[MAXN][MAXN];
-   int sz[MAXN];
+   int sz[MAXN]; //以u为根的子树，一共有多少个节点，包含u结点本身
    vector<int> tree[MAXN];
    void dfs(int u) {
        sz[u] = 1;
@@ -319,7 +318,7 @@ int main() {
 
    ### 第二次 DFS
 
-   假设当前根从父节点 `u` 移动到子节点 `v`。例洛谷**P1122**。
+   假设当前根从父节点 `u` 移动到子节点 `v`。
 
    对于 `v` 子树中的 `size[v]` 个节点，距离全部减少 `1`；对于子树外的 `n-size[v]` 个节点，距离全部增加 `1`。
 
