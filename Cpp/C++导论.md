@@ -48,7 +48,6 @@ C++ 编程入门课
 using namespace std;
 int main()
 {
-  
    cout << "Hello, world!" << endl;
     //可以用 "\n" 代替以上代码里的 endl。
     return 0;
@@ -121,7 +120,7 @@ int age;
 
 | 类型     | 关键字 | case                |  |
 | :------- | :----- | ------------------- | -------- |
-| 布尔型   | bool   | bool A=True;        | 布尔类型，存储值 true 或 false，占用 1 个字节。 |
+| 布尔型   | bool   | bool A=true;       | 布尔类型，存储值 true 或 false，占用 1 个字节。 |
 | 字符型   | char   | char A='a';         | 字符类型，用于存储 ASCII 字符，通常占用 1 个字节。 |
 | 整型     | int    | int A=123;          | 整数类型，通常用于存储普通整数，通常占用 4 个字节。 |
 | 浮点型   | float  | float A=1.23;       | 单精度浮点值，用于存储单精度浮点数。单精度是这样的格式，1 位符号，8 位指数，23 位小数，通常占用4个字节。![img](https://www.runoob.com/wp-content/uploads/2014/09/v2-749cc641eb4d5dafd085e8c23f8826aa_hd.png) |
