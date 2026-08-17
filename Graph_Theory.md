@@ -499,3 +499,167 @@ USACO Silver 很喜欢这种轻度 MST 判断题。
 - 反向加入非常简单（union）
 
 > USACO 2016 US Open Silver Problem 3-Closing the Farm
+
+***
+
+### 最短路
+
+        1
+       / \
+      2   3
+      |   |
+      4   5
+       \ /
+        6
+
+> 从 1 到其他节点的最短距离是多少？
+
+边权全是 1 → BFS（所谓最短路，就是经过最少的边）
+
+```c++
+queue<int> q;
+vector<int> dist(n + 1, -1);
+dist[s] = 0;
+q.push(s);
+while (!q.empty()) {
+    int u = q.front();
+    q.pop();
+    for (int v : adj[u]) {
+        if (dist[v] == -1) {
+            dist[v] = dist[u] + 1;
+            q.push(v);
+        }
+    }
+}
+```
+
+**边权只有 0/1 → 0-1** 
+
+- 这里走BFS有问题，不一定距离+1，有时候加0，有时候加1。
+
+这里会用到deque 双端队列
+
+```c++
+if (w == 0) //边权 = 0
+    dq.push_front(v);//放到队首
+else //边权 = 1
+    dq.push_back(v);//放到队尾
+```
+
+```c++
+deque<int> dq;
+vector<int> dist(n + 1, INF);
+dist[s] = 0;
+dq.push_front(s);
+while (!dq.empty()) {
+    int u = dq.front();
+    dq.pop_front();
+    for (auto [v, w] : adj[u]) {
+        if (dist[v] > dist[u] + w) {
+            dist[v] = dist[u] + w;
+            if (w == 0)
+                dq.push_front(v);
+            else
+                dq.push_back(v);
+        }
+    }
+}
+```
+
+**BFS 边权 >= 0 → Dijkstra**
+
+例如：
+
+```
+        5
+    A ------ B
+    |        |
+  10|        |2
+    |        |
+    C ------ D
+        1
+```
+
+从 A 出发。
+
+可能：
+
+```c++
+A → C = 10
+
+
+A → B = 5
+
+
+A → B → D
+= 5 + 2
+= 7
+
+
+A → B → D → C
+= 5 + 2 + 1
+= 8
+```
+
+所以：
+
+```c++
+dist[B] = 5
+dist[D] = 7
+dist[C] = 8
+```
+
+> **从目前所有未处理节点中，选择距离起点最近的那个。dist[v]=min(dist[v],dist[u]+w)**
+
+```c++
+using ll = long long;
+const ll INF = 4e18;
+vector<vector<pair<int,int>>> adj(n + 1);
+vector<ll> dist(n + 1, INF);
+priority_queue<
+    pair<ll,int>,
+    vector<pair<ll,int>>,
+    greater<pair<ll,int>>
+> pq; //最小堆，找到当前 dist 最小的节点。
+dist[s] = 0;
+pq.push({0, s}); //{距离, 节点}
+while (!pq.empty()) {
+    auto [d, u] = pq.top();
+    pq.pop();
+    if (d != dist[u])
+        continue;
+    for (auto [v, w] : adj[u]) {
+        if (dist[v] > dist[u] + w) {
+            dist[v] = dist[u] + w;
+            pq.push({dist[v], v});
+        }
+    }
+}
+```
+
+***
+
+### 最小生成树MST
+
+- Kruskal
+- Prim
+- Topological Sort
+- Tree DP
+
+***
+
+### 树
+
+- LCA（最近公共祖先）
+- Offline Reverse Processing
+- DAG DP
+- Rerooting
+
+***
+
+### Others
+
+- SCC 强连通分量 
+- 桥 / 割点
+- 二分图
+- Hierholzer
