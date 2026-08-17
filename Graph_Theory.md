@@ -245,20 +245,17 @@ if (find(a) == find(b)) {
 ```c++
 struct DSU {
     vector<int> parent, sz;
-
     DSU(int n) {
         parent.resize(n);
         sz.resize(n, 1);
         for (int i = 0; i < n; i++)
             parent[i] = i;
     }
-
     int find(int x) {
         if (parent[x] != x)
             parent[x] = find(parent[x]);
         return parent[x];
     }
-
     void unite(int a, int b) {
         a = find(a);
         b = find(b);
