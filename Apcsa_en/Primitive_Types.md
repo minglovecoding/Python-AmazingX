@@ -1,4 +1,4 @@
-## 📚Unit 1: Primitive Types Basic Java Syntax
+## 📚Unit 1: Primitive Types
 
 ### 📌What is Java?
 
@@ -14,7 +14,7 @@ Java is used worldwide to create software that we all use.
 
 ### 🖥️  Software
 
-- Vscode
+- Visual studio code
 - Github
 - Chatgpt
 
