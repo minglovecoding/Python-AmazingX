@@ -587,14 +587,11 @@ while (!dq.empty()) {
 ```c++
 A → C = 10
 
-
 A → B = 5
-
 
 A → B → D
 = 5 + 2
 = 7
-
 
 A → B → D → C
 = 5 + 2 + 1
@@ -612,28 +609,57 @@ dist[C] = 8
 > **从目前所有未处理节点中，选择距离起点最近的那个。dist[v]=min(dist[v],dist[u]+w)**
 
 ```c++
+#include <bits/stdc++.h>
+using namespace std;
 using ll = long long;
 const ll INF = 4e18;
-vector<vector<pair<int,int>>> adj(n + 1);
-vector<ll> dist(n + 1, INF);
-priority_queue<
-    pair<ll,int>,
-    vector<pair<ll,int>>,
-    greater<pair<ll,int>>
-> pq; //最小堆，找到当前 dist 最小的节点。
-dist[s] = 0;
-pq.push({0, s}); //{距离, 节点}
-while (!pq.empty()) {
-    auto [d, u] = pq.top();
-    pq.pop();
-    if (d != dist[u])
-        continue;
-    for (auto [v, w] : adj[u]) {
-        if (dist[v] > dist[u] + w) {
-            dist[v] = dist[u] + w;
-            pq.push({dist[v], v});
+int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pair<int, int>>> adj(n + 1);
+    // 读入边
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w}); // 无向图
+        // 如果是有向图，只保留：
+        // adj[u].push_back({v, w});
+    }
+    int s;
+    cin >> s; // 起点
+    vector<ll> dist(n + 1, INF);
+    priority_queue<
+        pair<ll, int>,
+        vector<pair<ll, int>>,
+        greater<pair<ll, int>>
+    > pq; // 最小堆，找到当前 dist 最小的节点
+    dist[s] = 0;
+    pq.push({0, s}); // {距离, 节点}
+    while (!pq.empty()) {
+        auto [d, u] = pq.top();
+        pq.pop();
+        // 这是旧的、已经过时的状态
+        if (d != dist[u])
+            continue;
+        // 遍历 u 的所有邻居
+        for (auto [v, w] : adj[u]) {
+            // 松弛操作 Relaxation
+            if (dist[v] > dist[u] + w) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
         }
     }
+    // 输出从 s 到所有节点的最短距离
+    for (int i = 1; i <= n; i++) {
+        if (dist[i] == INF) {
+            cout << "INF\n";
+        } else {
+            cout << dist[i] << '\n';
+        }
+    }
+    return 0;
 }
 ```
 
@@ -641,10 +667,148 @@ while (!pq.empty()) {
 
 ### 最小生成树MST
 
-- Kruskal
-- Prim
-- Topological Sort
-- Tree DP
+- ### Kruskal
+
+> **用最便宜的边，把所有点连起来，同时避免形成环。**
+
+思想：
+
+1. 把所有边按照权值排序
+2. 从小到大尝试加入
+3. 如果加入后不会形成环，就加入
+4. 直到选择 N-1 条边
+
+```c++
+struct Edge{
+    int u,v,w;
+};
+vector<Edge> edges;
+sort(edges.begin(), edges.end(),
+[](Edge a, Edge b){
+    return a.w < b.w;
+});
+int ans=0;
+int cnt=0;
+for(auto e:edges){
+    int a=find(e.u);
+    int b=find(e.v);
+    if(a!=b){
+        unite(a,b);
+        ans += e.w;
+        cnt++;
+        if(cnt==n-1)
+            break;
+    }
+}
+```
+
+- ### Prim
+
+> Prim：从一个点开始，不断把“离当前生成树最近的点”加入进来。
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+using pii = pair<int,int>;
+int main(){
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pii>> adj(n+1);
+    for(int i=0;i<m;i++){
+        int u,v,w;
+        cin >> u >> v >> w;
+        adj[u].push_back({v,w});
+        adj[v].push_back({u,w});
+    }
+    vector<int> key(n+1, INT_MAX);
+    vector<bool> used(n+1,false);
+    priority_queue<
+        pii,
+        vector<pii>,
+        greater<pii>
+    > pq;
+    // 从1号点开始
+    key[1]=0;
+    pq.push({0,1});
+    int mst_cost=0;
+    int count=0;
+    while(!pq.empty()){
+        auto [w,u]=pq.top();
+        pq.pop();
+        if(used[u])
+            continue;
+        used[u]=true;
+        mst_cost += w;
+        count++;
+        for(auto [v,weight]:adj[u]){
+            if(!used[v] && weight < key[v]){
+                key[v]=weight;
+                pq.push({key[v],v});
+            }
+        }
+    }
+    if(count != n){
+        cout<<"Graph is not connected\n";
+    }else{
+        cout<<mst_cost<<"\n";
+    }
+}
+/*
+4 5
+1 2 2
+1 3 6
+2 3 5
+2 4 3
+3 4 4*/
+```
+
+- ### Topological Sort
+
+Topological Sort 是 **有向无环图（DAG, Directed Acyclic Graph）** 中非常重要的算法。
+
+> 不断选择当前没有前置依赖（入度为 0）的节点加入答案，并删除它对其他节点的影响，直到所有节点都被处理。
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int>> adj(n+1);
+    vector<int> indegree(n+1);
+    for(int i=0;i<m;i++){
+        int u,v;
+        cin>>u>>v;
+        // u必须先于v
+        adj[u].push_back(v);
+        indegree[v]++;
+    }
+    queue<int> q;
+    // 找入度为0节点
+    for(int i=1;i<=n;i++){
+        if(indegree[i]==0)
+            q.push(i);
+    }
+    vector<int> topo;
+    while(!q.empty()){
+        int u=q.front();
+        q.pop();
+        topo.push_back(u);
+        for(int v:adj[u]){
+            indegree[v]--;
+            if(indegree[v]==0)
+                q.push(v);
+        }
+    }
+    // 有环
+    if(topo.size()!=n){
+        cout<<"Impossible\n";
+    }else{
+        for(int x:topo)
+            cout<<x<<" ";
+    }
+}
+```
 
 ***
 

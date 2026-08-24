@@ -493,7 +493,7 @@ However, the code is very hard to read.
 
 Therefore, you should make an effort to **indent nicely**.
 
-## Properly Indented Version
+### Properly Indented Version
 
 ```java
 public class Welcome {
@@ -508,7 +508,7 @@ Proper indentation makes the structure of the program much easier to understand.
 
 ***
 
-## Lab 1
+### Lab 1
 
 Use vscode and write a program that has the following outputs.
 
@@ -555,7 +555,7 @@ System.out.println()
 
 ---
 
-## 📌Variables and Datatypes
+### 📌Variables and Datatypes
 
 ### Data Types
 
@@ -582,17 +582,17 @@ Reference variables, or object variables, hold a **reference (or address)** to a
 
 More about reference variables will be introduced later.
 
-## Variables
+### Variables
 
 A variable can be thought of like the Memory Store / Memory Recall buttons on a calculator**.
 
 Variables must be declared before they are used, just like methods.
 
-## Primitive Types
+### Primitive Types
 
 The primitive types on the APCSA exam are:
 
-## int
+### int
 
 `int` stores integers, or whole numbers.
 
@@ -604,7 +604,7 @@ Examples:
 20393
 ```
 
-## double
+### double
 
 `double` stores floating-point numbers, or decimal numbers.
 
@@ -616,7 +616,7 @@ Examples:
 60293.93032
 ```
 
-## boolean
+### boolean
 
 `boolean` stores Boolean values.
 
@@ -627,7 +627,7 @@ true
 false
 ```
 
-## Receipt Example
+### Receipt Example
 
 Consider the following code:
 
@@ -654,7 +654,7 @@ public class Receipt {
 }
 ```
 
-## What's Bad About This Code?
+### What's Bad About This Code?
 
 There are two main problems:
 
@@ -688,7 +688,7 @@ public class Receipt {
 }
 ```
 
-## Variables
+### Variables
 
 A **variable** is a piece of the computer's memory that:
 
@@ -701,7 +701,7 @@ A variable can be compared to:
 - preset stations on a car stereo
 - speed dial on a cell phone
 
-## Steps for Using a Variable
+### Steps for Using a Variable
 
 There are three basic steps:
 
@@ -745,7 +745,7 @@ x
 myGPA
 ```
 
-## Assignment
+## **Assignment**
 
 An **assignment** stores a value into a variable.
 
@@ -896,13 +896,7 @@ x is 3
 
 More about string concatenation will be introduced later.
 
----
-
-
-
-
-
-# Declaration and Initialization
+## Declaration and Initialization
 
 A variable can be **declared and initialized in one statement**.
 
@@ -944,9 +938,7 @@ Therefore:
 x = 18
 ```
 
----
-
-# Assignment and Algebra
+## Assignment and Algebra
 
 Assignment uses:
 
@@ -970,30 +962,12 @@ The expression on the right side is evaluated first.
 
 Then its result is stored in the variable on the left.
 
----
-
 ## Example
 
 ```java
 int x = 3;
 
 x = x + 2;
-```
-
-In mathematics:
-
-```text
-x = x + 2
-```
-
-would have no solution.
-
-But in Java, it is not an equation.
-
-Java evaluates the right side first:
-
-```text
-x + 2
 ```
 
 Since:
@@ -1016,9 +990,7 @@ Therefore:
 x = 5
 ```
 
----
-
-# Increasing a Variable
+### Increasing a Variable
 
 The statement:
 
@@ -1042,13 +1014,11 @@ After the assignment:
 x = 5
 ```
 
----
-
-# Multiple Variables
+### Multiple Variables
 
 Multiple variables of the same type can be declared and initialized at the same time.
 
-## Declaration Syntax
+### Declaration Syntax
 
 ```java
 type name1, name2, name3;
@@ -1058,25 +1028,6 @@ Example:
 
 ```java
 int x, y, z;
-```
-
-This declares three integer variables:
-
-- `x`
-- `y`
-- `z`
-
----
-
-## Declaration and Initialization Syntax
-
-```java
-type name1 = value1, name2 = value2, name3 = value3;
-```
-
-Example:
-
-```java
 int a = 1, b = 2, c = 3;
 ```
 
@@ -1088,9 +1039,7 @@ b = 2
 c = 3
 ```
 
----
-
-# Assignment and Types
+### Assignment and Types
 
 A variable can only store a value of its own type.
 
@@ -1108,9 +1057,7 @@ ERROR: incompatible types
 
 because `2.5` is a floating-point value and `x` is an `int`.
 
----
-
-# Storing int Values in double Variables
+### Storing int Values in double Variables
 
 An `int` value can be stored in a `double` variable.
 
@@ -1134,11 +1081,9 @@ Therefore:
 myGPA = 4.0
 ```
 
----
+### Compiler Errors
 
-# Compiler Errors
-
-## 1. Order Matters
+### 1. Order Matters
 
 Assignment must have the variable on the left.
 
@@ -1146,7 +1091,6 @@ Incorrect:
 
 ```java
 int x;
-
 7 = x;
 ```
 
@@ -1156,19 +1100,15 @@ Correct:
 
 ```java
 int x;
-
 x = 7;
 ```
 
----
-
-## 2. A Variable Must Have a Value Before It Is Used
+### 2. A Variable Must Have a Value Before It Is Used
 
 Incorrect:
 
 ```java
 int x;
-
 System.out.println(x);
 ```
 
@@ -1178,9 +1118,7 @@ This causes an error because:
 x has no value
 ```
 
----
-
-## 3. You Cannot Declare the Same Variable Twice
+### 3. You Cannot Declare the Same Variable Twice
 
 Incorrect:
 
@@ -1204,13 +1142,10 @@ If you want to change its value, use assignment instead:
 
 ```java
 int x = 3;
-
 x = 5;
 ```
 
----
-
-# Printing a Variable's Value
+### Printing a Variable's Value
 
 Use `+` to print a string and a variable's value on the same line.
 
@@ -1218,7 +1153,6 @@ Example:
 
 ```java
 double grade = (95.1 + 71.9 + 82.6) / 3.0;
-
 System.out.println("Your grade was " + grade);
 ```
 
@@ -1232,7 +1166,6 @@ Another example:
 
 ```java
 int students = 11 + 17 + 4 + 19 + 14;
-
 System.out.println(
     "There are " + students +
     " students in the course."
@@ -1245,9 +1178,7 @@ Output:
 There are 65 students in the course.
 ```
 
----
-
-# Receipt Question
+### Receipt Question
 
 Improve the receipt program using variables.
 
@@ -1277,9 +1208,7 @@ public class Receipt {
 }
 ```
 
----
-
-# Receipt Answer
+### Receipt Answer
 
 The program can be improved by storing important values in variables.
 
@@ -1307,9 +1236,7 @@ public class Receipt {
 }
 ```
 
----
-
-# Type boolean
+### Type boolean
 
 A `boolean` is a logical type whose values are:
 
@@ -1322,13 +1249,9 @@ Example:
 
 ```java
 int age = 22;
-
 boolean minor = (age < 21);
-
 boolean lovesAPCS = true;
-
 System.out.println(minor);
-
 System.out.println(lovesAPCS);
 ```
 
@@ -1342,19 +1265,7 @@ true
 Explanation:
 
 ```java
-age < 21
-```
-
-is false because:
-
-```text
-age = 22
-```
-
-Therefore:
-
-```java
-minor = false
+age < 21 //false
 ```
 
 Meanwhile:
@@ -1365,9 +1276,7 @@ boolean lovesAPCS = true;
 
 directly assigns the value `true`.
 
----
-
-# final
+### final
 
 The keyword:
 
@@ -1384,11 +1293,8 @@ Example:
 ```java
 public class TestFinal {
     public static void main(String[] args) {
-
         final double PI = 3.14;
-
         System.out.println(PI);
-
         PI = 4.2;
     }
 }
@@ -1408,9 +1314,7 @@ final
 
 and therefore cannot be changed.
 
----
-
-# Naming Variables
+### Naming Variables
 
 The name of a variable should describe the data that it holds.
 
@@ -1440,9 +1344,7 @@ especially on the AP exam.
 
 The goal is to make the code easier to understand, not harder.
 
----
-
-# Variable Naming Convention
+### Variable Naming Convention
 
 In Java and many other programming languages, variable names normally begin with a **lowercase letter**.
 
@@ -1456,7 +1358,7 @@ int numOfLives = 3;
 
 This naming style is called:
 
-## camelCase
+### camelCase
 
 For example:
 
@@ -1467,9 +1369,7 @@ studentName
 totalPrice
 ```
 
----
-
-# Why Use camelCase?
+### Why Use camelCase?
 
 Variable names cannot contain spaces.
 
@@ -1487,9 +1387,7 @@ numOfLives
 
 Capitalizing each additional word makes the variable name easier to read.
 
----
-
-# Using Underscores
+### Using Underscores
 
 Another option is to use the underscore symbol:
 
@@ -1507,9 +1405,7 @@ int num_of_lives = 3;
 
 However, variable names still cannot contain spaces.
 
----
-
-# Java Is Case Sensitive
+### Java Is Case Sensitive
 
 Java is **case sensitive**.
 
@@ -1541,15 +1437,13 @@ mygpa
 
 are different variable names.
 
----
-
-# Keywords
+### Keywords
 
 A **keyword** is an identifier that cannot be used as a variable name because it already has a reserved meaning in Java.
 
 Java keywords listed in the slides include:
 
-```text
+```java
 abstract
 boolean
 break
@@ -1632,35 +1526,11 @@ public
 
 is reserved by Java.
 
----
+### Lab 1: Create Variables and Printing
 
-# repl.it Assignments
+Complete the **Create Variables and Printing** assignment on vscode.
 
-The following labs are **repl.it assignments**.
-
-Log on to your account to complete them.
-
-They are included in the slides for reference.
-
----
-
-# Lab 1: Create Variables and Printing
-
-Complete the **Create Variables and Printing** assignment on repl.it.
-
----
-
-# Lab 2: Create Variables and Printing 2
-
-Complete the **Create Variables and Printing 2** assignment on repl.it.
-
----
-
-# Lab 3: Create Variables and Printing Them
-
-Complete the **Create Variables and Printing Them** assignment on repl.it.
-
----
+***
 
 ## Arithmetic Operations
 
@@ -1689,9 +1559,7 @@ A complex expression can use:
 - operators
 - parentheses
 
----
-
-# Arithmetic Operators
+### Arithmetic Operators
 
 An **operator** combines multiple values or expressions.
 
@@ -1741,9 +1609,7 @@ instead of evaluating it, place it inside quotation marks:
 System.out.println("3 * 4");
 ```
 
----
-
-# Integer Division with `/`
+### Integer Division with `/`
 
 When we divide integers, the quotient is also an integer.
 
@@ -1805,9 +1671,7 @@ This error is called an:
 ArithmeticException
 ```
 
----
-
-# Integer Remainder with `%`
+### Integer Remainder with `%`
 
 The `%` operator computes the **remainder from integer division**.
 
@@ -1833,11 +1697,9 @@ Result:
 3
 ```
 
----
+### Applications of the `%` Operator
 
-# Applications of the `%` Operator
-
-## Obtain the Last Digit of a Number
+### Obtain the Last Digit of a Number
 
 ```java
 230857 % 10
@@ -1849,9 +1711,7 @@ Result:
 7
 ```
 
----
-
-## Obtain the Last Four Digits
+### Obtain the Last Four Digits
 
 ```java
 658236489 % 10000
@@ -1863,9 +1723,7 @@ Result:
 6489
 ```
 
----
-
-## Determine Whether a Number Is Odd or Even
+### Determine Whether a Number Is Odd or Even
 
 ```java
 7 % 2
@@ -1887,9 +1745,7 @@ Result:
 0
 ```
 
----
-
-# Important `%` Example
+### Important `%` Example
 
 What is:
 
@@ -1909,9 +1765,7 @@ not:
 0
 ```
 
----
-
-# `%` Example
+### `%` Example
 
 ```java
 public static void main(String[] args) {
@@ -1935,9 +1789,7 @@ ArithmeticException
 1
 ```
 
----
-
-# Expressions: Making Change
+### Expressions: Making Change
 
 Find the exact change for:
 
@@ -1954,9 +1806,7 @@ using:
 
 Use the least number of coins.
 
----
-
-## Step 1: Quarters
+### Step 1: Quarters
 
 How many quarters?
 
@@ -1984,9 +1834,7 @@ Result:
 12 cents
 ```
 
----
-
-## Step 2: Dimes
+### Step 2: Dimes
 
 How many dimes?
 
@@ -2012,9 +1860,7 @@ Result:
 2 cents
 ```
 
----
-
-## Step 3: Nickels
+### Step 3: Nickels
 
 How many nickels?
 
@@ -2040,9 +1886,7 @@ Result:
 2 cents
 ```
 
----
-
-## Step 4: Pennies
+### Step 4: Pennies
 
 How many pennies?
 
@@ -2065,9 +1909,7 @@ Therefore, 137 cents can be represented using:
 2 pennies
 ```
 
----
-
-# Even or Odd
+### Even or Odd
 
 An important use of the `%` operator is testing for **divisibility**.
 
@@ -2076,9 +1918,7 @@ For example:
 - Is a number even or odd?
 - Is a number a multiple of 3?
 
----
-
-## Testing Whether a Number Is Even
+### Testing Whether a Number Is Even
 
 A number is even if it has no remainder when divided by `2`.
 
@@ -2088,9 +1928,7 @@ if (number % 2 == 0) {
 }
 ```
 
----
-
-## Testing Whether a Number Is a Multiple of 3
+### Testing Whether a Number Is a Multiple of 3
 
 ```java
 if (number % 3 == 0) {
@@ -2098,9 +1936,7 @@ if (number % 3 == 0) {
 }
 ```
 
----
-
-# Precedence
+### Precedence
 
 **Precedence** means the order in which operators are evaluated.
 
@@ -2124,9 +1960,7 @@ Result:
 -4
 ```
 
----
-
-# Operator Precedence
+### Operator Precedence
 
 The operators:
 
@@ -2164,9 +1998,7 @@ Result:
 13
 ```
 
----
-
-# Precedence Example
+### Precedence Example
 
 Consider:
 
@@ -2198,9 +2030,7 @@ Therefore:
 18
 ```
 
----
-
-# Parentheses
+### Parentheses
 
 Parentheses can force a certain order of evaluation.
 
@@ -2228,9 +2058,7 @@ Result:
 16
 ```
 
----
-
-# Spacing and Precedence
+### Spacing and Precedence
 
 Spacing does **not** affect the order of evaluation.
 
@@ -2247,11 +2075,9 @@ is evaluated according to operator precedence.
 = 11
 ```
 
----
+### Precedence Examples
 
-# Precedence Examples
-
-## Example 1
+### Example 1
 
 ```java
 1 * 2 + 3 * 5 % 4
@@ -2299,9 +2125,7 @@ Result:
 5
 ```
 
----
-
-## Example 2
+### Example 2
 
 ```java
 1 + 8 % 3 * 2 - 9
@@ -2349,9 +2173,7 @@ Result:
 -4
 ```
 
----
-
-# Integer Division Review
+### Integer Division Review
 
 Consider:
 
@@ -2377,9 +2199,7 @@ The result is:
 0
 ```
 
----
-
-# Real Numbers — Type `double`
+### Real Numbers — Type `double`
 
 Examples of `double` values:
 
@@ -2411,9 +2231,7 @@ For example:
 
 is a `double`.
 
----
-
-# Arithmetic with `double`
+### Arithmetic with `double`
 
 The operators:
 
@@ -2455,9 +2273,7 @@ before:
 + -
 ```
 
----
-
-# Real Number Example
+### Real Number Example
 
 Consider:
 
@@ -2507,9 +2323,7 @@ Result:
 9.3
 ```
 
----
-
-# Mixing Types
+### Mixing Types
 
 When an `int` and a `double` are mixed in an operation, the result is a `double`.
 
@@ -2527,9 +2341,7 @@ Result:
 
 The conversion occurs **per operator**, affecting only the operands involved in that operation.
 
----
-
-# Mixing Types Example 1
+### Mixing Types Example 1
 
 Consider:
 
@@ -2591,9 +2403,7 @@ Result:
 3.4
 ```
 
----
-
-# Mixing Types Example 2
+### Mixing Types Example 2
 
 Consider:
 
@@ -2655,9 +2465,7 @@ Result:
 8.5
 ```
 
----
-
-# Type Casting
+### Type Casting
 
 A **type cast** is a conversion from one type to another.
 
@@ -2666,9 +2474,7 @@ Type casting can be used to:
 1. Promote an `int` into a `double` to get exact division using `/`.
 2. Truncate a `double` into an integer.
 
----
-
-# Type Casting Syntax
+### Type Casting Syntax
 
 ```java
 (type) expression
@@ -2710,9 +2516,7 @@ Result:
 1000
 ```
 
----
-
-# More About Type Casting
+### More About Type Casting
 
 Type casting has **high precedence**.
 
@@ -2744,9 +2548,7 @@ and:
 x = 1.0
 ```
 
----
-
-## Example
+### Example
 
 ```java
 double y = 1 + (double) 1 / 2;
@@ -2778,9 +2580,7 @@ So:
 y = 1.5
 ```
 
----
-
-# Casting an Entire Expression
+### Casting an Entire Expression
 
 Parentheses can be used to force the evaluation order.
 
@@ -2800,9 +2600,7 @@ is calculated first.
 
 Then the entire sum is converted into a `double`.
 
----
-
-# Another Way to Convert to `double`
+### Another Way to Convert to `double`
 
 A conversion to `double` can also be achieved by multiplying by `1.0`.
 
@@ -2812,9 +2610,7 @@ Example:
 double average = 1.0 * (a + b + c) / 3;
 ```
 
----
-
-# Casting Example
+### Casting Example
 
 ```java
 public class Test {
@@ -2836,16 +2632,13 @@ Output:
 0.3333333333333333
 ```
 
----
-
-# Casting Example 2
+### Casting Example 2
 
 ```java
 public static void main(String[] args) {
     double x = 4 / 3;
     double y = (double) (125 / 10);
     double z = (double) 28 / 5;
-
     System.out.println(x + " " + y + " " + z);
 }
 ```
@@ -2856,9 +2649,7 @@ Output:
 1.0 12.0 5.6
 ```
 
----
-
-# Why Does the Casting Example Produce These Values?
+### Why Does the Casting Example Produce These Values?
 
 ## `x`
 
@@ -2877,8 +2668,6 @@ Then `1` is stored as:
 ```text
 1.0
 ```
-
----
 
 ## `y`
 
@@ -2904,8 +2693,6 @@ becomes:
 12.0
 ```
 
----
-
 ## `z`
 
 ```java
@@ -2926,15 +2713,11 @@ Therefore:
 28.0 / 5 = 5.6
 ```
 
----
-
-# Round to the Nearest Integer
+### Round to the Nearest Integer
 
 Casting can be used to round a number to its nearest integer.
 
----
-
-## Positive Number
+### Positive Number
 
 ```java
 double number = 7.0 / 3;
@@ -2946,9 +2729,7 @@ To round a positive number to its nearest integer:
 int nearestInt = (int) (number + 0.5);
 ```
 
----
-
-## Negative Number
+### Negative Number
 
 ```java
 double negNumber = -20.0 / 3;
@@ -2967,9 +2748,7 @@ nearestInt = 2
 nearestNegInt = -7
 ```
 
----
-
-# Increment and Decrement
+### Increment and Decrement
 
 Increment and decrement operators are shortcuts for increasing or decreasing a variable's value by `1`.
 
@@ -2978,13 +2757,10 @@ Increment and decrement operators are shortcuts for increasing or decreasing a v
 | `variable++;` | `variable = variable + 1;` |
 | `variable--;` | `variable = variable - 1;` |
 
----
-
-# Increment Example
+### Increment Example
 
 ```java
 int x = 2;
-
 x++;
 ```
 
@@ -3000,13 +2776,10 @@ Therefore:
 x = 3
 ```
 
----
-
-# Decrement Example
+### Decrement Example
 
 ```java
 double gpa = 2.5;
-
 gpa--;
 ```
 
@@ -3022,9 +2795,7 @@ Therefore:
 gpa = 1.5
 ```
 
----
-
-# Modify-and-Assign
+### Modify-and-Assign
 
 Java provides shortcuts for modifying a variable's value.
 
@@ -3048,8 +2819,6 @@ Equivalent to:
 x = x + 3;
 ```
 
----
-
 ```java
 gpa -= 0.5;
 ```
@@ -3059,8 +2828,6 @@ Equivalent to:
 ```java
 gpa = gpa - 0.5;
 ```
-
----
 
 ```java
 number *= 2;
@@ -3072,9 +2839,7 @@ Equivalent to:
 number = number * 2;
 ```
 
----
-
-# Code Tracing
+### Code Tracing
 
 What are the values of `x`, `y`, and `z` after tracing through the following code?
 
@@ -3099,9 +2864,7 @@ y = 0
 z = 1
 ```
 
----
-
-# Lab 1
+### Lab 1
 
 For example, if the list is:
 
@@ -3119,11 +2882,9 @@ Variance = 1.5555555555555556
 Standard deviation = 1.247219128924647
 ```
 
----
+### Lab 1: Statistics
 
-# Lab 1: Statistics
-
-Create a new repl on **repl.it** and follow the comments below to write a program that computes some statistics.
+Create a new repl on vscode and follow the comments below to write a program that computes some statistics.
 
 ```java
 public class Statistics {
@@ -3152,9 +2913,7 @@ public class Statistics {
 }
 ```
 
----
-
-# Lab 2: Exact Change
+### Lab 2: Exact Change
 
 Use the following template, or something similar, to write a program that gives exact change with the **least number of coins** for a given number of cents.
 
@@ -3182,6 +2941,4 @@ is:
 ```text
 5 quarters, 1 dimes, 0 nickels, 2 pennies.
 ```
-
----
 
