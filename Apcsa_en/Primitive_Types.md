@@ -10,13 +10,14 @@ Many of the apps you use in an Android phone or tablet are also written in Java.
 
 Netflix uses Java for some of its software too.
 
-Java is used worldwide to create software that we all use.
+[Java](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) is used worldwide to create software that we all use.
 
 ### 🖥️  Software
 
 - Visual studio code
 - Github
 - Chatgpt
+- Java
 
 ### 🗓️  Teaching Arrangement
 
@@ -355,13 +356,13 @@ System.out.println("This is not\na legal String.");
 This is not a legal string:
 
 ```java
-"This is not a "legal" String either."
+"This is not a "legal" String either." //error
 ```
 
 The quotation marks inside the string interfere with the quotation marks that mark the beginning and end of the string.
 
 ```java
-"This is not a \"legal\" String either."
+"This is not a \"legal\" String either." //success
 ```
 
 ## Comments
@@ -437,7 +438,7 @@ Comments are useful for:
 ```java
 /* Suzy Student, CS 101, Fall 2019
    This program prints lyrics about ... something. */
-public class BaWitDaBa {
+public class Main {
     public static void main(String[] args) {
         
         // first verse
