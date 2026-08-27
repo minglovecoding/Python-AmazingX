@@ -997,6 +997,7 @@ The statement:
 
 ```java
 x = x + 2;
+x+=2;
 ```
 
 increases the value stored in variable `x` by two.
@@ -1251,9 +1252,9 @@ Example:
 ```java
 int age = 22;
 boolean minor = (age < 21);
-boolean lovesAPCS = true;
+boolean lovesAPCSA = true;
 System.out.println(minor);
-System.out.println(lovesAPCS);
+System.out.println(lovesAPCSA);
 ```
 
 Output:
@@ -1617,7 +1618,7 @@ When we divide integers, the quotient is also an integer.
 Example:
 
 ```java
-14 / 4
+14 / 4 
 ```
 
 The result is:
@@ -1635,7 +1636,7 @@ not:
 More examples:
 
 ```java
-32 / 5
+32 / 5 
 ```
 
 Result:
@@ -1908,6 +1909,22 @@ Therefore, 137 cents can be represented using:
 1 dime
 0 nickels
 2 pennies
+```
+
+```java
+public class Main{ 
+    public static void main(String[] args){
+        int cents=137;
+        int quarters=cents/25;
+        int dimes=(cents%25)/10;
+        int nickels=((cents%25)%10)/5;
+        int pennies=((cents%25)%10)%5;
+        System.out.println(quarters);
+        System.out.println(dimes);
+        System.out.println(nickels);
+        System.out.println(pennies);
+        }
+}
 ```
 
 ### Even or Odd
@@ -2350,54 +2367,6 @@ Consider:
 7 / 3 * 1.2 + 3 / 2
 ```
 
-First:
-
-```java
-7 / 3
-```
-
-Since both operands are integers:
-
-```text
-7 / 3 = 2
-```
-
-So:
-
-```java
-2 * 1.2 + 3 / 2
-```
-
-Then:
-
-```text
-2 * 1.2 = 2.4
-```
-
-So:
-
-```java
-2.4 + 3 / 2
-```
-
-Next:
-
-```java
-3 / 2 = 1
-```
-
-not:
-
-```text
-1.5
-```
-
-Therefore:
-
-```text
-2.4 + 1 = 3.4
-```
-
 Result:
 
 ```text
@@ -2410,54 +2379,6 @@ Consider:
 
 ```java
 2.0 + 10 / 3 * 2.5 - 6 / 4
-```
-
-First:
-
-```java
-10 / 3 = 3
-```
-
-So:
-
-```java
-2.0 + 3 * 2.5 - 6 / 4
-```
-
-Then:
-
-```java
-3 * 2.5 = 7.5
-```
-
-So:
-
-```java
-2.0 + 7.5 - 6 / 4
-```
-
-Next:
-
-```java
-6 / 4 = 1
-```
-
-So:
-
-```java
-2.0 + 7.5 - 1
-```
-
-Then:
-
-```text
-2.0 + 7.5 = 9.5
-```
-
-Finally:
-
-```text
-9.5 - 1 = 8.5
 ```
 
 Result:
@@ -2650,70 +2571,6 @@ Output:
 1.0 12.0 5.6
 ```
 
-### Why Does the Casting Example Produce These Values?
-
-## `x`
-
-```java
-double x = 4 / 3;
-```
-
-Integer division happens first:
-
-```text
-4 / 3 = 1
-```
-
-Then `1` is stored as:
-
-```text
-1.0
-```
-
-## `y`
-
-```java
-double y = (double) (125 / 10);
-```
-
-The parentheses are evaluated first:
-
-```text
-125 / 10 = 12
-```
-
-Then:
-
-```java
-(double) 12
-```
-
-becomes:
-
-```text
-12.0
-```
-
-## `z`
-
-```java
-double z = (double) 28 / 5;
-```
-
-`28` is converted into:
-
-```text
-28.0
-```
-
-before division.
-
-Therefore:
-
-```text
-28.0 / 5 = 5.6
-```
-
 ### Round to the Nearest Integer
 
 Casting can be used to round a number to its nearest integer.
@@ -2883,9 +2740,11 @@ Variance = 1.5555555555555556
 Standard deviation = 1.247219128924647
 ```
 
+***
+
 ### Lab 1: Statistics
 
-Create a new repl on vscode and follow the comments below to write a program that computes some statistics.
+Create a new java on vscode and follow the comments below to write a program that computes some statistics.
 
 ```java
 public class Statistics {
@@ -2893,7 +2752,7 @@ public class Statistics {
 
         // 1. Declare 3 int variables for grades
         //    and initialize them to 3 values
-
+        double Chinese=90.0,Math=85.0,English=95.0;
         // 2. Declare an int variable for the sum of the grades
 
         // 3. Declare a double variable for the average of the grades
