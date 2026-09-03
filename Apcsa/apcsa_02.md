@@ -10,7 +10,7 @@
 - 类的实例，具有状态和行为。
 - 示例：`Car myCar = new Car();`
 
-**3、继承（Inheritance）**：
+**3、*继承（Inheritance）**：
 
 - 一个类可以继承另一个类的属性和方法。
 - 示例：`public class Dog extends Animal { ... }`
@@ -27,7 +27,7 @@
   ```
   
 
-**5、多态（Polymorphism）**：
+**5、*多态（Polymorphism）**：
 
 - 对象可以表现为多种形态，主要通过方法重载和方法重写实现。
 - 示例：
@@ -118,10 +118,10 @@ public class Puppy{
 ```java
 public class Puppy{
    private String name
-   public Puppy(String name){
+   public Puppy(String name1){
       //这个构造器仅有一个参数：name
-      this.name=name
-      System.out.println("小狗的名字是 : " + name ); 
+      this.name=name1;
+      System.out.println("小狗的名字是 : " + this.name); 
    }
    public static void main(String[] args){
       // 下面的语句将创建一个Puppy对象
@@ -143,6 +143,8 @@ public class Puppy {
         //this.age= age
         System.out.println("小狗的名字是 : " + name);
     }
+    public Puppy(String name，int age) {}
+    
  
     // 设置 age 的值
     public void setAge(int age) {
@@ -163,6 +165,7 @@ public class Puppy {
     public static void main(String[] args) {
         // 创建对象
         Puppy myPuppy = new Puppy("Tommy");
+        //Puppy myPuppy1 = new Puppy("Tommy",10);
  
         // 通过方法来设定 age
         myPuppy.setAge(2);
@@ -184,9 +187,9 @@ public class Puppy {
 **1、引用当前对象的属性或方法：**当构造方法的参数名与类属性名相同时，使用 this 来区分类属性和参数。例如：
 
 ```java
-public Person(String name1, int age1) {
-    this.name = name1; // this.name 表示类的属性
-    this.age = age1;
+public Person(String name, int age) {
+    this.name = name; // this.name 表示类的属性
+    this.age = age;
 }
 ```
 
@@ -363,7 +366,7 @@ public class MyClass{
 			    // Output: The input x is 5
 	}
 	public static void printX(int x){
-		System.out.println(“The input x is” + x);
+		System.out.println("The input x is" + x);
 	}
 	public static int twiceX(int x){
 		return 2 * x;
@@ -373,7 +376,7 @@ public class MyClass{
 
 ```java
 //Methods are said to be overloaded when there are multiple methods with the same name but a different signature. 
-public class MyClass{
+public class Main{
 	public static void main(String[] args){
 		double a = add(1, 2) + add(1.8, 5.2) + add(1, 2, 3);
 		System.out.println(a); // 16.0
@@ -388,18 +391,19 @@ public class MyClass{
 		return x + y + z;
 	}
 }
+
 ```
 
 ### 📌 **形式参数**
 
 ```java
-public class MyClass{
+public class Main{
 	public static void main(String[] args){
 			  int x = 23;
-    		strange(x);
+    		strange(x); //实际参数
     		System.out.println("2. x = " + x);
 	}
-	public static void strange(int x){
+	public static void strange(int x){//形式参数
 	  		x = x + 1;
    		System.out.println("1. x = " + x);
 }
@@ -410,7 +414,7 @@ public class MyClass{
 **Case**（寻找错误）
 
 ```java
-public class MyClass{
+public class Main{
 	public static void main(String[] args){
 		printX();  
 		add(); 

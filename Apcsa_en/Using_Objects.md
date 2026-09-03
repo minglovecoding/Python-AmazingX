@@ -104,17 +104,6 @@ Obstacle poison; // kills player
 
 #### Sprite
 
-Soon, we will use the Processing IDE(www.processing.org) to help us write arcade games.
-
-In games, a sprite is an object that represents a character in a game.
-
-It usually consists of an image(or set of images) of a character moving and interacting with other sprites in the game.
-
-Let's look at an example of a Sprite class that we will expand later into a full arcade game.
-
-
-#### Sprite
-
 Sprite's attributes can include many properties: the image(.png or .jpg) of the sprite, the width and height of the image, and position on the screen given by center_x and center_y instance variables.
 
 To keep things simple, for now, we focus on just two attributes: center_x and center_y.
@@ -456,14 +445,12 @@ import java.util.*;   // so that I can use Scanner
 
 public class UserInputExample {
 public static void main(String[] args) {
-Scanner console = new Scanner(System.in);
-
-System.out.print("How old are you? ");
-int age = console.nextInt();
-
-int years = 65 - age;
-System.out.println(years + " years to retirement!");
-}
+  Scanner console = new Scanner(System.in);
+  System.out.print("How old are you? ");
+  int age = console.nextInt();
+  int years = 65 - age;
+  System.out.println(years + " years to retirement!");
+  }
 }
 ```
 
@@ -521,12 +508,11 @@ public static void main(String[] args) {
 Scanner console = new Scanner(System.in);
 
 System.out.print("Please type two numbers: ");
-int num1 = console.nextInt();
-int num2 = console.nextInt();
-
-int product = num1 * num2;
-System.out.println("The product is " + product);
-}
+  int num1 = console.nextInt();
+  int num2 = console.nextInt();
+  int product = num1 * num2;
+  System.out.println("The product is " + product);
+  }
 }
 ```
 
@@ -627,15 +613,15 @@ The driver class is the class with the main method. Note that the main method is
 ```java
 public class MyClass{
 public static void main(String[] args){
-method2();
-method1();
+  method2();
+  method1();
 }
 public static void method1(){
-System.out.println("running method1");
+  System.out.println("running method1");
 }
 public static void method2(){
-System.out.println("running method2");
-}
+  System.out.println("running method2");
+ }
 }
 ```
 
@@ -651,15 +637,15 @@ The order of the methods in the driver class does not matter and does not affect
 ```java
 public class MyClass{
 public static void method1(){
-System.out.println("running method1");
+  System.out.println("running method1");
 }
 public static void main(String[] args){
-method2();
-method1();
+  method2();
+  method1();
 }
 public static void method2(){
-System.out.println("running method2");
-}
+  System.out.println("running method2");
+ }
 }
 ```
 
@@ -1550,11 +1536,6 @@ String fav_book = "Hamlet";
 String fav_char_star_wars = "Ham Solo";
 String fav_char_star_wars_2 = "ChewBacon";
 ```
-
-
-#### Lab 1
-
-Login to repl.it classroom, do the 5 "String Methods" problems.
 
 
 #### Lab 2

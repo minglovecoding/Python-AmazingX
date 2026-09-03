@@ -714,6 +714,7 @@ int main(){
     int n, m;
     cin >> n >> m;
     vector<vector<pii>> adj(n+1);
+    //建图
     for(int i=0;i<m;i++){
         int u,v,w;
         cin >> u >> v >> w;
@@ -721,7 +722,7 @@ int main(){
         adj[v].push_back({u,w});
     }
     vector<int> key(n+1, INT_MAX);
-    vector<bool> used(n+1,false);
+    vector<bool> used(n+1,false);  //是否已加入到集合
     priority_queue<
         pii,
         vector<pii>,
@@ -729,7 +730,7 @@ int main(){
     > pq;
     // 从1号点开始
     key[1]=0;
-    pq.push({0,1});
+    pq.push({0,1}); //加入第一个点的代价为0;
     int mst_cost=0;
     int count=0;
     while(!pq.empty()){
@@ -989,6 +990,10 @@ int lca(int u, int v) {
 
 ```java
 up[u][j]  //u 向上跳 2^j 层之后的祖先。
+  
+up[u][j] = up[up[u][j-1]][j-1]; //2^j = 2^(j-1) + 2^(j-1)
+//可以先跳 2^(j-1)，再跳 2^(j-1)
+  
 //例如原本要往上跳 1000 层，现在只要跳6层。
 //1000= 2^9 + 2^8 + 2^7 + 2^6 + 2^5 + 2^3= 512 + 256 + 128 + 64 + 32 + 8
 //现在时间复杂度是O(log N)
@@ -996,8 +1001,6 @@ for (int j = LOG - 1; j >= 0; j--) {
     if ((diff >> j) & 1) {
         u = up[u][j];  //逐级跳
 }
-up[u][j] = up[up[u][j-1]][j-1]; //2^j = 2^(j-1) + 2^(j-1)
-//可以先跳 2^(j-1)，再跳 2^(j-1)
 ```
 
 例如求：
@@ -1637,6 +1640,8 @@ union(u, v);
 这就是 Offline Reverse Processing 最常见的用途。
 
 - USACO 2022 January Contest, Gold - Problem 2. Farm Updates
+- USACO 2016 US Open Silver — Closing the Farm
+- USACO 2024 December Silver — Conveyor Belt
 
 ***
 
