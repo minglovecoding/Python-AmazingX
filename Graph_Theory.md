@@ -608,6 +608,8 @@ dist[C] = 8
 
 > **从目前所有未处理节点中，选择距离起点最近的那个。dist[v]=min(dist[v],dist[u]+w)**
 
+![dijkstra](/Users/zhoumingzhao/Desktop/Python-AmazingX/images/dijkstra.png)
+
 ```c++
 #include <bits/stdc++.h>
 using namespace std;
@@ -840,33 +842,6 @@ int main(){
 ```
 
 以 `1` 为根。
-
-那么：
-
-```
-LCA(4, 5) = 2
-LCA(7, 8) = 5
-LCA(4, 7) = 2
-LCA(7, 6) = 1
-```
-
-比如 `4` 和 `7`：
-
-```
-4 的祖先：
-4 → 2 → 1
-7 的祖先：
-7 → 5 → 2 → 1
-```
-
-公共祖先：
-
-```
-2
-1
-```
-
-其中 `2` 比 `1` 更深，因此：
 
 ```
 LCA(4, 7) = 2
@@ -1520,7 +1495,7 @@ int main() {
 
 > **LCA 就是两个节点向根走时，第一次汇合的节点。**
 
-而 Binary Lifting 的核心思想则是：
+而 Binary Lifting 的核心思想是通过空间换时间：
 
 > **把“一层一层找祖先”，优化成按 1、2、4、8、16……层跳祖先。**
 
