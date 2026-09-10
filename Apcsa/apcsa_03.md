@@ -2,9 +2,7 @@
 
 在 **Java** 中，`boolean` 是一个非常重要、但相对简单的基本数据类型，表示 **“真 / 假”**（true / false）的逻辑值。
 
-------
-
-### 🟢 一、基本定义
+### 一、基本定义
 
 ```
 boolean flag = true;
@@ -16,9 +14,7 @@ boolean isFinished = false;
    ❌ `false`（假）
 - 它是 **基本类型（primitive type）**，不是对象。
 
-------
-
-### 🟣 二、使用场景
+### 二、使用场景
 
 ### 1️⃣ 控制流程语句
 
@@ -44,8 +40,6 @@ while (running) {
 }
 ```
 
-------
-
 ### 2️⃣ 与逻辑运算符结合
 
 `boolean` 可与逻辑运算符一起使用：
@@ -68,7 +62,7 @@ if (isAdult && hasTicket) {
 
 ------
 
-### 🟡 三、boolean 不是数字！
+### 三、boolean 不是数字！
 
 和 C、C++ 不同，Java 不允许用 `boolean` 当作 `0` 或 `1`。
 
@@ -82,20 +76,18 @@ boolean flag = 1;  // ❌ 错误
 如果想转换，可手动写：
 
 ```c++
-int num = flag ? 1 : 0;   // 用三元运算符实现
+int num = (flag) ? 1 : 0;   // 用三元运算符实现
 ```
-
-------
 
 ```java
 public class Boolean_Class{
    public static void main(String[] args){
-	int x = 2, y = 3;
-	System.out.println(x == y); // false
-	System.out.println(x != y); // true
-	System.out.println(2 + 4 * 3 <= 15); // true
-	System.out.println(x > 5); // false
-	System.out.println(y >= 3); // true
+     int x = 2, y = 3;
+	   System.out.println(x == y); // false
+	   System.out.println(x != y); // true
+	   System.out.println(2 + 4 * 3 <= 15); // true
+	   System.out.println(x > 5); // false
+	   System.out.println(y >= 3); // true
    }
 }
 
@@ -134,8 +126,8 @@ public class Main {
      System.out.println("a--   = " +  (a--) );
      // 查看  d++ 与 ++d 的不同
    
-     //System.out.println("d++   = " +  (d++) );
-     System.out.println("++d   = " +  (++d) );
+     //System.out.println("d++   = " +  (d++) );//25 26
+     System.out.println("++d   = " +  (++d) );//26 26
   }
 }
 ```
@@ -168,7 +160,6 @@ public class selfAddMinus{
 
 ```java
 public class Test {
- 
   public static void main(String[] args) {
      int a = 10;
      int b = 20;
@@ -181,8 +172,6 @@ public class Test {
   }
 }
 ```
-
-***
 
 ### 📌 位运算符
 
@@ -250,8 +239,8 @@ public class Test {
 
 | 操作符 | 描述                                                         | 例子                |
 | :----- | :----------------------------------------------------------- | :------------------ |
-| &&     | 称为逻辑与运算符。当且仅当两个操作数都为真，条件才为真。     | （A && B）为假。    |
-| \| \|  | 称为逻辑或操作符。如果任何两个操作数任何一个为真，条件为真。 | （A \| \| B）为真。 |
+| &&     | 称为**逻辑与**运算符。当且仅当两个操作数都为真，条件才为真。 | （A && B）为假。    |
+| \| \|  | 称为**逻辑或**操作符。如果任何两个操作数任何一个为真，条件为真。 | （A \| \| B）为真。 |
 | ！     | 称为逻辑非运算符。用来反转操作数的逻辑状态。如果条件为true，则逻辑非运算符将得到false。 | ！（A && B）为真。  |
 
 ```java
@@ -352,13 +341,12 @@ public class Test {
 该运算符用于操作对象实例，检查该对象是否是一个特定类型（类类型或接口类型）。
 
 ```java
-class Vehicle {}
- 
-public class Car extends Vehicle {
+public class Dog{} 
+public class Main{
    public static void main(String[] args){
-      Vehicle a = new Car();
-      boolean result =  a instanceof Car;
-      System.out.println( result);
+      Dog a=new Dog();
+      boolean result =  a instanceof Dog;
+      System.out.println(result);
    }
 }
 ```
@@ -399,7 +387,7 @@ Java中有三种主要的循环结构：
 ```java
 public class Test {
    public static void main(String[] args) {
-      int x = 10;
+      int x = 1;
       while( x < 10 ) {
          System.out.print("value of x : " + x );
          x++;
@@ -414,7 +402,7 @@ public class Test {
 ```java
 public class Test {
    public static void main(String[] args){
-      int x = 10;
+      int x = 1;
       do{
          System.out.print("value of x : " + x );
          x++;
@@ -523,7 +511,7 @@ public class Test {
 }
 ```
 
-### if...else if...else 语句
+### if...else if...else if语句
 
 ```java
 public class Test {

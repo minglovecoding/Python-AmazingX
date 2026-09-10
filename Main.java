@@ -1,54 +1,29 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
-
+import java.util.*;
 public class Main{
-    public static Scoreboard{
-        private String team1;
-        private String team2;
-        private int score1;
-        private int score2;
-        private boolean turn;
-
-        public Scoreboard(String name1,String name2){
-            team1=name1;
-            team2=name2;
-            score1=0;
-            score2=0;
-            turn=true;
+    public static void main(String[] args){
+        Scanner in=new Scanner(System.in);
+        int num=in.nextInt();
+        //int num1=20;
+        while(num!=0){
+            System.out.println(num%10);
+            num/=10;
         }
-        
-        public void recordPlay(int score){
-            if(score==0){
-                turn=!turn;
-            }else{
-                if(turn){
-                    score1+=score;
-                }else{
-                    score2+=score;
-                }
-            }
-        }
-
-        public String getScore(){
-            if(turn){
-                return score1+"-"+score2+"-"+team1;
-            }
-            else{
-                return score1+"-"+score2+"-"+team2;
-            }
-        }
-    }
-
-    public static void main(String[] args) throws FileNotFoundException{
-        File file = new File("data.txt");
-        Scanner sc= new Scanner(file);
-        int sum=0;
-        while (sc.hasNextInt()){
-            sum+=sc.nextInt();      
-        }
-        System.out.println(sum);
-        sc.close();
     }
 }
+
+//while语句 从1打印到10
+//for循环 从10打印到20
+//do while 从20打印到30
+
+//[]numbers 1-10
+//print 1 3 4 5 只能用break和continue
+
+//声明变量A=‘O’
+//‘A’-apple ‘O’-Orange ‘B’-Banana ‘P’-Pineapple default-Fruit 
+
+//创建一个numbers动态列表
+//在列表添加数字1-10
+//删除所有奇数
+//打印numbers里的数
+
+
