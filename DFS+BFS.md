@@ -86,18 +86,76 @@ int main() {
 **核心思想：一圈一圈往外扩，像“水波纹”。**
 
 ```c++
-queue<int> q;
-q.push(start);
-vis[start] = true;
+q.push(起点);
+标记起点;
 
-while(!q.empty()) {
-    int u = q.front(); q.pop();
-    for (int v : adj[u]) {
-        if (!vis[v]) {//如果v点没有访问
-            vis[v] = true;
-            q.push(v);
+while (!q.empty()) {
+    取出队首;
+
+    枚举四个相邻位置;
+    检查边界、障碍物和是否访问过;
+
+    更新距离;
+    加入队列;
+}
+```
+
+```c++
+/*
+4 5
+S....
+.##..
+...#.
+.....
+*/
+#include <bits/stdc++.h>
+using namespace std;
+const int NMAX = 1005;
+int n, m;
+char grid[NMAX][NMAX];
+int dist[NMAX][NMAX];
+int dx[4] = {1, -1, 0, 0};
+int dy[4] = {0, 0, 1, -1};
+bool inBorder(int x, int y) {
+    return x >= 0 && x < n && y >= 0 && y < m;
+}
+void bfs(int startX, int startY) {
+    memset(dist, -1, sizeof(dist));
+    queue<pair<int, int>> q;
+    dist[startX][startY] = 0;
+    q.push({startX, startY});
+    while (!q.empty()) {
+        auto [x, y] = q.front();
+        q.pop();
+      
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            // 检查边界
+            if (!inBorder(nx, ny)) continue;
+            // 不能经过障碍物
+            if (grid[nx][ny] == '#') continue;
+            // 已经访问过
+            if (dist[nx][ny] != -1) continue;
+            dist[nx][ny] = dist[x][y] + 1;
+            q.push({nx, ny});
         }
     }
+}
+int main() {
+    cin >> n >> m;
+    int startX = -1, startY = -1;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> grid[i][j];
+            if (grid[i][j] == 'S') {
+                startX = i;
+                startY = j;
+            }
+        }
+    }
+    bfs(startX, startY);
+    return 0;
 }
 ```
 
@@ -111,57 +169,6 @@ while(!q.empty()) {
 
 - 需要队列
 - 不能像 DFS 那样方便地做回溯
-
-```c++
-//给你一个 n × m 的迷宫（0 = 路，1 = 墙），从 (0,0) 走到 (n-1,m-1)，只能向上下左右移动，每走一步距离 +1。求最短距离。
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, m;
-int dx[4] = {1, -1, 0, 0};
-int dy[4] = {0, 0, 1, -1};
-
-int bfs(vector<vector<int>>& g) {
-    vector<vector<int>> dist(n, vector<int>(m, -1));
-    queue<pair<int,int>> q;
-
-    q.push({0, 0});
-    dist[0][0] = 0;
-
-    while (!q.empty()) {
-        auto [x, y] = q.front();
-        q.pop();
-
-        // 如果走到终点
-        if (x == n-1 && y == m-1) return dist[x][y];
-
-        for (int k = 0; k < 4; k++) {
-            int nx = x + dx[k];
-            int ny = y + dy[k];
-
-            // 越界、遇到墙、走过的都跳过
-            if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
-            if (g[nx][ny] == 1) continue;
-            if (dist[nx][ny] != -1) continue;
-
-            dist[nx][ny] = dist[x][y] + 1;
-            q.push({nx, ny});
-        }
-    }
-
-    return -1; // 走不到终点
-}
-int main() {
-    vector<vector<int>> g = {
-        {0,0,1},
-        {1,0,0},
-        {0,0,0}
-    };
-    n = g.size();
-    m = g[0].size();
-    cout << bfs(g) << endl; // 输出最短距离
-}
-```
 
 ***
 
