@@ -9,22 +9,18 @@ public class Student {
     // Instance variables
     private String name;
     private int score;
-
     // Constructor
     public Student(String name, int score) {
         this.name = name;
         this.score = score;
     }
-
     // Accessors (getters)
     public String getName() {
         return name;
     }
-
     public int getScore() {
         return score;
     }
-
     // Mutators (setters)
     public void setScore(int newScore) {
         score = newScore;
@@ -220,14 +216,28 @@ this.name = name;
 - 一个类有另一个类的对象作为成员变量
 - 从 main 或 tester 类调用你的类
 
-示例：
-
 ```java
-Student s = new Student("James", 95);
-System.out.println(s.getScore());
+class Dog {
+    public void bark() {
+        System.out.println("Woof!");
+    }
+}
+class Person {
+    public void callDog(Dog dog) {
+        dog.bark();
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        Person person = new Person();
+
+        person.callDog(dog);
+    }
+}
 ```
 
-### 📝 **健身房会员系统（GymMember）**
+### **健身房会员系统（GymMember）**
 
 某健身房需要一个程序来管理会员的信息。需要编写一个名为 **GymMember** 的类，用来保存和管理会员资料。
 

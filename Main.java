@@ -1,29 +1,27 @@
 import java.util.*;
 public class Main{
     public static void main(String[] args){
+        int[] num=new int[5];
+        int sum=0;
         Scanner in=new Scanner(System.in);
-        int num=in.nextInt();
-        //int num1=20;
-        while(num!=0){
-            System.out.println(num%10);
-            num/=10;
+        for(int i=0;i<num.length;i++){
+            num[i]=in.nextInt();
+            int sum+=num[i];
         }
+
+        int res=num[0];
+        for(int i=1;i<num.length;i++){
+            if(num[i]>res){
+                res=num[i];
+            }
+        }
+        //average
+        double avg=(sum*1.0)/num.length;
+        System.out.println(res);
+        System.out.println(avg);
     }
 }
 
-//while语句 从1打印到10
-//for循环 从10打印到20
-//do while 从20打印到30
-
-//[]numbers 1-10
-//print 1 3 4 5 只能用break和continue
-
-//声明变量A=‘O’
-//‘A’-apple ‘O’-Orange ‘B’-Banana ‘P’-Pineapple default-Fruit 
-
-//创建一个numbers动态列表
-//在列表添加数字1-10
-//删除所有奇数
-//打印numbers里的数
-
-
+//声明一个数组num num里有5个数
+//5个数是要从键盘输入的
+//输出这5个数里最大的值

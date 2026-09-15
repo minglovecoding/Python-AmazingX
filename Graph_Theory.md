@@ -514,7 +514,7 @@ USACO Silver 很喜欢这种轻度 MST 判断题。
 
 > 从 1 到其他节点的最短距离是多少？
 
-边权全是 1 → BFS（所谓最短路，就是经过最少的边）
+1. 边权全是 1 → BFS（所谓最短路，就是经过最少的边）
 
 ```c++
 queue<int> q;
@@ -533,7 +533,7 @@ while (!q.empty()) {
 }
 ```
 
-**边权只有 0/1 → 0-1** 
+2. **边权只有 0/1 → 0-1** 
 
 - 这里走BFS有问题，不一定距离+1，有时候加0，有时候加1。
 
@@ -541,70 +541,38 @@ while (!q.empty()) {
 
 ```c++
 if (w == 0) //边权 = 0
-    dq.push_front(v);//放到队首
+    dq.push_front({nx, ny});//放到队首
 else //边权 = 1
-    dq.push_back(v);//放到队尾
+    dq.push_back({nx, ny});//放到队尾
 ```
 
 ```c++
-deque<int> dq;
-vector<int> dist(n + 1, INF);
-dist[s] = 0;
-dq.push_front(s);
+deque<pair<int, int>> dq;
+dist[sx][sy] = 0;
+dq.push_front({sx, sy});
+
 while (!dq.empty()) {
-    int u = dq.front();
+    auto [x, y] = dq.front();
     dq.pop_front();
-    for (auto [v, w] : adj[u]) {
-        if (dist[v] > dist[u] + w) {
-            dist[v] = dist[u] + w;
-            if (w == 0)
-                dq.push_front(v);
+    for (int i = 0; i < 4; i++) {
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if (!border(nx, ny)) continue;
+        int cost = (grid[nx][ny] != grid[x][y]);
+        if (dist[nx][ny] > dist[x][y] + cost) {
+            dist[nx][ny] = dist[x][y] + cost;
+            if (cost == 0)
+                dq.push_front({nx, ny});
             else
-                dq.push_back(v);
+                dq.push_back({nx, ny});
         }
     }
 }
 ```
 
-**BFS 边权 >= 0 → Dijkstra**
+> 例洛谷P4554
 
-例如：
-
-```
-        5
-    A ------ B
-    |        |
-  10|        |2
-    |        |
-    C ------ D
-        1
-```
-
-从 A 出发。
-
-可能：
-
-```c++
-A → C = 10
-
-A → B = 5
-
-A → B → D
-= 5 + 2
-= 7
-
-A → B → D → C
-= 5 + 2 + 1
-= 8
-```
-
-所以：
-
-```c++
-dist[B] = 5
-dist[D] = 7
-dist[C] = 8
-```
+3. **BFS 边权 >= 0 → Dijkstra**
 
 > **从目前所有未处理节点中，选择距离起点最近的那个。dist[v]=min(dist[v],dist[u]+w)**
 

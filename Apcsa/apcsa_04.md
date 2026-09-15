@@ -91,11 +91,16 @@ public class Main {
 > print sum=1+2+3+...+99+100。
 
 ```java
-int sum=0;
-int number=1;
-while(number<=100){
-   sum+=number;
-   number++;
+public class Main{
+    public static void main(String[] args){
+        int num=1;
+        int res=0;
+        while(num<=100){
+            res+=num;
+            num++;
+        }
+        System.out.println(res);
+    }
 }
 ```
 
