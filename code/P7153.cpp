@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-
 using ll = long long;
-
 struct Point {
     ll x, y;
     int id;
@@ -108,6 +106,7 @@ int main() {
     // 统计宽度 >= 高度
     Result horizontal = countSubsets(cows);
 
+    
     // 交换 x、y，统计原问题中高度 >= 宽度
     for (Point& cow : cows) {
         swap(cow.x, cow.y);
@@ -115,6 +114,7 @@ int main() {
 
     Result vertical = countSubsets(cows);
 
+    //第一次枚举左右端点只处理“横向跨度更大”的子集；后用同样算法处理“纵向跨度更大”的子集，最后去除宽高相等造成的重复。
     // 正方形包围盒在两次统计中都出现，因此减掉一次
     ll answer =
         horizontal.total
