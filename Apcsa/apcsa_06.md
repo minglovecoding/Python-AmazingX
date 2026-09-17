@@ -3,11 +3,11 @@
 Java语言使用new操作符来创建数组，语法如下：
 
 ```java
-arrayRefVar = new dataType[arraySize];
+double[] li=new double[3];
 ```
 
 ```java
-import java.util.Scanner;
+import java.util.*;
 public class Main{
     public static void main(String[] agrs){
         int size=3;
@@ -21,14 +21,6 @@ public class Main{
             average+=li[i];
         }
         average/=size;
-    //index between 0 and size-1
-    /*
-    int i=0;
-    while(i<size){
-       average+=mylist[i];
-       i++;
-    }
-    */
     System.out.println("Average is "+average);
     //Arrays.toString(average)
   }
@@ -128,11 +120,11 @@ public class Main{
 public class Main{
   public static void main(String[] args){
     for(int i=0;i<array.length;i++){
-        if(array[i]%2!=0){
-          return false;
+        if(array[i]%2==0){
+          return true;
         } 
     }
-    return true;
+    return false;
   }
 }
 ```
