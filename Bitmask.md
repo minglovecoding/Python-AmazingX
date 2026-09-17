@@ -1,8 +1,10 @@
 ### 🧩 状压 DP（Bitmask）
 
-> 用一个二进制整数 `mask` 表示哪些元素已经被使用，然后在所有子集上做 DP，通常 N ≤ 20。
+当元素数量较少，并且问题的关键是“已经处理了哪些元素，以及当前处于什么位置或状态”时，优先考虑状态压缩 DP。
 
-例如：现在只有4头牛0 1 2 3，用4个二进制位可以表示它们是否被选择，比如mask=0101
+> 用一个二进制整数 `mask` 表示哪些元素已经被使用，然后在所有子集上做 DP，通常 **N ≤ 20**。
+
+例如：现在只有4头牛0 1 2 3，用4个二进制位可以表示它们是否被选择，比如mask=0101。
 
 表示：
 
@@ -112,7 +114,7 @@ if (!(mask & (1 << j))) {
 ```c++
 for (int mask = 0; mask < (1 << N); mask++) {
     for (int i = 0; i < N; i++) {
-        if (mask & (1 << i)) continue;
+        if (mask & (1 << i)) continue;  //第i头牛存在的话跳过
         int newMask = mask | (1 << i);
         dp[newMask] = max(
             dp[newMask],
@@ -187,7 +189,7 @@ for (int mask = 0; mask < (1 << N); mask++) { //1左移N位
     for (int i = 0; i < N; i++) {
         if (!(mask & (1 << i)))
             continue;
-        for (int j = 0; j < N; j++) {
+        for (int j = 0; j < N; j++) {//i已经访问 j没有访问
             if (mask & (1 << j))
                 continue;
             int newMask = mask | (1 << j);
