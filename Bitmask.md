@@ -201,7 +201,9 @@ for (int mask = 0; mask < (1 << N); mask++) { //1左移N位
 }
 ```
 
-### 📌 popcount
+> 洛谷P3694、P1433
+
+### 📌 __builtin_popcount(x)
 
 > mask 里面选了几个东西。
 
@@ -210,6 +212,16 @@ int cnt = __builtin_popcount(mask);
 ```
 
 例如：mask=101101 有4个1，**__builtin_popcount(mask) == 4**。
+
+### 📌 __builtin_ctz(x)
+
+> 统计二进制末尾连续 `0` 的数量，`ctz` 是 count trailing zeros。
+
+```c++
+int x = 12;  // 二进制：1100
+cout << __builtin_ctz(x);
+//2
+```
 
 ### 📌 Matching DP
 
