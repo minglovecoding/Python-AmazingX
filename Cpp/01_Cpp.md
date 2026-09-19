@@ -128,20 +128,16 @@ int main ()
 }
 ```
 
-### 📌 C++数学常数
+### 📌 C++数学常量
 
 ```c++
 #include <iostream>
 #include <cmath>
 #include <numbers>
 using namespace std;
-constexpr double PI  = 3.14159265358979323846;
-constexpr double E   = 2.71828182845904523536;
-constexpr double PHI = 1.61803398874989484820;
+const double PI=3.14;
 int main() {
 	cout<<PI<<endl;
-	cout<<E<<endl;
-	cout<<PHI<<endl;
   return 0;
 }
 ```
