@@ -16,7 +16,7 @@ C++ 编程入门课
 
 ## 🧑🏽‍💻 刷题网站
 
-- [leetcode](https://leetcode.cn/) 力扣
+- [CSES](https://cses.fi/problemset/)
 - [usaco](https://usaco.org/index.php) 美国高中信息学竞赛
 - codeforces cf
 - 洛谷
