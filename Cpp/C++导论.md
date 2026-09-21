@@ -47,10 +47,10 @@ C++ 编程入门课
 
 ```c++
 #include <iostream>
-using namespace std;
+//using namespace std;
 int main()
 {
-   cout << "Hello, world!" << endl;
+    cout << "Hello, world!" << endl;
     //可以用 "\n" 代替以上代码里的 endl。
     return 0;
 }
@@ -567,44 +567,52 @@ int main ()
 }
 ```
 
-```c++
-for (int i = 0; i < 10; i++) {
-    if (i == 5) break;
-    //if (i == 5) continue;
-    cout << i << " ";
+### 📌 Switch
+
+```C++
+#include <iostream>
+using namespace std;
+
+int main() {
+    int day;
+    cin >> day;
+
+    switch (day) {
+        case 1:
+            cout << "Monday";
+            break;
+
+        case 2:
+            cout << "Tuesday";
+            break;
+
+        case 3:
+            cout << "Wednesday";
+            break;
+
+        default:
+            cout << "Invalid day";
+            break;
+    }
+
+    return 0;
 }
 ```
 
-### 📌 调用函数
+### 📌 Continue和Break
 
-```cpp
-#include <iostream>
-using namespace std;
- 
-int sum(int a, int b)
-{
-  int result;
- 
-  result = a + b;
-  
-  return (result);
+```c++
+for (int i = 1; i <= 5; i++) {
+    if (i == 3) {
+        break;
+    }
+    cout << i << " ";
 }
- 
-int main ()
-{
-   // 局部变量声明
-   int a = 100;
-   int b = 200;
-   int result;
- 
-   // 调用函数来添加值
-   result = sum(a, b);
-   cout << "Total value is :" << result << endl;
- 
-   // 再次调用函数
-   //result = sum(a);
-   //cout << "Total value is :" << result << endl;
- 
-   return 0;
+
+for (int i = 1; i <= 5; i++) {
+    if (i == 3) {
+        continue;
+    }
+    cout << i << " ";
 }
 ```
