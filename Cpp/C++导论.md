@@ -20,6 +20,7 @@ C++ 编程入门课
 - [usaco](https://usaco.org/index.php) 美国高中信息学竞赛
 - codeforces cf
 - 洛谷
+- [CoderTiger](codetiger.me/project/usaco)
 
 ---
 
