@@ -138,13 +138,12 @@ public static void selectionSort(int arr[]) {
         arr[i] = temp;
     }
 }
-
 ```
 
-Insection sort: 把数组/列表分成“左边已排序”和“右边未排序”，每次从右边拿一个元素，插入到左边的正确位置。
+Insection sort: 把数组分成“左边已排序”和“右边未排序”，每次从右边拿一个元素，插入到左边的正确位置。
 
 ```java
-public void insertionSort(ArrayList<Integer> list) {
+public static void insertionSort(ArrayList<Integer> list) {
     for (int i = 1; i < list.size(); i++) {
         int current = list.remove(i);   // removes & returns element at i
         int index = i - 1;

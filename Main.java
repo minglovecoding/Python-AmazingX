@@ -1,28 +1,33 @@
-//6
-//4 3 0 5 1 2
-
-//0 0 0 3 1 2
-//1≤n≤100，0≤a≤10
 import java.util.*;
 public class Main{
-    public static void main(String[] args){
-        Scanner in=new Scanner(System.in);
-        int n=in.nextInt();
-        int[] a=new int[101];
-        for(int i=0;i<n;i++){
-            a[i]=in.nextInt();
-        }
-        for(int i=0;i<n;i++){
-            int j=i-1;
-            int cnt=0;
-            while(j>=0){
-                if(a[j]<a[i]) cnt++;
-                j--;
+    public static void selectionSort(int arr[]) {
+    for (int i = 0; i < arr.length - 1; i++) {
+        // find smallest from i to end of array
+        int min_idx = i;
+        for (int j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[min_idx]) {
+                min_idx = j;
             }
-            System.out.print(cnt+" ");
         }
-        System.out.println();
+        // swap minimum with element at index i
+        int temp = arr[min_idx];
+        arr[min_idx] = arr[i];
+        arr[i] = temp;
     }
 }
-//for循环遍历每一头鱼index
-//while循环往左遍历每头鱼可爱值是否小于本身
+
+    public static void main(String[] args){
+        int[] a={4,5,2,1,3};
+        selectionSort(a);
+        System.out.println(Arrays.toString(a));
+    }
+}
+
+//构造一个names的动态数组
+//add Ricky Sean
+//把names所有元素打印
+//打印size大小
+//各自单独取出自己的名字
+
+//{4,5,2,1,3}
+//{1,2,3,4,5}
