@@ -12,7 +12,7 @@
 
 **Logic gate（逻辑门）**接收代表 `0 / 1` 的输入，产生 `0 / 1` 的输出。**Truth table（真值表）**列出所有可能的输入组合及对应输出。单个 NOT 门只有一个输入；本章的其余五种门按两个输入学习。电路可以把多个门接起来，从而处理三个或更多外部输入。
 
-<img src="/Users/mingo/Desktop/Python-AmazingX/images/logic.png" style="zoom: 25%;" />
+<img src="../images/logic.png" style="zoom: 25%;" />
 
 **认图诀窍：** NOT 是三角形后加小圆圈；NAND = AND 后加小圆圈；NOR = OR 后加小圆圈；XOR 比 OR 在输入侧多一条弧线。小圆圈表示输出取反。
 
