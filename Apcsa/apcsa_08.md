@@ -227,8 +227,9 @@ public class Main {
     // 题8：编写 countHorizontalPairs，统计每行中左右相邻且相等的元素对数。
     // 例如 {{2, 2, 2}, {3, 4, 4}} 返回 3：第一行有两对，第二行有一对
     
-    // Homework：编写 hasAdjacentSeats：如果某一行存在两个左右相邻的空座位，返回 true；否则返回 false。
+    // Homework：编写 hasAdjacentSeats：0 表示空座位，1 表示已占用。
+    //如果某一行存在两个左右相邻的空座位，返回 true；否则返回 false。
     public static boolean hasAdjacentSeats(int[][] seats){
-    //
+    
     }
 ```
