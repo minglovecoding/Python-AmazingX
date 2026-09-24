@@ -16,7 +16,7 @@ int [][] mat={{1,2,3},{1,2},{3,4,5}};
 //mat[0]={1,2,3}
 //mat[1]={1,2}
 //mat[2]={3,4,5}
-//mat.length、mat[0].length
+//row: mat.length、column: mat[0].length
 String [][] seatinginfo={{"America","Bob"},{"Jake","rose"}};
 ```
 
@@ -224,89 +224,11 @@ public class Main {
         return false;
     }
 
-    // 题8：blur（上下左右+自己平均，边界只算存在的）
-    public static int[][] blur(int[][] pixels) {
-        int rows = pixels.length;
-        int cols = pixels[0].length;
-        int[][] out = new int[rows][cols];
-
-        int[] dr = {0, -1, 1, 0, 0};
-        int[] dc = {0, 0, 0, -1, 1};
-
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                int sum = 0, count = 0;
-                for (int k = 0; k < 5; k++) {
-                    int nr = r + dr[k];
-                    int nc = c + dc[k];
-                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-                        sum += pixels[nr][nc];
-                        count++;
-                    }
-                }
-                out[r][c] = sum / count;
-            }
-        }
-        return out;
+    // 题8：编写 countHorizontalPairs，统计每行中左右相邻且相等的元素对数。
+    // 例如 {{2, 2, 2}, {3, 4, 4}} 返回 3：第一行有两对，第二行有一对
+    
+    // Homework：编写 hasAdjacentSeats：如果某一行存在两个左右相邻的空座位，返回 true；否则返回 false。
+    public static boolean hasAdjacentSeats(int[][] seats){
+    //
     }
-
-    // 题9：只能向右或向下，判断是否有路径（0可走，1墙）
-    public static boolean hasPath(int[][] maze) {
-        int rows = maze.length;
-        int cols = maze[0].length;
-        if (maze[0][0] == 1 || maze[rows - 1][cols - 1] == 1) return false;
-
-        boolean[][] dp = new boolean[rows][cols];
-        dp[0][0] = true;
-
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (maze[r][c] == 1) continue;
-                if (r == 0 && c == 0) continue;
-                boolean fromUp = (r > 0) && dp[r - 1][c];
-                boolean fromLeft = (c > 0) && dp[r][c - 1];
-                dp[r][c] = fromUp || fromLeft;
-            }
-        }
-        return dp[rows - 1][cols - 1];
-    }
-
-    // 可选：简单测试入口（不需要可删）
-    public static void main(String[] args) {
-        int[][] grid = {
-                {1, 2, 3},
-                {4, 5, 6}
-        };
-        System.out.println(sumAll(grid));        // 21
-        System.out.println(countEvens(grid));    // 3
-        System.out.println(Arrays.toString(rowMaxes(grid))); // [3, 6]
-
-        int[][] m = {
-                {1, 2, 3},
-                {4, 5, 6},
-                {7, 8, 9}
-        };
-        System.out.println(mainDiagSum(m));  // 15
-        System.out.println(antiDiagSum(m));  // 15
-
-        int[][] avg = neighborAverages(m);
-        System.out.println(Arrays.deepToString(avg)); // [[3, 4], [6, 7]]
-
-        String[][] seats = {
-                {"Amy", "", "Bob"},
-                {"", "Cody", ""}
-        };
-        System.out.println(containsName(seats, "Cody")); // true
-
-        int[][] blurred = blur(m);
-        System.out.println(Arrays.deepToString(blurred));
-
-        int[][] maze = {
-                {0, 0, 1},
-                {1, 0, 0},
-                {1, 1, 0}
-        };
-        System.out.println(hasPath(maze)); // true
-    }
-}
 ```
