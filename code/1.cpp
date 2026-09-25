@@ -3,3 +3,9 @@
 //g[i][j][p]=g[i−1][j−1][p]+f[i−1][j−1][p−1]
 //f[i][0][0]=1
 //f[n][m][k]
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    cout<<"hello"<<endl;
+    return 0;
+}
