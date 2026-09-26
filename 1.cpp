@@ -1,20 +1,20 @@
 #include <iostream>
+#include <ctime>
+ 
 using namespace std;
-int main()
+ 
+int main( )
 {
-    int a=30;
-    int res=0;
-    do{
-        cout<<a<<"\t";
-        res+=a;
-        a--;
-    }while(a>=20);
-    cout<<"\n"<<res<<"\n";
+   // 基于当前系统的当前日期/时间
+   time_t now = time(0);
+   
+   // 把 now 转换为字符串形式
+   char* dt = ctime(&now);
+ 
+   cout << "本地日期和时间：" << dt << endl;
+ 
+   // 把 now 转换为 tm 结构
+   tm *gmtm = gmtime(&now);
+   dt = asctime(gmtm);
+   cout << "UTC 日期和时间："<< dt << endl;
 }
-
-//10 1-10
-//输出sum
-
-//用while语句打印20-10所有数
-
-//用do while 语句输出30-20的累加值

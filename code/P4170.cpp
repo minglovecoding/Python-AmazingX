@@ -10,6 +10,7 @@ int dp[Nmax][Nmax];
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
+    
     string s;
     cin >> s;
     int n = s.size();

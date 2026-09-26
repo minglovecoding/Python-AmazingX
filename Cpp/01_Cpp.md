@@ -270,7 +270,7 @@ int main ()
    double avg;
  
    // 传递一个指向数组的指针作为参数
-   avg = getAverage( balance, 5 ) ;
+   avg = getAverage(balance, 5 ) ;
  
    // 输出返回值
    cout << "平均值是：" << avg << endl; 
@@ -357,6 +357,8 @@ int main() {
     return 0;
 }		
 ```
+
+***
 
 ### 📌 C++字符串
 
@@ -559,7 +561,7 @@ int main ()
 
 指向指针的指针是一种多级间接寻址的形式，或者说是一个指针链。
 
-<img src="/Users/zhoumingzhao/Desktop/Python-AmazingX/images/pointer.png" alt="pointer" style="zoom:150%;" />
+<img src="../images/pointer.png" alt="pointer" style="zoom:150%;" />
 
 一个指针包含一个变量的地址。当我们定义一个指向指针的指针时，第一个指针包含了第二个指针的地址，第二个指针指向包含实际值的位置。
 
@@ -764,7 +766,7 @@ int main() {
  
 using namespace std;
  
-double vals[] = {10.1, 12.6, 33.1, 24.1, 50.0};
+double vals[5] = {10.1, 12.6, 33.1, 24.1, 50.0};
  
 double& setValues(int i) {  
    double& ref = vals[i];    
@@ -820,6 +822,8 @@ int main( )
 }
 ```
 
+***
+
 ### 📌 C++ 基本的输入输出
 
 1.输入输出
@@ -861,26 +865,86 @@ cin.tie(0);
 
 ### 📌 C++ 结构体
 
+> 把多个相关的数据组合成一个新的数据类型。
+
+比如我们想表示一个学生，需要姓名、年龄、成绩。使用结构体后，可以把它们打包成一个 `Student`。
+
 ```C++
-#include<bits/stdc++.h>
+#include <iostream>
+#include <string>
 using namespace std;
-struct Person{
-	char name[10];
-	int age;
-	char sex[5];
-	int height;
-	string school;
-}; 
-int main()
-{
-   Person Johnson;
-   strcpy(Johnson.name,"Johnson");
-   Johnson.age=18;
-   strcpy(Johnson.sex,"male");
-   Johnson.height=175;
-   Johnson.school="shenzhen middle school";
-   cout<<Johnson.name<<" "<<Johnson.age<<" "<<Johnson.school<<endl;
-   return 0;
+struct Student {
+    string name;
+    int age;
+    double score;
+};
+int main() {
+    Student s;
+    s.name = "Tom";
+    s.age = 18;
+    s.score = 92.5;
+    cout << s.name << endl;
+    cout << s.age << endl;
+    cout << s.score << endl;
+    return 0;
+}
+```
+
+### 2. 使用 `.` 访问成员
+
+假设：
+
+```
+Student s;
+```
+
+那么：
+
+```
+s.name  //成员变量
+s.age
+s.score
+```
+
+就是访问 `s` 内部的数据。
+
+### 3. 结构体数组
+
+这个在算法题里非常常见：
+
+```c++
+Student students[3] = {
+    {"Tom", 18, 92.5},
+    {"Jack", 19, 88.0},
+    {"Amy", 17, 96.5}
+};
+```
+
+访问：
+
+```c++
+cout << students[0].name << endl;
+cout << students[1].age << endl;
+```
+
+### 4. 更常见的是 `vector<struct>`
+
+写 USACO / C++ 算法题时，你会经常看到：
+
+```c++
+#include <iostream>
+#include <vector>
+using namespace std;
+struct Point {
+    int x;
+    int y;
+};
+int main() {
+    vector<Point> points;  //一个专门存储 `Point` 的动态数组。
+    points.push_back({2, 3});
+    points.push_back({5, 7});
+    points.push_back({8, 1});
+    cout << points[0].x << " " << points[0].y << endl;
 }
 ```
 
