@@ -1,3 +1,26 @@
+# VS Code 本地配置
 .vscode/
+
+# macOS
+.DS_Store
+
+# Vim / 编辑器临时文件
+*.swp
+*.swo
+
+# C / C++ 编译产物
 a.out
 *.out
+*.o
+
+# Java 编译产物
+*.class
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 临时文件
+*.tmp
+*.log
