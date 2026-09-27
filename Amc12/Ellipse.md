@@ -321,7 +321,6 @@ $$
 $$
 
 2025 AMC 12A 第14题主要使用：
-
 $$
 e=\frac ca,\qquad b=a\sqrt{1-e^2},\qquad S=\pi ab
 $$

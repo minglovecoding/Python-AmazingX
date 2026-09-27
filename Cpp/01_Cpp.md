@@ -36,6 +36,8 @@ int main ()
 
 Lambda 表达式本质上与函数声明非常类似。Lambda 表达式具体形式如下:
 
+> **lambda 函数通常用在“只需要临时写一小段函数”的地方**。
+
 ```c++
 #1
 [](int x, int y){ return x < y ; }
@@ -125,7 +127,7 @@ int main ()
    // 数学运算
    cout << "sin(d) :" << sin(d) << endl;
    cout << "abs(i)  :" << abs(i) << endl;
-   cout << "floor(d) :" << floor(d) << endl;
+   cout << "floor(d) :" << floor(d) << endl; //ceil
    cout << "sqrt(f) :" << sqrt(f) << endl;
    cout << "pow( d, 2) :" << pow(d, 2) << endl;
  
