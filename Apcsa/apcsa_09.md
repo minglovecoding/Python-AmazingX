@@ -1,5 +1,7 @@
 ## 📚Inheritance
 
+> 理解父类、子类及继承关系, 设计和编写继承关系已明确排除在考试范围外。
+
 1) 继承基础概念
 
 ```java
@@ -89,7 +91,7 @@ public class Main {
     obj.print(5.0); 
   }
 }
-//overriding是相同的函数名，不同的函数参数
+//overloading是相同的函数名，不同的函数参数
 ```
 
 ```java
@@ -120,7 +122,7 @@ public class Main {
 ```java
 //同一个“父类类型”的引用，指向不同“子类对象”时，调用同一个方法名，会因为对象真实类型不同而表现出不同的行为。
 class Animal {
-  public String speak() { return "???"; }
+  public String speak() { return "Animal"; }
 }
 
 class Dog extends Animal {
