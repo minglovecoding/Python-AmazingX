@@ -122,20 +122,18 @@ public static void mystery(int n) {
 
 归并排序
 
+![](../images/mergeSort.png)
+
 ```java
 import java.util.Arrays;
-
 public class MergeSortVersion {
-
     // Merges the left/right elements into a sorted result.
     // Precondition: left/right are sorted
     public static void merge(int[] result, int[] left, int[] right) {
         int i1 = 0; // index into left array
         int i2 = 0; // index into right array
-
         for (int i = 0; i < result.length; i++) {
-            if (i2 >= right.length ||
-                (i1 < left.length && left[i1] <= right[i2])) {
+            if ((i1 < left.length && left[i1] <= right[i2])||i2 >= right.length) {
                 result[i] = left[i1]; // take from left
                 i1++;
             } else {
@@ -144,18 +142,15 @@ public class MergeSortVersion {
             }
         }
     }
-
     // Rearranges the elements of a into sorted order using the merge sort algorithm (recursive).
     public static void mergeSort(int[] a) {
         if (a.length >= 2) {
             // split array into two halves
             int[] left  = Arrays.copyOfRange(a, 0, a.length / 2);
             int[] right = Arrays.copyOfRange(a, a.length / 2, a.length);
-
             // sort the two halves
             mergeSort(left);
             mergeSort(right);
-
             // merge the sorted halves into a sorted whole
             merge(a, left, right);
         }
@@ -180,7 +175,7 @@ public class MergeSortVersion {
 ```java
 public static void mystery1(int n) {
     if (n <= 0) {
-        System.out.print("X ");
+        System.out.print("X");
     } else {
         System.out.print(n + " ");
         mystery1(n - 2);
