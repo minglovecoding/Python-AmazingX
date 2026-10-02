@@ -182,7 +182,7 @@ int main(){
 ```c++
 #include<iostream>
 #include<string>
-#include<map>
+#include<unordered_map>
 using namespace std;
 int main(){
    unordered_map<string,int>goods;

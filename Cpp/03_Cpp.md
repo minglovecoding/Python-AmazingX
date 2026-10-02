@@ -852,6 +852,66 @@ int main() {
 }
 ```
 
-### 📌 **课后作业**
+### **📌 low_bound和upper_bound**
 
-https://www.runoob.com/cplusplus/cpp-examples.html
+```
+#include <algorithm>
+```
+
+默认按升序查找：
+
+| 函数                         | 找到的位置                     |
+| ---------------------------- | ------------------------------ |
+| `lower_bound(begin, end, x)` | 第一个 **大于等于 `x`** 的元素 |
+| `upper_bound(begin, end, x)` | 第一个 **大于 `x`** 的元素     |
+
+查找范围是 **`[begin, end)`**：包含 `begin`，不包含 `end`。找不到时返回 `end`。
+
+### 1. 普通数组
+
+```C++
+int a[] = {1, 2, 2, 2, 4, 6};
+int n = 6;
+
+int l = lower_bound(a, a + n, 2) - a;
+int r = upper_bound(a, a + n, 2) - a;
+
+cout << l << '\n';  // 1：第一个 >= 2 的元素下标
+cout << r << '\n';  // 4：第一个 > 2 的元素下标
+```
+
+**函数返回的是位置（指针或迭代器），减去起始位置才能得到下标。**
+
+### 2. vector
+
+```c++
+vector<int> a = {1, 2, 2, 2, 4, 6};
+
+auto it = lower_bound(a.begin(), a.end(), 2);
+
+int index = it - a.begin();  // 下标：1
+
+if (it != a.end()) {
+    cout << *it;            // 元素值：2
+}
+```
+
+`upper_bound` 的写法相同：
+
+```c++
+auto it = upper_bound(a.begin(), a.end(), 2);
+// it 指向 4
+```
+
+### 3. 找不到时
+
+```c++
+int index = lower_bound(a.begin(), a.end(), 10) - a.begin();
+// index == a.size()
+```
+
+此时返回的是尾后位置，**不能用 `a[index]` 或 `*it` 读取元素**。
+
+对于普通数组和 `vector`，两者的查找时间复杂度都是 **`O(log n)`**。
+
+总结：**lower 找 `>=`，upper 找 `>`。**
