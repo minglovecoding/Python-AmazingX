@@ -69,11 +69,6 @@ struct Node {
     int data;
     Node* next;
 };
-Node* head = nullptr;
-Node* newNode = new Node{10, nullptr};
-Node* newNode2 = new Node{10, nullptr};
-head = newNode; // 插入新节点
-head.next = newNode2;
 
 list<int> l1;                // 空list
 list<int> l2(5);             // 5个元素，默认值0
@@ -91,7 +86,6 @@ l.insert(it, 15);       // 在第2个位置插入15
 l.erase(it);            // 删除第2个位置的元素
 
 l.clear();              // 清空
-
 ```
 
 ### 📌 **栈（Stack）**
