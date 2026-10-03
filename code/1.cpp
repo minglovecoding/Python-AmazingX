@@ -1,12 +1,14 @@
-#include <iostream>
+#include<iostream>
+#include<set>
 using namespace std;
- 
-int main( )
-{
-    vector<int>v;
-    v.push_back(1);
-    v.push_back(2);
-    v.push_back(3);
-
-    return 0;
+int main(){
+   set<int>s1;
+   s1.insert(1);
+   s1.insert(2);
+   s1.insert(3);
+   s1.insert(2);
+   s1.insert(1);
+   for(auto iter=s1.begin();iter!=s1.end();iter++){
+      cout<<*iter<<endl;
+   }
 }
