@@ -28,7 +28,7 @@ using namespace std;
 ### 升序排序
 
 ```cpp
-int a[] = {5, 2, 4, 1, 3};
+int a[6] = {5, 2, 4, 1, 3};
 int n = 5;
 sort(a, a + n); // 1 2 3 4 5
 
@@ -65,7 +65,7 @@ int w = min({3, 7, 5});  // 3
 ### 更新答案
 
 ```cpp
-int a[] = {3, 8, 2, 6};
+int a[4] = {3, 8, 2, 6};
 int ans = a[0];
 for (int i = 1; i < 4; i++) {
     ans = max(ans, a[i]);
@@ -76,7 +76,7 @@ cout << ans; // 8
 ### 查找整个范围的最大、最小元素
 
 ```cpp
-int a[] = {3, 8, 2, 6};
+int a[4] = {3, 8, 2, 6};
 int biggest = *max_element(a, a + 4);  // 8
 int smallest = *min_element(a, a + 4); // 2
 int index = max_element(a, a + 4) - a; // 最大值下标：1
@@ -219,6 +219,7 @@ if (pos != string::npos) {
 ### 读取一整行：getline
 
 ```cpp
+//a b c
 string line;
 getline(cin, line); // 可以读取含空格的一整行
 ```
@@ -260,6 +261,7 @@ reverse(a, a + 4); // 4 3 2 1
 ```cpp
 int a[100];
 fill(a, a + 100, -1); // 所有元素设为 -1
+//memset(a,-1,sizeof(a))
 
 vector<int> v(100);
 fill(v.begin(), v.end(), 5); // 所有元素设为 5
@@ -283,7 +285,7 @@ fill(a + 1, a + 4, 0); // 1 0 0 0 5
 语法：`accumulate(起点, 终点, 初始值)`。
 
 ```cpp
-int a[] = {1, 2, 3, 4};
+int a[4] = {1, 2, 3, 4};
 long long sum = accumulate(a, a + 4, 0LL); // 10
 
 vector<int> v = {10, 20, 30};
@@ -303,7 +305,7 @@ int sum = accumulate(a, a + 4, 100); // 100 + 1 + 2 + 3 + 4 = 110
 头文件：`<algorithm>`。
 
 ```cpp
-int a[] = {1, 2, 2, 3, 2};
+int a[5] = {1, 2, 2, 3, 2};
 int cnt = count(a, a + 5, 2); // 3
 
 string s = "banana";
@@ -474,8 +476,8 @@ for (int i = 0; i < n; i++) {
 ### 检查上下左右四个位置
 
 ```cpp
-int dx[] = {-1, 1, 0, 0};
-int dy[] = {0, 0, -1, 1};
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
 
 // 假设 (x, y) 是网格中的一个位置
 for (int k = 0; k < 4; k++) {

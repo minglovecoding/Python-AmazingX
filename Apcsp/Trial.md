@@ -437,6 +437,166 @@ PrintTrade("Mote", "Rook", "potion", 2);
 >
 > “Given a call with its arguments in the wrong order, what comes out?”
 
+### 5B. Quest 4 — Return Values, Boolean Functions & Conditional Logic
+
+Quest 4 进一步练习了 **return value、条件判断，以及返回 `bool` 的函数**。
+
+```csharp
+int CritDamage(int attack, int roll)
+{
+    if (roll == 6)
+    {
+        return attack * 2;
+    }
+    else if (roll == 1)
+    {
+        return attack * 0;
+    }
+    else
+    {
+        return attack;
+    }
+}
+```
+
+这个函数有两个 parameters：
+
+```text
+attack
+roll
+```
+
+返回类型：
+
+```text
+int
+```
+
+说明这个函数最终会返回一个整数。
+
+### Example 1
+
+```csharp
+CritDamage(10, 6);
+```
+
+```text
+roll == 6
+→ true
+→ return 10 * 2
+→ 20
+```
+
+### Example 2
+
+```csharp
+CritDamage(10, 1);
+```
+
+```text
+roll == 6 → false
+roll == 1 → true
+→ return 10 * 0
+→ 0
+```
+
+### Example 3
+
+```csharp
+CritDamage(10, 4);
+```
+
+```text
+roll == 6 → false
+roll == 1 → false
+else
+→ return 10
+```
+
+> 一旦执行 `return`，当前函数会立即结束。
+
+```csharp
+bool IsLowHealth(int hp, int maxHp)
+{
+    return hp <= maxHp / 3;
+}
+```
+
+返回类型：
+
+```text
+bool
+```
+
+所以这个函数只能返回：
+
+```text
+true
+```
+
+或：
+
+```text
+false
+```
+
+### Example 1
+
+```csharp
+IsLowHealth(20, 90);
+```
+
+```text
+maxHp / 3 = 30
+20 <= 30
+→ true
+```
+
+### Example 2
+
+```csharp
+IsLowHealth(40, 90);
+```
+
+```text
+40 <= 30
+→ false
+```
+
+### Boolean Expression 可以直接 `return`
+
+```csharp
+bool IsLowHealth(int hp, int maxHp)
+{
+    return hp <= maxHp / 3;
+}
+```
+
+等价于：
+
+```csharp
+bool IsLowHealth(int hp, int maxHp)
+{
+    if (hp <= maxHp / 3)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+```
+
+第一种写法更简洁。
+
+### Quest 4 需要掌握：
+
+- `int` 函数返回整数
+- `bool` 函数返回 `true / false`
+- 比较表达式本身就是 Boolean expression
+- `return` 会立即结束当前函数
+- 参数顺序仍然很重要
 
 ### 6. Return Values
 

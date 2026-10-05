@@ -203,13 +203,13 @@ cout << *it; // 30
 
 | 函数 | 功能 | 示例 |
 |---|---|---|
-| abs | 绝对值，有多种类型重载 | `abs(-5)` → 5 |
+| **abs** | 绝对值，有多种类型重载 | `abs(-5)` → 5 |
 | fabs | 浮点绝对值 | `fabs(-5.5)` → 5.5 |
-| sqrt | 平方根 | `sqrt(16.0)` → 4.0 |
+| **sqrt** | 平方根 | `sqrt(16.0)` → 4.0 |
 | cbrt | 立方根 | `cbrt(27.0)` → 约 3.0 |
-| ceil | 向上取整，返回浮点值 | `ceil(2.3)` → 3.0 |
-| floor | 向下取整，返回浮点值 | `floor(-2.3)` → -3.0 |
-| pow | 幂运算 | `pow(4.0, 2.0)` → 16.0 |
+| **ceil** | 向上取整，返回浮点值 | `ceil(2.3)` → 3.0 |
+| **floor** | 向下取整，返回浮点值 | `floor(-2.3)` → -3.0 |
+| **pow** | 幂运算 | `pow(4.0, 2.0)` → 16.0 |
 | fmod | 浮点余数 | `fmod(5.3, 2.0)` → 约 1.3 |
 | fmax、fmin | 浮点最大、最小值 | `fmax(3.5, 4.2)` → 4.2 |
 | sin、cos、tan | 三角函数，参数为弧度 | `sin(0.0)` → 0.0 |
@@ -500,7 +500,10 @@ compare 返回负数、0、正数分别表示小于、相等、大于。c_str �
 ```cpp
 pair<int, string> p = {1, "hello"};
 cout << p.first << ' ' << p.second;
-
+//vector<pair<int,int>>cows;
+//cow.push_back({x,y});
+//tuple<int,int,int>Three_D;
+//Three_D.push_back({x,y,z});
 auto q = make_pair(1, string("hello")); // pair<int, string>
 ```
 
@@ -539,7 +542,7 @@ move 本身不搬运数据，而是将表达式转换为可供移动操作使用
 ### 13.1 普通数组
 
 ```cpp
-int a[] = {1, 2, 2, 2, 4, 6};
+int a[6] = {1, 2, 2, 2, 4, 6};
 int n = 6;
 int l = lower_bound(a, a + n, 2) - a; // 1
 int r = upper_bound(a, a + n, 2) - a; // 4
