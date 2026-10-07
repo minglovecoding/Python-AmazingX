@@ -180,53 +180,39 @@ pos[场次][牛编号] = 排名位置
 
 ```cpp
 #include <iostream>
-#include <vector>
 using namespace std;
-
+int pos[15][25];
 int main() {
-    int k, n;
-    cin >> k >> n;
-    vector<vector<int>> pos(k, vector<int>(n + 1));
-    for (int round = 0; round < k; round++) {
-        for (int rank = 0; rank < n; rank++) {
-            int cow;
-            cin >> cow;
-            pos[round][cow] = rank;
-        }
-    }
+   int N,K;
+   int cow;
+   int ans=0;
+   bool flag;
+   //freopen("gymnastics.in", "r", stdin);
+   //freopen("gymnastics.out", "w", stdout);
+   cin>>K>>N;
+   for(int i=0;i<K;i++){
+      for(int j=0;j<N;j++){
+         cin>>cow;
+         pos[i][cow]=j+1;
+      }
+   }
 
-    int answer = 0;
-    for (int a = 1; a <= n; a++) {
-        for (int b = 1; b <= n; b++) {
-            if (a == b) continue;
-            bool ok = true;
-            for (int round = 0; round < k; round++) {
-                if (pos[round][a] >= pos[round][b]) {
-                    ok = false;
-                    break;
-                }
+   for(int i=1;i<=N;i++){
+      for(int j=1;j<=N;j++){
+         flag=true;
+         if(i==j) continue;
+         for(int k=0;k<K;k++){
+            if(pos[k][i]<pos[k][j]){
+               flag=false;
+               break;
             }
-            if (ok) answer++;
-        }
-    }
-    cout << answer << '\n';
-    return 0;
+         }
+         if(flag) ans++;
+      }
+   }
+   cout<<ans<<endl;
+   return 0;
 }
-```
-
-**官方样例输入：**
-
-```text
-3 4
-4 1 2 3
-4 1 3 2
-4 2 1 3
-```
-
-**输出：**
-
-```text
-4
 ```
 
 时间 O(KN²)，总空间 O(KN)。
