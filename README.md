@@ -2,33 +2,25 @@
 
 ***
 
-## 📌铜升银（50 小时）
+## 📌铜升银（34 小时）
 
 ### 课程阶段
 
 | 阶段 | 课时 | 课程内容 | 课程说明 |
 | --- | ---: | --- | --- |
-| 知识梳理段 | 26 小时 | C++ / Python 语法讲解 | 梳理各章节的语法知识点 |
+| 知识梳理段 | 10 小时 | C++ / Python 语法讲解 | 梳理各章节的语法知识点 |
 | 算法讲解段 | 16 小时 | 基础算法讲解 | 按专题讲解递推、递归、贪心等算法 |
 | 真题练习段 | 8 小时 | USACO 全英文真题与模拟考试 | 查漏补缺、真题模考点评与考场技巧点拨 |
 
-### Unit 1：Python / C++ 语法介绍（26 小时）
+### Unit 1：Python / C++ 语法介绍（10 小时）
 
-| 章节 | 课时 | 内容 |
+| 章节 | 课件文件 | 内容 |
 | ---: | ---: | --- |
-| Chapter 1 | 2 小时 | C++ 知识入门（Introduction） |
-| Chapter 2 | 2 小时 | 变量、常量与标准数据类型（Variables, Constants and Data Types） |
-| Chapter 3 | 2 小时 | 赋值语句与运算符（Assignment and Operators） |
-| Chapter 4 | 2 小时 | 选择语句：`if` 与 `switch` |
-| Chapter 5 | 2 小时 | 循环语句：`for` 与 `while` |
-| Chapter 6 | 2 小时 | 循环语句：`do...while` |
-| Chapter 7 | 2 小时 | 一维数组与二维数组（Arrays） |
-| Chapter 8 | 2 小时 | `sort`、`string` 与 `vector` |
-| Chapter 9 | 2 小时 | `set`、`map`、`pair` 与 `tuple` |
-| Chapter 10 | 2 小时 | 函数（一）：函数入门（Function Introduction） |
-| Chapter 11 | 2 小时 | 函数（二）：函数练习（Function Practice） |
-| Chapter 12 | 2 小时 | 文件访问与结构体（File Access and Struct） |
-| Chapter 13 | 2 小时 | 如何调试（Debugging） |
+| Chapter 1 | C++导论 | USACO介绍、环境配置、C++基础语法 |
+| Chapter 2 | 01_Cpp | 调用函数、字符串、指针、二维数组、结构体等 |
+| Chapter 3 | 02_Cpp | 数据结构：stack、list、vector、map、哈希表等 |
+| Chapter 4 | 03_Cpp | STL标准库 |
+| Chapter 5 | 04_Cpp | USACO常用函数及语法 |
 
 ### Unit 2：简单算法（16 小时）
 
