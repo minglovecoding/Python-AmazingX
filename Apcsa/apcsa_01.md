@@ -43,6 +43,7 @@ APCSA入门课
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
+        //return
     }
 }
 //String[] args 是 主函数 main 的参数，用来接收命令行参数。运行程序时你在命令后面写的每个“空格分隔的词”，都会按顺序放进这个字符串数组里，所有的 Java 程序都由此开始运行。
