@@ -217,8 +217,6 @@ int main() {
 
 时间 O(KN²)，总空间 O(KN)。
 
-**课堂提问：**如果不存 pos，每次比较都扫描排名寻找两头牛，最坏复杂度会增加到 O(KN³)。这说明检查一个候选方案的成本也很重要。
-
 ## 3. 暴力求解：尝试所有候选方案
 
 暴力和枚举经常重叠，不必把它们当作完全独立的算法。暴力强调直接、全面地尝试；枚举说明候选如何被遍历。
@@ -296,21 +294,6 @@ int main() {
 }
 ```
 
-**官方样例输入：**
-
-```text
-3
-5 9
-1 4
-3 7
-```
-
-**输出：**
-
-```text
-7
-```
-
 设时间范围长度为 T，时间 O(N²T)，总空间 O(N + T)。本题 T = 1000，N ≤ 100，这个简单实现适合讲解铜组暴力。
 
 **易错点：**每次枚举解雇对象都要重置标记；重叠部分只统计一次；N = 1 时答案为 0。
@@ -353,9 +336,7 @@ int main() {
 
 ## 4. 贪心：选择必须有理由
 
-贪心每次作出一个选择，并不回头枚举所有选择组合。只有当能说明这种选择不会破坏全局最优时，才可认为算法正确。“当前看起来最好”不是证明。
-
-讲解顺序：提出策略 → 尝试反例 → 证明不会更差 → 实现。
+贪心每次作出一个选择，都是在做每一次选择或决策时选择最优的状况。
 
 ### 4.1 原例：P3817 小 A 的糖果
 
@@ -402,22 +383,9 @@ int main() {
 
 时间 O(n)，此实现总空间 O(n)。
 
-### 4.2 USACO 真题：Sleepy Cow Sorting
+### 4.2 USACO 真题：[Sleepy Cow Sorting](https://usaco.org/index.php?page=viewproblem2&cpid=892)
 
 **2019 January Bronze，Problem 2**
-
-[官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=892)
-
-**教学概述：**一个由 1 到 N 构成的排列，每次只能把队首元素移到后面的某个位置。求排成升序的最少操作数，N ≤ 100。
-
-**观察：**没有被移动的元素始终保持相对次序。希望保留不动的部分尽可能长，它必须是原排列末尾的一段递增后缀。
-
-例如 1 2 4 3，最长递增后缀只有 3，前面 3 个元素需要移动，因此答案为 3。
-
-**为什么答案等于后缀前的元素数量？**
-
-- 下界：操作只能处理队首，若只移动前 k 个元素，其后的原始后缀保持相对顺序；这个后缀必须已经递增。因此少于最长递增后缀之前的元素数不够。
-- 可行性：保留递增后缀，把前面的元素按队首顺序取出，逐个插入当前有序后缀的合适位置，即可完成排序。这里是证明构造，不需要真的模拟所有插入。
 
 ```cpp
 #include <iostream>
@@ -439,35 +407,17 @@ int main() {
 }
 ```
 
-**官方样例输入：**
+时间 O(n)，总空间 O(n)，扫描辅助空间 O(1)。
 
-```text
-4
-1 2 4 3
-```
-
-**输出：**
-
-```text
-3
-```
-
-时间 O(n)，总空间 O(n)，扫描辅助空间 O(1)。本题更适合用“保留最长有序后缀”和上下界证明解释，而不是仅说“贪心地选最小牛”。
-
-### 4.3 原例：P4995 跳跳！
-
-[洛谷题目](https://www.luogu.com.cn/problem/P4995)
+### 4.3 原例：[P4995](https://www.luogu.com.cn/problem/P4995) 跳跳！
 
 原稿把标题写成“排队接水”，应改为“跳跳！”。目标是最大化平方高度差总和，而不是最小化。从高度 0 的地面出发，每块石头恰好访问一次，不能再跳回地面。
 
 常用方案是将石头排序，从最高开始，再取最低、次高、次低，交替访问两端。实现中使用整数乘法，不使用 pow 计算整数平方；每次仅取一块石头，避免指针交错时额外计算一次跳跃。
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
-
 int main() {
     int n;
     cin >> n;
@@ -501,7 +451,7 @@ int main() {
 
 ***
 
-## 5. 递推：由已知状态计算下一状态
+## 5. 递推：由已知状态计算未知状态
 
 递推先明确状态含义，再给出初值和计算顺序。递推不等于“所有带循环的代码”；递推式也不自动等于一个完整的动态规划算法。
 
@@ -519,7 +469,7 @@ int main() {
 #include <iostream>
 using namespace std;
 
-long long ways(int n) {
+long long iteration(int n) {
     if (n <= 1) return 1;
     long long previous2 = 1, previous1 = 1;
     for (int i = 2; i <= n; i++) {
@@ -530,10 +480,18 @@ long long ways(int n) {
     return previous1;
 }
 
+long long recursion(int n){
+  if(n==1||n==2) return n;
+  return recursion(n-1)+recursion(n-2);
+}
+
 int main() {
     int n;
     cin >> n; // 本例限定 0 <= n <= 91
-    cout << ways(n) << '\n';
+    //iteration
+    cout << iteration(n) << '\n';
+    //recursion
+    cout << recursion(n) << '\n';
     return 0;
 }
 ```
@@ -557,7 +515,7 @@ int main() {
 using namespace std;
 
 string addDecimal(const string& a, const string& b) {
-    int i = static_cast<int>(a.size()) - 1;
+    int i = (int)(a.size()) - 1;
     int j = static_cast<int>(b.size()) - 1;
     int carry = 0;
     string result;
