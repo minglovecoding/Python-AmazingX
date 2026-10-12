@@ -10,6 +10,7 @@ C++ 编程入门课
 ## 🖥️ 必备软件
 
 - vscode（写代码用的）
+- Codespaces（ipad编译器）
 - github（开源代码）
 - chatgpt （查阅代码） 
 - C++[在线编译器](https://www.jyshare.com/compile/12/)
