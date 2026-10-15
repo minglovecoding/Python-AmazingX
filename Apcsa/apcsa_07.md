@@ -123,20 +123,18 @@ public class Main{
 Selection sort：从数组里依次选择第i小的数并进行交换。
 
 ```java
-public static void selectionSort(int arr[]) {
-    for (int i = 0; i < arr.length - 1; i++) {
-        // find smallest from i to end of array
-        int min_idx = i;
-        for (int j = i + 1; j < arr.length; j++) {
-            if (arr[j] < arr[min_idx]) {
-                min_idx = j;
-            }
+int[] nums = {8, 6, 3, 9, 2};
+
+for (int i = 0; i < nums.length - 1; i++) {
+    int minIndex = i;
+    for (int j = i + 1; j < nums.length; j++) {
+        if (nums[j] < nums[minIndex]) {
+            minIndex = j;
         }
-        // swap minimum with element at index i
-        int temp = arr[min_idx];
-        arr[min_idx] = arr[i];
-        arr[i] = temp;
     }
+    int temp = nums[i];
+    nums[i] = nums[minIndex];
+    nums[minIndex] = temp;
 }
 ```
 
