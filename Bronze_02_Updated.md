@@ -24,7 +24,7 @@
 using namespace std;
 
 // 要求 a 已升序排序；找到返回下标，否则返回 -1。
-int findIndex(const vector<int>& a, int target) {
+int findIndex(vector<int>& a, int target) {
     int l = 0;
     int r = (int)a.size() - 1;
 
@@ -176,8 +176,8 @@ bool check(int k, const string& s) {
     for (int i = 0; i + k <= n; i++) {
         string sub = s.substr(i, k);
         if (!seen.insert(sub).second) return false;
+        // sub 原来不存在，现在已经加入 seen
     }
-
     return true;
 }
 
@@ -206,7 +206,7 @@ int main() {
 
 ## 四、双指针：利用不回退的移动减少重复工作
 
-双指针通常用两个整数下标控制扫描位置，不要求使用 C++ 的指针类型。
+双指针通常用两个整数下标控制扫描位置。
 
 常见形式：
 
@@ -239,7 +239,6 @@ for (int right = 0; right < n; right++) {
     while (1LL * a[right] - a[left] > K) {
         left++;
     }
-
     best = max(best, right - left + 1);
 }
 ```
@@ -260,12 +259,9 @@ for (int right = 0; right < n; right++) {
 
 右指针总共移动 `N` 次。左指针不会回退，总共也最多移动 `N` 次。内层循环的执行次数要在整个算法中累计，不能机械地将两层循环相乘。
 
-因此窗口扫描为 $O(N)$，加上排序后的总复杂度为 $O(N\log N)$。
+因此窗口扫描为 O(N)，加上排序后的总复杂度为 O(N\log N)。
 
-### 3. 铜组真题：Diamond Collector
-
-**USACO 2016 US Open Bronze，Problem 1**  
-[官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=639)
+### 3. 2016 US Open Bronze：[Diamond Collector](https://usaco.org/index.php?page=viewproblem2&cpid=639)
 
 **题意概括：** 从不同大小的钻石中选择尽可能多的钻石，使最大与最小尺寸之差不超过 `K`。
 
@@ -296,8 +292,6 @@ int main() {
     cout << answer << '\n';
 }
 ```
-
-本题 $N\le1000$，朴素枚举也可以通过。双指针的价值在于练习窗口维护，并为更大数据规模做准备。
 
 ### 4. 固定左端点，推进右端点的等价写法
 
@@ -380,8 +374,6 @@ for (右指针) {
 
 ## 六、相向双指针：两数之和
 
-这是通用训练例题，不对应某一道特定的 USACO 真题。
-
 在有序数组中，判断是否存在两个不同下标，使两数之和等于 `target`。
 
 ```cpp
@@ -443,7 +435,7 @@ vector<int> mergeSorted(const vector<int>& A, const vector<int>& B) {
 
 例如 `A = {1, 4, 7}`、`B = {2, 3, 8}`，合并得到 `{1, 2, 3, 4, 7, 8}`。
 
-复杂度为 $O(n+m)$，结果数组占用 $O(n+m)$ 空间。这里合并会保留重复值，不会自动去重。
+复杂度为 O(n+m)，结果数组占用 O(n+m) 空间。这里合并会保留重复值，不会自动去重。
 
 ## 八、综合拓展：二分答案 + 线性扫描
 
