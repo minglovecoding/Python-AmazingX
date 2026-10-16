@@ -24,3 +24,9 @@ __pycache__/
 # 临时文件
 *.tmp
 *.log
+
+# AI虚拟配置环境
+.venv/
+
+#测试python文件
+/1.py

@@ -338,7 +338,7 @@ print(result is None)  # True
 
 `is` / `is not` 判断对象身份；数字、字符串的值比较使用 `==`。不要通过小整数对象缓存推导身份规则。
 
-### 3.6 位运算（选学）
+### 3.6 位运算
 
 ```python
 a, b = 60, 13
@@ -446,7 +446,7 @@ label = 1 if score >= 60 else 0
 print(label)  # 1
 ```
 
-一般形式：`满足条件时的值 if 条件 else 不满足时的值`。复杂规则使用普通分支。
+复杂规则使用普通分支。
 
 `pass` 是占位语句，什么也不做；代码块暂时为空时可以使用。
 
@@ -523,12 +523,13 @@ while count < 3:
 
 循环前检查条件；条件最初为假时执行 0 次。更新变量时应能逐渐接近结束条件。
 
-### 5.4 break 与 continue
+### 5.4 break 、pass与 continue
 
 ```python
 for x in [2, -1, 0, 5, 8]:
     if x < 0:
         continue  # 跳过当前这一轮
+        #pass 不执行任何操作
     if x == 5:
         break     # 结束当前循环
     print(x)      # 输出 2、0
@@ -715,7 +716,7 @@ print(nums)                     # [4, 8, 12]
 
 `sum([])` 为 0；`min([])`、`max([])` 会报错。`for value in nums: value *= 2` 不会把整数结果写回列表。遍历时不要直接删除同一个列表的元素，容易跳过元素；使用筛选生成新列表。
 
-### 6.7 共享对象与浅复制
+### 6.7 深复制与浅复制
 
 ```python
 a = [1, 2]
@@ -776,7 +777,7 @@ print(sample.get("score", 0))      # 0：缺失时返回默认值
 print("label" in sample)           # True：检查键
 ```
 
-Python 3.7+ 字典保持插入顺序，**不是原讲义所说的无序集合**；也不会像 C++ `map` 一样自动按键排序。
+Python 3.7+ 字典保持插入顺序，不会像 C++ `map` 一样自动按键排序。
 
 键必须可哈希；字符串、整数、只包含可哈希元素的元组常可作键。列表、字典、集合不能直接作键。键唯一，重复赋值会覆盖值。
 
@@ -1047,7 +1048,7 @@ print(sum(x ** 2 for x in nums)) # 14
 ### 9.6 map、filter 与迭代器（了解）
 
 ```python
-nums = list(map(int, ["1", "2", "3"]))
+nums = list(map(int, ["1", "2", "3"]))  #把string转化成int
 positive = list(filter(lambda x: x > 0, [-1, 0, 2]))
 iterator = iter(nums)
 print(next(iterator))  # 1
@@ -1060,7 +1061,7 @@ print(positive)        # [2]
 
 ```python
 from collections import Counter, deque
-from bisect import bisect_left, bisect_right
+from bisect import bisect_left, bisect_right#第一个大于或等于目标值的位置与第一个严格大于目标值的位置
 import heapq
 
 print(Counter([1, 0, 1]))  # Counter({1: 2, 0: 1})
@@ -1168,7 +1169,7 @@ hours,attendance,label
 
 ```python
 import csv
-
+#newline="" 不是不允许换行，而是让 Python 不自动修改写入的换行符。
 with open("samples.csv", "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["hours", "attendance", "label"])
@@ -1323,7 +1324,7 @@ print(model.predict([3, 5]))  # [0, 1]
 
 ## 12. AI 数据工具衔接：NumPy 与 Pandas
 
-> 本章是第三方库入门，不属于 Python 内置语法。先完成第 1–10 章，再学习本章。
+> 本章是第三方库入门，不属于 Python 内置语法。
 
 ### 12.1 list 与 NumPy 数组
 
@@ -1331,7 +1332,7 @@ print(model.predict([3, 5]))  # [0, 1]
 import numpy as np
 
 values = [1, 2, 3]
-array = np.array(values, dtype=float)
+array = np.array(values, dtype=float) #将 values 转换成 NumPy 数组，并指定数组元素为浮点数（float）
 print(values * 2)  # [1, 2, 3, 1, 2, 3]：重复
 print(array * 2)   # [2. 4. 6.]：元素级乘法
 print(array + 1)   # [2. 3. 4.]
@@ -1655,8 +1656,6 @@ else:
 
 ## 15. 参考答案与教师提示
 
-> 建议先让学生独立运行、解释，再展示答案。不要直接复制答案替代编程练习。
-
 ### 15.1 各章练习参考要点
 
 | 章节 | 参考要点 |
@@ -1809,7 +1808,7 @@ def load_samples(path):
 
 ---
 
-## 16. Python 速查与原讲义修订说明
+## 16. Python 速查
 
 ### 16.1 常用语法速查
 
