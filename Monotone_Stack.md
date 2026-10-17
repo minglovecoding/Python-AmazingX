@@ -25,10 +25,12 @@ stack<int> st;
 vector<int> answer(n + 1, 0);
 // a 使用下标 1...n
 for (int i = 1; i <= n; i++) {
+    //出stack操作
     while (!st.empty() && a[st.top()] < a[i]) {
         answer[st.top()] = i;
         st.pop();
     }
+    //入stack操作
     st.push(i);
 }
 ```
