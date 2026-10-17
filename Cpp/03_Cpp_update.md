@@ -221,7 +221,7 @@ cout << *it; // 30
 #include <cmath>
 #include <cstdlib>
 using namespace std;
-
+//hypot函数求斜边
 int main() {
     cout << abs(-5) << '\n';
     cout << sqrt(16.0) << '\n';
@@ -555,9 +555,11 @@ cout << r - l; // 2 出现 3 次
 
 ```cpp
 vector<int> a = {1, 2, 2, 2, 4, 6};
-auto it = lower_bound(a.begin(), a.end(), 2);
-if (it != a.end()) {
-    cout << *it; // 2
+auto left = lower_bound(a.begin(), a.end(), 2);
+auto right = upper_bound(a.begin(),a.end(),2);
+while(left!=right){
+   cout<<*left<<" ";
+   left++;
 }
 ```
 
