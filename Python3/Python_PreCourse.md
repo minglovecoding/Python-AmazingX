@@ -887,6 +887,7 @@ def summarize(values):
 
 average, largest = summarize([2.0, 4.0, 6.0])
 print(average, largest)
+#给一个列表[1,2,3..,10] 调用一个函数返回相加值以及最大值
 ```
 
 多个返回值实际打包为元组。类型提示帮助读者和编辑器理解代码，**不会自动转换或强制校验参数**。`raise` 的作用见第 10 章。
@@ -1077,8 +1078,6 @@ print(heapq.heappop(heap)) # 1：最小堆
 
 `bisect_left` 对应查找第一个不小于目标值的位置，`bisect_right` 对应第一个大于目标值的位置；这里要求序列升序。返回插入位置，不保证目标存在。
 
-这些工具可连接你 C++ 课里的频率统计、队列、二分位置和优先队列。AI 基础课按项目需求使用，不要求提前展开所有算法。
-
 ### 📌 课堂练习
 
 对样本字典列表筛选 `hours >= 3` 的样本，再按出勤率降序排列。保留原列表不变。
@@ -1169,7 +1168,7 @@ hours,attendance,label
 
 ```python
 import csv
-#newline="" 不是不允许换行，而是让 Python 不自动修改写入的换行符。
+#newline="" 要求python不自动转换写入的换行符，csv.writer 默认用 \r\n 结束一条记录，\r\n -> \r\r\n
 with open("samples.csv", "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["hours", "attendance", "label"])
@@ -1324,7 +1323,7 @@ print(model.predict([3, 5]))  # [0, 1]
 
 ## 12. AI 数据工具衔接：NumPy 与 Pandas
 
-> 本章是第三方库入门，不属于 Python 内置语法。
+> NumPy 主要用于数值和数组计算，Pandas 主要用于处理表格数据
 
 ### 12.1 list 与 NumPy 数组
 
@@ -1385,7 +1384,7 @@ print(X.mean(axis=1))  # [1.5 3.5]：对每行求均值
 print(np.zeros((2, 3)))
 print(np.ones(3))
 print(np.arange(0, 6, 2))  # [0 2 4]
-print(np.arange(6).reshape(2, 3))
+print(np.arange(6).reshape(2, 3)) #先生成 0～5 这 6 个整数，再排列成 2 行、3 列的数组
 ```
 
 `reshape` 必须保持元素总数一致。`axis` 指被聚合的轴；不要只机械记忆“行/列”，要结合数组形状理解。
@@ -1398,7 +1397,7 @@ import numpy as np
 X = np.array([[1.0, 2.0], [3.0, 4.0]])
 w = np.array([0.5, -0.2])
 b = 0.1
-z = X @ w + b
+z = X @ w + b #[0.1 0.7] + b 广播
 print(z)  # [0.2 0.8]
 print(X * X)  # 元素级乘法，不是矩阵乘法
 ```
@@ -1412,15 +1411,20 @@ print(X * X)  # 元素级乘法，不是矩阵乘法
 ```python
 import numpy as np
 
-X = np.array([[1.0, 5.0], [3.0, 5.0], [5.0, 5.0]])
-minimum = X.min(axis=0)
-span = X.max(axis=0) - minimum
-safe_span = np.where(span == 0, 1.0, span)
+X = np.array([[1.0, 5.0], [3.0, 5.0], [5.0, 5.0]]) 
+minimum = X.min(axis=0) # [1. 5.]
+span = X.max(axis=0) - minimum # 得到 [4. 0.]
+safe_span = np.where(span == 0, 1.0, span) #np.where(条件, 条件成立时的值, 不成立时的值)
 scaled = (X - minimum) / safe_span
 print(scaled)  # 第一列为 0、0.5、1；常数列为 0
+"""
+[[0.  0. ]
+ [0.5 0. ]
+ [1.  0. ]]
+"""
 ```
 
-这里只演示语法。正式实验中先划分训练集与测试集，仅在训练集上计算缩放参数，再用于测试集，避免数据泄漏。
+正式实验中先划分训练集与测试集，仅在训练集上计算缩放参数，再用于测试集，避免数据泄漏。
 
 ### 12.7 Pandas 数据表
 
@@ -1432,15 +1436,15 @@ df = pd.DataFrame({
     "attendance": [0.9, 0.5, 0.8],
     "label": [1, 0, 1],
 })
-print(df.head())
-print(df.shape)                       # (3, 3)
-print(df.dtypes)
-print(df["label"].value_counts())
-selected = df.loc[df["hours"] >= 3, ["hours", "label"]]
+print(df.head())  #head() 默认显示前 5 行
+print(df.shape)   # (3, 3)
+print(df.dtypes)  # 数据类型
+print(df["label"].value_counts()) #统计各标签的数量
+selected = df.loc[df["hours"] >= 3, ["hours", "label"]]  #df.loc[选哪些行, 选哪些列]
 print(selected)
 print(df.iloc[0])                     # 按位置取第一行
-X = df[["hours", "attendance"]].to_numpy(dtype=float)
-y = df["label"].to_numpy(dtype=int)
+X = df[["hours", "attendance"]].to_numpy(dtype=float)  #选取两列特征，再转换为浮点 NumPy 数组
+y = df["label"].to_numpy(dtype=int)  #取出标签列，转换成整数 NumPy 数组
 print(X.shape, y.shape)               # (3, 2) (3,)
 ```
 
@@ -1453,7 +1457,7 @@ import pandas as pd
 
 df = pd.read_csv("samples.csv")
 print(df.isna().sum())  # 每列缺失值数量
-clean = df.dropna(subset=["hours", "attendance", "label"])
+clean = df.dropna(subset=["hours", "attendance", "label"])  #删除指定列中存在缺失值的行
 print(clean)
 ```
 
@@ -1463,8 +1467,8 @@ print(clean)
 
 ```python
 import numpy as np
-
-rng = np.random.default_rng(42)
+#打乱样本顺序、划分训练集和测试集
+rng = np.random.default_rng(42) #种子值
 indices = rng.permutation(5)
 print(indices)
 ```
@@ -1642,7 +1646,7 @@ else:
 
 ### C. 综合验收
 
-学生独立完成第 13 章项目的 CSV 版本，并满足：
+独立完成第 13 章项目的 CSV 版本，并满足：
 
 - 能说明特征、标签、预测分别是什么。
 - 能把数据读取、预测和评估拆成函数。
@@ -1650,11 +1654,9 @@ else:
 - 能解释列表共享、`return`、`zip` 和 `X.shape`。
 - 能指出人工规则与训练模型的区别，并说明为什么测试集不应用来调参。
 
-建议评价：正确性 40%，函数与数据组织 25%，测试和错误处理 20%，解释能力 15%。
-
 ---
 
-## 15. 参考答案与教师提示
+## 15. 参考答案
 
 ### 15.1 各章练习参考要点
 
