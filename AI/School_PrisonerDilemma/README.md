@@ -1,6 +1,15 @@
-# 沿用学校框架：空间囚徒困境与遗传算法
+## 沿用学校框架：空间囚徒困境与遗传算法
 
-这是学校 CellMap / CAWrapper / GA / Chromosome 代码的整合改造版，不是前一个独立窗口版本。
+| 文件                             | 主要作用                                                             | 可以理解为       |
+| -------------------------------- | -------------------------------------------------------------------- | ---------------- |
+| **`CAWrapper.py`**       | 创建窗口和`CellMap`，启动程序                                      | 程序入口         |
+| **`CellMap.py`**         | 显示网格、处理按钮和鼠标操作，定时推进算法，用颜色显示合作比例       | 界面与控制       |
+| **`GA.py`**              | 管理整个网格种群，计算得分、选择邻居，组织交叉和变异，同步生成下一代 | 进化过程         |
+| **`Chromosome.py`**      | 表示一个细胞的 C/D 策略和适应度，提供交叉、变异方法                  | 单个策略         |
+| **`PrisonerDilemma.py`** | `payoff()`计算一回合得分；`play_game()`计算两条策略比赛的总分    | 比赛计分         |
+| `GAWrapper.py`                 | 启动同一个窗口，是备用入口                                           | 可省略           |
+| `test_model.py`                | 自动检查计分和进化逻辑                                               | 测试工具，可省略 |
+| `README.md`                    | 说明运行方式、规则和修改内容                                         | 使用说明         |
 
 ## 运行
 
@@ -24,15 +33,15 @@ python3 -m pip install pillow
 
 ## 文件结构与学校版本的对应
 
-| 文件 | 沿用与修改 |
-|---|---|
-| CellMap.py | 保留学校 tk.Frame、Canvas、Start/Stop、速度、Skip Generations、鼠标交互、保存图像与定时刷新结构；将生死规则替换成网格策略进化 |
-| CAWrapper.py | 保留学校窗口类及网格构建方式；导入完整 CellMap，删除只会画网格的同名占位类；设置 20×20 网格 |
-| Chromosome.py | 保留 getCode/setCode/getFitness/setFitness/mutate/makeChildren/compareFitness 等接口；字符由可打印 ASCII 改成 C/D；适应度由对局计算 |
-| GA.py | 保留种群初始化、父母选择、交叉、变异、下一代和最好/最差等组织方式；全局锦标赛选择改成当前细胞与更优秀邻居的局部选择 |
-| GAWrapper.py | 删除 Hello, world! 目标文本任务，作为相同界面的备用入口 |
-| PrisonerDilemma.py | 保留原 payoff 和 play_game，增加非法输入与长度检查 |
-| test_model.py | 对计分、邻居、更新与遗传操作的自动检查 |
+| 文件               | 沿用与修改                                                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| CellMap.py         | 保留学校 tk.Frame、Canvas、Start/Stop、速度、Skip Generations、鼠标交互、保存图像与定时刷新结构；将生死规则替换成网格策略进化       |
+| CAWrapper.py       | 保留学校窗口类及网格构建方式；导入完整 CellMap，删除只会画网格的同名占位类；设置 20×20 网格                                        |
+| Chromosome.py      | 保留 getCode/setCode/getFitness/setFitness/mutate/makeChildren/compareFitness 等接口；字符由可打印 ASCII 改成 C/D；适应度由对局计算 |
+| GA.py              | 保留种群初始化、父母选择、交叉、变异、下一代和最好/最差等组织方式；全局锦标赛选择改成当前细胞与更优秀邻居的局部选择                 |
+| GAWrapper.py       | 删除 Hello, world! 目标文本任务，作为相同界面的备用入口                                                                             |
+| PrisonerDilemma.py | 保留原 payoff 和 play_game，增加非法输入与长度检查                                                                                  |
+| test_model.py      | 对计分、邻居、更新与遗传操作的自动检查                                                                                              |
 
 原学校 CellMap.py 末尾还定义过一套 CAWrapper，这里统一把正式窗口类放在 CAWrapper.py 中，避免与独立文件内的类重复。
 

@@ -1,4 +1,4 @@
-"""Original two-player scoring, reused by the school grid framework."""
+#表示一个细胞的策略：保存 C/D 字符串和适应度，提供策略交叉、变异操作。
 
 
 def payoff(move1, move2):

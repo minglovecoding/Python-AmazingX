@@ -1,4 +1,4 @@
-"""Adapt the school's Chromosome API from target text to C/D strategies."""
+#表示一个细胞的策略：保存 C/D 字符串和适应度，提供策略交叉、变异操作。
 import random
 
 

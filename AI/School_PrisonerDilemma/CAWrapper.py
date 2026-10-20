@@ -1,4 +1,4 @@
-"""School CAWrapper window; import the complete CellMap instead of a placeholder."""
+#启动程序、创建主窗口，把网格界面放进去
 import tkinter as tk
 from CellMap import CellMap
 

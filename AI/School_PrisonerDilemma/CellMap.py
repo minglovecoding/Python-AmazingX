@@ -1,3 +1,4 @@
+#管理界面和动画：显示细胞、处理按钮和鼠标操作，调用算法推进下一代，并刷新颜色。
 import tkinter as tk
 from tkinter import messagebox
 from GA import GA

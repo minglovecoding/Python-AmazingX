@@ -1,4 +1,4 @@
-"""Run with: python3 -m unittest -v test_model.py"""
+#自动检查核心算法是否正确
 import random
 import unittest
 from unittest.mock import patch
