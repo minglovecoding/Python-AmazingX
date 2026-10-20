@@ -14,12 +14,12 @@
 
 ### Unit 2：简单算法（20 小时）
 
-| 章节 | 课时 | 内容 |
+| 课件文件 | 课时 | 内容 |
 | ---: | ---: | --- |
 | Bronze_01 | 2 小时 | 枚举暴力、贪心、递推递归算法 |
 | Bronze_02 | 2 小时 | 二分查找与双指针、滑动窗口 |
-| Chapter 16 | 2 小时 | 矩形几何（Rectangle Geometry） |
-| Chapter 17 | 2 小时 | 模拟（Simulation） |
+| Presum+Diff | 2 小时 | 前缀和、差分算法（一维二维）                               |
+|  Chapter 17 | 2 小时 | 矩形几何（Rectangle Geometry）                             |
 | Chapter 18 | 2 小时 | 完整搜索 / 穷举搜索（Complete Search） |
 | Chapter 19 | 2 小时 | 全排列、子集与回溯（Permutation, Subset and Backtracking） |
 | Chapter 20 | 2 小时 | 简单贪心算法（Greedy Algorithm） |
@@ -119,7 +119,7 @@
 
 ## 课程作业与练习平台
 
-- 洛谷
+- [洛谷](https://www.luogu.com.cn/)
 - [USACO.org](https://usaco.org/)
 - [CSES](https://cses.fi/problemset/)
 - [Codeforces](https://codeforces.com/)
