@@ -559,6 +559,7 @@ int main ()
        cout << "a 的值：" << a << endl;
        a++;
    }
+  
    do
    {
        cout << "a 的值：" << a << endl;
