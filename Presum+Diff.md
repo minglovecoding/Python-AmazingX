@@ -167,7 +167,6 @@ int main() {
 ### 1. 定义与构造
 
 `pre[row][col]` 表示从 `(1,1)` 到 `(row,col)` 的所有元素之和，包含边界。
-
 $$
 pre[i][j]=pre[i-1][j]+pre[i][j-1]-pre[i-1][j-1]+a[i][j]
 $$
@@ -187,7 +186,7 @@ for (int row = 1; row <= n; row++) {
 
 ### 2. 查询子矩形
 
-查询闭矩形 `[r1,r2] × [c1,c2]`：
+查询闭矩形 `[r1,c1] × [r2,c2]`：
 
 $$
 sum=pre[r2][c2]-pre[r1-1][c2]-pre[r2][c1-1]+pre[r1-1][c1-1]
@@ -479,6 +478,8 @@ int main() {
 若数组从 1 开始，给闭矩形 `[r1,r2] × [c1,c2]` 全部加 `v`：
 
 ```cpp
+//diff[i][j]=a[i][j]-a[i-1][j]-a[i][j-1]+a[i-1][j-1];
+  
 diff[r1][c1] += v;
 diff[r2 + 1][c1] -= v;
 diff[r1][c2 + 1] -= v;
@@ -490,11 +491,22 @@ diff[r2 + 1][c2 + 1] += v;
 还原时求二维前缀和：
 
 ```cpp
-for (int row = 1; row <= n; row++) {
-    for (int col = 1; col <= m; col++) {
-        diff[row][col] += diff[row - 1][col] + diff[row][col - 1]
-                        - diff[row - 1][col - 1];
-        // 此时 diff[row][col] 已是该格子最终增加的数值。
+// d 是二维差分数组
+// a 是还原后的数组
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+        a[i][j] = d[i][j]
+                + a[i-1][j]
+                + a[i][j-1]
+                - a[i-1][j-1];
+    }
+}
+//第二种写法
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+        d[i][j] += d[i-1][j]
+                 + d[i][j-1]
+                 - d[i-1][j-1];
     }
 }
 ```
