@@ -1168,6 +1168,7 @@ hours,attendance,label
 
 ```python
 import csv
+
 #newline="" 要求python不自动转换写入的换行符，csv.writer 默认用 \r\n 结束一条记录，\r\n -> \r\r\n
 with open("samples.csv", "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
