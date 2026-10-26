@@ -37,6 +37,9 @@ cout << a << ' ' << b << '\n';
 ```cpp
 ios::sync_with_stdio(false);
 cin.tie(nullptr);
+
+//freopen("gymnastics.in", "r", stdin);
+//freopen("gymnastics.out", "w", stdout);
 ```
 
 放在 `main()` 的开头、任何输入输出之前：第一行关闭 C++ 流与 C 标准输入输出的同步；第二行解除读取前自动刷新 `cout` 的绑定。使用这套模板时统一使用 `cin/cout`。

@@ -34,7 +34,7 @@ $$
 vector<long long> pre(n + 1, 0);
 
 for (int i = 1; i <= n; i++) {
-    long long x;
+    long long x; 
     cin >> x;
     pre[i] = pre[i - 1] + x;
 }

@@ -246,7 +246,7 @@ reverse(s.begin(), s.end()); // cba
 vector<int> v = {1, 2, 3};
 reverse(v.begin(), v.end()); // 3 2 1
 
-int a[] = {1, 2, 3, 4};
+int a[4] = {1, 2, 3, 4};
 reverse(a, a + 4); // 4 3 2 1
 ```
 
@@ -270,7 +270,7 @@ fill(v.begin(), v.end(), 5); // 所有元素设为 5
 也可以填充部分范围：
 
 ```cpp
-int a[] = {1, 2, 3, 4, 5};
+int a[5] = {1, 2, 3, 4, 5};
 fill(a + 1, a + 4, 0); // 1 0 0 0 5
 ```
 
