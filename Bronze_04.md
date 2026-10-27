@@ -1,810 +1,688 @@
-## USACO 铜组：结构体、记录排序与模拟
+##  USACO 铜组：条件转化、排序查询与模拟优化
 
-### 一、什么是 `struct`？
+## 📌 学习目标
 
-`struct`（结构体）是一种**自定义数据类型**，可以把多个相关的数据组合成一个整体。
+| 顺序 | 内容 | 对应例题 |
+|---|---|---|
+| 1 | 条件转化、排序后的门槛查询 | 2024 February Bronze：Maximizing Productivity |
+| 2 | 有限状态模拟、方向编码、联合状态判重 | Training：The Tamworth Two / P1518 |
+| 3 | 同步传递、环形数组、连续段汇总 | 2024 February Bronze：Milk Exchange |
 
-例如，一个人的姓名、年龄、成绩属于同一个对象：
+## 一、条件转化：把变化的查询与固定数据分开
+
+### 从规则写出不等式
+
+某个农场在 `c[i]` 时关闭，从起床到计划访问该农场需要 `t[i]` 时间。起床时间为 `S`，要求严格提前到达：
+
+$$
+S+t_i<c_i
+$$
+
+移项后：
+
+$$
+S<c_i-t_i
+$$
+
+定义：
 
 ```cpp
-struct Person {
-    string name;
-    int age = 0;
-    double score = 0;
-}; // 注意分号
+deadline[i] = c[i] - t[i];
 ```
 
-它定义的是一种名为 `Person` 的类型，**还没有创建某个具体的人**。
-
-### ✔️ 定义类型与创建变量
+`deadline[i]` 只由农场数据决定，所有询问都可以重复使用。查询变为统计：
 
 ```cpp
-Person p1;
-p1.name = "Alice";
-p1.age = 18;
-p1.score = 95.5;
-
-cout << p1.name << ' ' << p1.age << ' ' << p1.score << '\n';
+deadline[i] > S
 ```
 
-使用 `.` 访问成员，读作“对象的某个属性”。
+### 特别注意“严格小于”
 
-| 表达式 | 含义 |
+如果 `deadline[i] = 5`：
+
+| 起床时间 `S` | 能否按时访问 |
 |---|---|
-| `Person` | 类型名 |
-| `p1` | 该类型的一个变量 |
-| `p1.name` | `p1` 的姓名 |
-| `p1.age` | `p1` 的年龄 |
+| 4 | 可以 |
+| 5 | 不可以，恰好在关闭时到达 |
+| 6 | 不可以 |
 
-### ✔️ 花括号初始化
+不要因为使用整数，就把严格不等号随意改成 `<=`。
+
+###  什么时候值得做这种转化？
+
+- 查询很多，而原始数据不变。
+- 每次查询都重复计算同一种差值、和或门槛。
+- 移项后可以让数据排序，使满足条件的元素聚集在一段连续区间。
+
+这是**预处理复用**，不需要每次查询重新计算所有差值。
+
+## 二、排序与二分：查找边界，不是只查找相等元素
+
+### ✔️ 两个函数的区别
+
+对升序数组 `a`：
+
+| 函数 | 返回的位置 |
+|---|---|
+| `lower_bound(a.begin(), a.end(), x)` | 第一个 `>= x` 的位置 |
+| `upper_bound(a.begin(), a.end(), x)` | 第一个 `> x` 的位置 |
+
+如果没有符合条件的元素，返回 `a.end()`。**可以用它计算位置或数量，但不能直接解引用。**
 
 ```cpp
-Person p2{"Bob", 20, 88.0};
+vector<int> a{1, 3, 3, 5, 8};
+
+int left = lower_bound(a.begin(), a.end(), 3) - a.begin(); // 1
+int right = upper_bound(a.begin(), a.end(), 3) - a.begin(); // 3
+
+int equalCount = right - left; // 等于 3 的数量：2
+int greaterCount = (int)a.size() - right; // 大于 3 的数量：2
 ```
 
-值按照成员的**声明顺序**依次对应：`name`、`age`、`score`。
+### ✔️ 常见计数公式
+
+设 `L` 是 `lower_bound(x)` 的下标，`U` 是 `upper_bound(x)` 的下标，数组长度为 `n`：
+
+| 统计目标 | 数量 |
+|---|---|
+| `< x` | `L` |
+| `<= x` | `U` |
+| `== x` | `U - L` |
+| `>= x` | `n - L` |
+| `> x` | `n - U` |
+
+**前提：数组按相应规则有序。** 在本章使用升序排序和默认比较规则。
+
+### 完整演示
 
 ```cpp
-Person p3{};  // name 为空字符串；age、score 使用上面声明的默认值 0
-```
-
-### ❗ 局部变量不一定自动为零
-
-如果成员没有默认值：
-
-```cpp
-struct Point {
-    int x;
-    int y;
-};
-
-Point a;         // 局部变量：x、y 未初始化，不要直接读取
-Point b{};       // x、y 都为 0
-Point c{2, 5};   // x 为 2，y 为 5
-```
-
-养成初始化习惯，不依赖“这次运行恰好是零”。
-
-### 完整示例
-
-```cpp
-// program: person_demo
+// program: bounds_demo
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Person {
-    string name;
-    int age = 0;
-    double score = 0;
-};
-
 int main() {
-    Person p1;
-    p1.name = "Alice";
-    p1.age = 18;
-    p1.score = 95.5;
+    vector<int> a{1, 3, 3, 5, 8};
+    int n = (int)a.size();
 
-    Person p2{"Bob", 20, 88.0};
-
-    cout << p1.name << ' ' << p1.age << ' ' << p1.score << '\n';
-    cout << p2.name << ' ' << p2.age << ' ' << p2.score << '\n';
-    return 0;
-}
-```
-
-```text
-输出：
-Alice 18 95.5
-Bob 20 88
-```
-
-这里 `88.0` 输出为 `88` 是默认浮点格式的表现。若题目要求固定一位小数，可使用 `fixed << setprecision(1)`。
-
-## 二、结构体数组与 `vector`
-
-### ✔️ 固定大小的数组
-
-```cpp
-Person people[3] = {
-    {"Tom", 17, 89.5},
-    {"Jerry", 18, 92.0},
-    {"Mike", 19, 85.0}
-};
-
-cout << people[1].name << '\n'; // Jerry
-```
-
-`people[i]` 是一个完整的 `Person`，`people[i].score` 才是其中的成绩。
-
-### ✔️ 动态数组
-
-```cpp
-int n;
-cin >> n;
-vector<Person> people(n);
-
-for (int i = 0; i < n; i++) {
-    cin >> people[i].name >> people[i].age >> people[i].score;
-}
-```
-
-也可以从空 `vector` 开始逐条添加：
-
-```cpp
-vector<Person> people;
-people.push_back({"Alice", 18, 95.5});
-people.push_back({"Bob", 20, 88.0});
-```
-
-这两种方式要分清：
-
-- `vector<Person> people(n)` 已经有 `n` 个元素，可以使用下标 `0 ~ n-1`。
-- `vector<Person> people` 初始为空，不能直接写 `people[0]`，应先添加元素或调整大小。
-
-### ✔️ 范围循环：复制与引用
-
-```cpp
-for (auto person : people) {
-    person.age++; // 修改副本，不会修改 people 中的元素
-}
-
-for (auto &person : people) {
-    person.age++; // 引用：修改原元素
-}
-
-for (const auto &person : people) {
-    cout << person.name << '\n'; // 只读，不复制，也不允许修改
-}
-```
-
-## 三、函数传参：什么时候需要 `&`？
-
-```cpp
-void birthday(Person person) {
-    person.age++; // 值传递：只修改副本
-}
-
-void birthdayInPlace(Person &person) {
-    person.age++; // 引用传递：修改调用者的对象
-}
-
-void printPerson(const Person &person) {
-    cout << person.name << ' ' << person.age << '\n';
-}
-```
-
-| 参数形式 | 是否复制 | 是否能通过参数修改原对象 |
-|---|---|---|
-| `Person person` | 是 | 否 |
-| `Person &person` | 否 | 是 |
-| `const Person &person` | 否 | 否 |
-
-**需要更新物体状态时用引用；只读取记录时通常用 `const` 引用。**
-
-注意：这里的 `&` 是声明引用，不是要求在调用时写 `&p1`。
-
-```cpp
-birthdayInPlace(p1); // 正确
-```
-
-## 四、结构体排序：必须说清楚谁排在前面
-
-### 为什么不能只排序其中一个属性？
-
-假设学生记录为：
-
-| 学号 | 姓名 | 成绩 |
-|---|---|---|
-| 1 | Alice | 80 |
-| 2 | Bob | 95 |
-
-如果只把成绩数组排成 `95、80`，而姓名数组不变，就会错误地认为 Alice 得了 `95`。
-
-结构体排序会把**整条记录一起移动**，避免姓名、成绩错配。
-
-### ✔️ 单关键字排序
-
-```cpp
-bool compareByScore(const Person &a, const Person &b) {
-    return a.score > b.score; // 分数高的排前面
-}
-
-sort(people.begin(), people.end(), compareByScore);
-```
-
-比较函数返回 `true`，表示 **`a` 应当排在 `b` 前面**，不是“是否要交换”。
-
-### ✔️ 多关键字排序
-
-例如“分数从高到低；同分时学号从小到大”：
-
-```cpp
-struct Student {
-    int id;
-    string name;
-    int score;
-};
-
-bool compareStudent(const Student &a, const Student &b) {
-    if (a.score != b.score) return a.score > b.score;
-    return a.id < b.id;
-}
-```
-
-`if` 的先后顺序，就是关键字的优先级。注意两条记录完全相同时，应返回 `false`。
-
-### ✔️ Lambda 写法
-
-```cpp
-sort(students.begin(), students.end(),
-     [](const Student &a, const Student &b) {
-         if (a.score != b.score) return a.score > b.score;
-         return a.id < b.id;
-     });
-```
-
-两种写法含义相同，初学时先掌握独立比较函数即可。
-
-### ❗ 不能使用 `>=` 或 `<=`
-
-```cpp
-return a.score >= b.score; // 错误：分数相等时，双向比较都为 true
-```
-
-排序规则必须保持一致，`compare(a, a)` 应为 `false`，否则不满足 `sort` 的要求，可能出现错误甚至异常。
-
-另外，`sort` 不保证等价记录维持输入顺序。若题目要求同分按原顺序，最直观的方式是记录原编号并用它作第二关键字，也可以使用 `stable_sort`。
-
-### 完整练习：学生成绩排名
-
-输入 `n`，接着每行输入姓名和成绩。学号按输入顺序从 `1` 开始。按成绩降序、学号升序输出学号、姓名、成绩。
-
-```cpp
-// program: student_ranking
-#include <bits/stdc++.h>
-using namespace std;
-struct Student {
-    int id;
-    string name;
-    int score;
-};
-bool compareStudent(const Student &a, const Student &b) {
-    if (a.score != b.score) return a.score > b.score;
-    return a.id < b.id;
-}
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Student> students(n);
-
-    for (int i = 0; i < n; i++) {
-        students[i].id = i + 1;
-        cin >> students[i].name >> students[i].score;
-    }
-
-    sort(students.begin(), students.end(), compareStudent);
-
-    for (const auto &student : students) {
-        cout << student.id << ' ' << student.name << ' '
-             << student.score << '\n';
+    for (int x : {0, 3, 9}) {
+        int L = lower_bound(a.begin(), a.end(), x) - a.begin();
+        int U = upper_bound(a.begin(), a.end(), x) - a.begin();
+        cout << x << ' ' << L << ' ' << U - L << ' ' << n - U << '\n';
     }
     return 0;
 }
 ```
 
 ```text
-输入：
-4
-Alice 80
-Bob 95
-Carol 95
-David 70
-
-输出：
-2 Bob 95
-3 Carol 95
-1 Alice 80
-4 David 70
+输出：每行依次为 x、小于 x 的数量、等于 x 的数量、大于 x 的数量
+0 0 0 5
+3 1 2 2
+9 5 0 0
 ```
 
-时间 `O(n log n)`，记录数组空间 `O(n)`。
+### ✔️ 预处理不等于离线查询
 
-## 五、模拟：把题目规则变成状态更新
+- **预处理后逐条回答**：先整理固定数据，每次读入一个查询就能回答，不依赖后面的查询。
+- **离线处理**：先保存查询，再按查询内容排序、分组或调整处理顺序，最后恢复原顺序输出。
 
-**模拟（Simulation）就是按照题目的规则，按正确顺序执行操作，维护状态，得到结果。**
+本章 Maximizing Productivity 的“差值排序 + 二分”属于前者。仅仅给数据排序，不足以称为离线查询。
 
-| 题目 | 状态 | 初始状态 | 单次操作 | 统计时机 |
-|---|---|---|---|---|
-| Mixing Milk | 三个桶的当前奶量 | 输入给出 | 从一个桶尽量倒入另一个桶 | 100 次操作后输出 |
-| Milk Measurement | 三头牛的奶量、展示名单 | 奶量全为 7，三头都展示 | 某头牛奶量增加或减少 | 更新后比较展示名单 |
-| Shell Game | 石子位置、猜中次数 | 枚举 1、2、3 | 交换两个位置，再猜测 | 每次交换后计分 |
+## 三、真题：Maximizing Productivity
 
-## 六、真题：Mixing Milk——结构体保存桶的状态
+📌 **USACO 2024 February，Bronze，Problem 3。**
 
-📌 **USACO 2018 December，Bronze，Problem 1。**
-
-- [洛谷 P5116](https://www.luogu.com.cn/problem/P5116)
-- [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=855)
-- 教学重点：**相关属性打包、引用修改、循环模拟**。
+- [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=1397)
+- [官方题解](https://usaco.org/current/data/sol_prob3_bronze_feb24.html)
 
 ### 问题概括
 
-三个桶各有容量和当前奶量。按 `1 → 2 → 3 → 1` 的顺序倒奶，共进行 `100` 次；每次一直倒到源桶空或目标桶满，输出最终奶量。
+给出 `N` 个农场的关闭时间 `c[i]` 与计划访问偏移 `t[i]`。每个查询问：起床时间为 `S`，能否访问至少 `V` 个农场？
 
-### 结构体设计
+题目为每个农场给出独立的计划到达时间 `S + t[i]`，**不需要在农场之间再规划一条访问路线**。
 
-```cpp
-struct Bucket {
-    long long capacity;
-    long long milk;
-};
+### 1. 先写出朴素方法
+
+每个查询扫描所有农场，检查 `S + t[i] < c[i]`，时间为 `O(NQ)`。
+
+小规模可以接受；完整数据 `N,Q ≤ 2×10^5`，不能反复扫描全部农场。
+
+### 2. 方法 A：差值排序 + upper_bound
+
+1. 计算 `deadline[i] = c[i] - t[i]`，升序排列。
+2. 找出第一个 `deadline[i] > S` 的下标 `pos`。
+3. 满足条件的农场数为 `N - pos`。
+4. 判断数量是否至少为 `V`。
+
+例如：
+
+```text
+deadline：-1 3 4 4 6
+S = 3：满足条件的是 4、4、6，共 3 个
 ```
 
-一次最多倒出的奶量：
+#### 参考代码 A
 
 ```cpp
-min(source.milk, destination.capacity - destination.milk)
-```
-
-### 思路
-
-1. 保存三个桶的状态。
-2. 用 `step % 3` 确定源桶，用 `(step + 1) % 3` 确定目标桶。
-3. 按上面的公式求出实际倒奶量。
-4. 源桶减少、目标桶增加，容量不变。
-
-### 参考代码
-
-```cpp
-// program: mixing_milk_bronze
+// program: productivity_binary
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
 
-struct Bucket {
-    ll capacity;
-    ll milk;
-};
-
-void pour(Bucket &source, Bucket &destination) {
-    ll amount = min(source.milk, destination.capacity - destination.milk);
-    source.milk -= amount;
-    destination.milk += amount;
-}
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    Bucket buckets[3];
-    for (auto &bucket : buckets) cin >> bucket.capacity >> bucket.milk;
+    int N, Q;
+    cin >> N >> Q;
+    vector<ll> c(N), t(N), deadline(N);
+    for (ll &value : c) cin >> value;
+    for (ll &value : t) cin >> value;
 
-    for (int step = 0; step < 100; step++) {
-        int from = step % 3;
-        int to = (step + 1) % 3;
-        pour(buckets[from], buckets[to]);
+    for (int i = 0; i < N; i++) deadline[i] = c[i] - t[i];
+    sort(deadline.begin(), deadline.end());
+
+    while (Q--) {
+        int V;
+        ll S;
+        cin >> V >> S; // 实际输入顺序是 V、S
+
+        int pos = upper_bound(deadline.begin(), deadline.end(), S)
+                  - deadline.begin();
+        int count = N - pos;
+        cout << (count >= V ? "YES" : "NO") << '\n';
     }
-
-    for (const auto &bucket : buckets) cout << bucket.milk << '\n';
     return 0;
 }
 ```
 
+时间为 `O(N log N + Q log N)`，保存数据空间为 `O(N)`。
+
+### 3. 方法 B：直接检查第 V 大门槛
+
+题目只问“是否至少有 `V` 个”，并不要求输出准确数量。
+
+升序数组中，第 `V` 大元素的下标为：
+
+```cpp
+N - V
+```
+
+因此只需要判断：
+
+```cpp
+deadline[N - V] > S
+```
+
+**正确性：**如果第 `V` 大都大于 `S`，前 `V` 大全部满足；如果第 `V` 大不大于 `S`，则严格大于 `S` 的最多只有 `V-1` 个。
+
+例如：
+
 ```text
-输入：
-10 3
-11 4
-12 5
-
-输出：
-0
-10
-2
+升序：-1 3 4 4 6
+第 3 大：4，所以下标为 5 - 3 = 2
+V = 3，S = 3：4 > 3，YES
+V = 4，S = 3：3 > 3 不成立，NO
 ```
 
-**复杂度：**固定 `100` 次操作，可视为常数时间；空间 `O(1)`。
-
-### 手推前两次
-
-| 步骤 | 桶 1 | 桶 2 | 桶 3 |
-|---|---|---|---|
-| 初始 | 3 | 4 | 5 |
-| 1 → 2 | 0 | 7 | 5 |
-| 2 → 3 | 0 | 0 | 12 |
-
-## 七、排序入门真题：Training Mixing Milk——按价格采购
-
-📌 **USACO Training Section 1.3。它是训练题，不是上面的 2018 铜组倒奶题。**
-
-[洛谷 P1208：混合牛奶](https://www.luogu.com.cn/problem/P1208)
-
-### 问题概括
-
-需要采购一定量的牛奶，每个奶农有单价和最多供应量。可以只买一部分，求最小总费用。
-
-### 结构体设计
+#### 参考代码 B
 
 ```cpp
-struct Farmer {
-    int price;
-    int amount;
-};
-```
-
-### 思路
-
-1. 按单价从低到高排序整个奶农记录。
-2. 优先从便宜奶农处购买，买到需求满足就停止。
-3. 每次购买 `min(剩余需求, 当前供应量)`。
-
-**为什么便宜的优先？** 如果还可以买到便宜牛奶，却使用了一单位更贵的牛奶，将它替换后费用不会增加。因此存在最优方案按价格从低到高采购。
-
-### 参考代码
-
-```cpp
-// program: mixing_milk_training
+// program: productivity_kth
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
 
-struct Farmer {
-    int price;
-    int amount;
-};
-
-bool cheaper(const Farmer &a, const Farmer &b) {
-    return a.price < b.price;
-}
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int need, m;
-    cin >> need >> m;
-    vector<Farmer> farmers(m);
-    for (auto &farmer : farmers) cin >> farmer.price >> farmer.amount;
-
-    sort(farmers.begin(), farmers.end(), cheaper);
-
-    ll answer = 0;
-    for (const auto &farmer : farmers) {
-        int buy = min(need, farmer.amount);
-        answer += 1LL * buy * farmer.price;
-        need -= buy;
-        if (need == 0) break;
+    int N, Q;
+    cin >> N >> Q;
+    vector<ll> deadline(N);
+    for (ll &value : deadline) cin >> value; // 暂时保存 c[i]
+    for (int i = 0; i < N; i++) {
+        ll travel;
+        cin >> travel;
+        deadline[i] -= travel;
     }
+    sort(deadline.begin(), deadline.end());
 
-    cout << answer << '\n';
+    while (Q--) {
+        int V;
+        ll S;
+        cin >> V >> S;
+        cout << (deadline[N - V] > S ? "YES" : "NO") << '\n';
+    }
     return 0;
 }
 ```
 
-```text
-自测输入：
-7 3
-5 4
-2 3
-3 5
+题目保证 `1 ≤ V ≤ N`，所以这里的下标合法。时间为 `O(N log N + Q)`，保存数据空间为 `O(N)`。
 
-输出：
-18
-```
-
-先买单价 `2` 的 `3` 单位，再买单价 `3` 的 `4` 单位，费用为 `3×2 + 4×3 = 18`。
-
-**复杂度：**时间 `O(m log m)`，记录数组空间 `O(m)`。
-
-### ❗ 排序不等于贪心一定正确
-
-这道题允许拆开购买、每单位成本固定，所以价格排序成立。如果商品不可拆分，或存在满减、组合条件，不能直接套这个结论。
-
-## 八、真题：Milk Measurement——事件排序与展示名单
-
-📌 **USACO 2017 December，Bronze，Problem 3。**
-
-[官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=761)
-
-> 注意这里是只有 Bessie、Elsie、Mildred 三头牛的铜组版本。洛谷 P4087 标为 Silver，数据和要求不同，不能用下面的三头牛代码提交。
-
-### 问题概括
-
-三头牛最初的产奶量都为 `7`。给出若干条乱序日志，每条包含日期、牛名、产奶量变化。每天最多一条日志。展示所有产奶量并列最高的牛，求展示名单改变了多少次。
-
-### 为什么使用结构体？
-
-日期、牛名、变化量属于**同一个事件**，按日期排序时必须一起移动。
-
-```cpp
-struct Record {
-    int day;
-    string name;
-    int change;
-};
-```
-
-### 思路
-
-1. 按 `day` 升序排列日志。
-2. 保存三头牛的当前奶量，初始均为 `7`。
-3. 用长度为 `3` 的布尔数组记录展示名单，每个位置表示该牛是否并列最高。
-4. 执行一条日志后重新计算名单，与之前比较；不同则答案加一。
-
-**不能只比较最高产奶量数值。** 某头牛从 `9` 增加到 `10`，如果始终是同一头牛独占第一，名单并没有改变。相反，第一名数量相同但身份变了，仍然需要更换照片。
-
-### 参考代码
-
-```cpp
-// program: milk_measurement_bronze
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Record {
-    int day;
-    string name;
-    int change;
-};
-
-int cowId(const string &name) {
-    if (name == "Bessie") return 0;
-    if (name == "Elsie") return 1;
-    return 2; // Mildred
-}
-
-array<bool, 3> display(const array<int, 3> &milk) {
-    int highest = *max_element(milk.begin(), milk.end());
-    return {milk[0] == highest, milk[1] == highest, milk[2] == highest};
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<Record> records(n);
-    for (auto &record : records) {
-        cin >> record.day >> record.name >> record.change;
-    }
-
-    sort(records.begin(), records.end(),
-         [](const Record &a, const Record &b) {
-             return a.day < b.day;
-         });
-
-    array<int, 3> milk{7, 7, 7};
-    auto previous = display(milk);
-    int answer = 0;
-
-    for (const auto &record : records) {
-        milk[cowId(record.name)] += record.change;
-        auto current = display(milk);
-
-        if (current != previous) answer++;
-        previous = current;
-    }
-
-    cout << answer << '\n';
-    return 0;
-}
-```
-
-`array<bool, 3>` 是固定长度为 `3` 的数组容器，可直接比较内容是否相同；若学生尚未学过，可以换成三个布尔变量分别比较。
-
-输入 `+3`、`-1` 时，可以直接用 `cin >> int变量` 读取，不必手动拆分符号。
+### 官方样例：两个版本都适用
 
 ```text
 输入：
-4
-7 Mildred +3
-4 Elsie -1
-9 Mildred -1
-1 Bessie +2
+5 5
+3 5 7 9 12
+4 2 3 3 8
+1 5
+1 6
+3 3
+4 2
+5 1
 
 输出：
-3
+YES
+NO
+YES
+YES
+NO
 ```
 
-### 手推名单变化
+## 四、模拟进阶：完整状态、同步与结束条件
 
-| 日期 | Bessie | Elsie | Mildred | 展示名单 | 是否更换 |
-|---|---|---|---|---|---|
-| 初始 | 7 | 7 | 7 | 三头牛 | — |
-| 1 | 9 | 7 | 7 | Bessie | 是 |
-| 4 | 9 | 6 | 7 | Bessie | 否 |
-| 7 | 9 | 6 | 10 | Mildred | 是 |
-| 9 | 9 | 6 | 9 | Bessie、Mildred | 是 |
+### ✔️ 模拟仍然要分析复杂度
 
-**复杂度：**排序 `O(n log n)`，模拟 `O(n)`，记录数组空间 `O(n)`。
+模拟考查读题、状态建模和实现，但**不是不考复杂度**。同样的规则，可能要执行 `100` 次，也可能执行 `10^9` 次；后者通常需要规律或结构优化。
 
-## 九、模拟真题：Shell Game——枚举初始状态再模拟
+| 模型 | 先考虑的方法 | 需要进一步注意 |
+|---|---|---|
+| 操作次数很小 | 按规则逐步执行 | 更新顺序与边界 |
+| 状态有限、下一步唯一 | 模拟并记录完整状态 | 重复状态说明进入循环 |
+| 每分钟多个对象同时更新 | 保留旧状态，计算新状态 | 不能让先更新的对象影响同一分钟其他对象 |
+| 时间极大、存在结构规律 | 按段、按事件或按周期汇总 | 先证明规律，不能随意跳步骤 |
 
-📌 **USACO 2019 January，Bronze，Problem 1。**
+### ✔️ 三个需要分清的问题
 
-[官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=891)
+1. **状态与答案不同**：想知道是否相遇，仍可能必须记录双方方向，而不只是位置。
+2. **没有变化与循环不同**：状态可以在多个时刻间循环，并不一定停在原地。
+3. **同步与顺序不同**：一次操作内产生的结果，是否能被同一步的其他对象立即使用？由题意决定。
 
-### 问题概括
+### ✔️ 正确的模拟框架
 
-三个杯子中的某一个下面有石子，但初始位置未知。每次先交换两个杯子，再猜石子在哪个位置。给出所有交换与猜测，求可能猜中的最大次数。
+```text
+初始化状态
+循环：
+    检查是否达到目标
+    检查是否出现重复状态（若此模型适用）
+    根据当前状态计算下一步
+    完成一次统一更新
+    时间增加
+```
 
-### 状态与记录
+只有在“记录的状态足以决定全部后续行为、规则不随遗漏的时间信息变化”时，重复状态才能推出之后重复。
+
+## 五、经典题：The Tamworth Two（两只塔姆沃斯牛）
+
+📌 **USACO Training Section 2.4。**
+
+[洛谷 P1518](https://www.luogu.com.cn/problem/P1518)
+
+### 规则概括
+
+在固定 `10 × 10` 地图中，农夫与牛都从朝北开始：
+
+- 每分钟，前方可走就前进一步。
+- 前方为墙或地图外，就用这一分钟原地顺时针转 `90°`，**转弯后不立即再走一步**。
+- 两者同时行动，在一分钟结束时同格才算相遇；交换位置、途中交错不算。
+- 永远不相遇则输出 `0`。
+
+### 1. 方向编码
 
 ```cpp
-struct Operation {
-    int a;
-    int b;
-    int guess;
-};
+// 0 北、1 东、2 南、3 西
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
+
+direction = (direction + 1) % 4; // 顺时针转向
 ```
 
-- `operations`：保存所有操作，需要为三个初始位置重复使用。
-- `position`：石子当前所在的位置。
-- `score`：当前假设下猜中的次数。
-- `answer`：三个假设中的最高分。
+坐标统一从 `0` 开始：行、列均为 `0 ~ 9`。先判断是否在地图内，再访问地图。
 
-### 思路
+### 2. 为什么必须记录六个量？
 
-1. 枚举初始位置 `start = 1, 2, 3`。
-2. 每次重新设置 `position = start`、`score = 0`。
-3. 按输入顺序执行每条操作：先更新石子位置，再判断是否猜中。
-4. 用这一轮的 `score` 更新答案。
+联合状态为：
 
-这里只需要跟踪石子位置，不必同时维护三个杯子的所有信息。**状态够用即可，不必把题面中所有对象都存下来。**
+```text
+农夫行、农夫列、农夫方向、牛行、牛列、牛方向
+```
+
+位置相同但方向不同，下一步可能不同。只记录双方位置，或发现某一方单独重复，就提前判定无解，都不充分。
+
+### 3. 联合状态只有 160000 种
+
+每个对象有：
+
+$$
+10\times10\times4=400
+$$
+
+种状态，双方联合起来共有：
+
+$$
+400\times400=160000
+$$
+
+种。如果没有相遇却重复了相同联合状态，因为之后的变化完全确定，就会永久循环。
+
+### 4. 安全的零下标编码
+
+```cpp
+int code = (x * 10 + y) * 4 + direction; // 0 ~ 399
+```
+
+用：
+
+```cpp
+seen[farmerCode][cowCode]
+```
+
+记录联合状态，不必把六个量写成容易混淆的十进制权重公式。
 
 ### 参考代码
 
 ```cpp
-// program: shell_game
+// program: tamworth_two
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Operation {
-    int a;
-    int b;
-    int guess;
-};
+string grid[10];
+bool seen[400][400]; // 放在全局，初始为 false
+
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
+
+void advance(int &x, int &y, int &direction) {
+    int nx = x + dx[direction];
+    int ny = y + dy[direction];
+
+    if (nx < 0 || nx >= 10 || ny < 0 || ny >= 10 || grid[nx][ny] == '*') {
+        direction = (direction + 1) % 4;
+    } else {
+        x = nx;
+        y = ny;
+    }
+}
+
+int encode(int x, int y, int direction) {
+    return (x * 10 + y) * 4 + direction;
+}
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int n;
-    cin >> n;
-    vector<Operation> operations(n);
-    for (auto &op : operations) cin >> op.a >> op.b >> op.guess;
+    int fx = -1, fy = -1, cx = -1, cy = -1;
+    for (int x = 0; x < 10; x++) {
+        cin >> grid[x];
+        for (int y = 0; y < 10; y++) {
+            if (grid[x][y] == 'F') fx = x, fy = y;
+            if (grid[x][y] == 'C') cx = x, cy = y;
+        }
+    }
 
-    int answer = 0;
-    for (int start = 1; start <= 3; start++) {
-        int position = start;
-        int score = 0;
+    int fd = 0, cd = 0;
+    int minutes = 0;
 
-        for (const auto &op : operations) {
-            if (position == op.a) {
-                position = op.b;
-            } else if (position == op.b) {
-                position = op.a;
-            }
-
-            // 题目规定先交换，再猜测
-            if (position == op.guess) score++;
+    while (true) {
+        if (fx == cx && fy == cy) {
+            cout << minutes << '\n';
+            return 0;
         }
 
-        answer = max(answer, score);
-    }
+        int fCode = encode(fx, fy, fd);
+        int cCode = encode(cx, cy, cd);
+        if (seen[fCode][cCode]) {
+            cout << 0 << '\n';
+            return 0;
+        }
+        seen[fCode][cCode] = true;
 
-    cout << answer << '\n';
-    return 0;
+        advance(fx, fy, fd);
+        advance(cx, cy, cd);
+        minutes++;
+    }
 }
 ```
 
+### 为什么代码依次调用，仍然表示同时行动？
+
+两次 `advance` 都只看固定的墙和各自状态，不会读取另一方刚更新的位置，也不会修改地图。两次调用完成后才进入下一次相遇判断，因此等价于同步推进一分钟。
+
+题目中的 `F`、`C` 字符只用于读入初始位置；之后不把它们当作墙，不需要在地图上反复擦除和重画。
+
+### 自测：先转弯，再相遇
+
 ```text
 输入：
-3
-1 2 1
-3 2 1
-1 3 1
+**********
+*FC*******
+**********
+**********
+**********
+**********
+**********
+**********
+**********
+**********
 
 输出：
 2
 ```
 
-### 手推：假设初始位置为 2
+第一分钟都被北面的墙挡住，转向东；第二分钟农夫右移，牛因东侧为墙原地转向南，此时同格相遇。
 
-| 操作 | 交换后石子位置 | 猜测位置 | 累计得分 |
-|---|---|---|---|
-| 交换 1、2 | 1 | 1 | 1 |
-| 交换 3、2 | 1 | 1 | 2 |
-| 交换 1、3 | 3 | 1 | 2 |
+**复杂度：**地图固定时最多处理 `160000` 个不同联合状态，每步为常数操作；访问标记空间同为 `160000` 个布尔值。不需要自行猜测一个“模拟足够久”的时间上限。
 
-初始在位置 `1、2、3` 时，得分分别为 `1、2、0`，因此答案是 `2`。
+### ❗ 对原代码编码的修正
 
-**复杂度：**枚举 3 个起点，每次模拟 `N` 条操作，时间为 `O(3N) = O(N)`；保存操作的空间为 `O(N)`。
+原稿坐标采用 `1 ~ 10`，却按十进制位权累加，最大联合编码可达到 `161110`，超出 `bool zt[160005]`。现在统一零下标，并把每个对象编码为 `0 ~ 399`，联合状态直接用二维数组记录。
 
-## 十、真题：Lifeguards——结构体保存区间
+## 六、环形数组与同步传递
 
-📌 **USACO 2018 January，Bronze，Problem 2。**
+### ✔️ 环形下标
 
-- [洛谷 P1697](https://www.luogu.com.cn/problem/P1697)
-- [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=784)
-- 教学重点：**区间记录、单位时间覆盖、枚举删除对象**。
+下标 `i` 在 `0 ~ N-1` 中：
+
+```cpp
+int left = (i - 1 + N) % N;
+int right = (i + 1) % N;
+```
+
+不能直接写 `(i - 1) % N` 后用于下标，因为 C++ 的负数取余结果可能为负。
+
+### ✔️ 同步传递使用新数组
+
+一轮中，所有对象是否能发送，必须根据**这一轮开始时**的奶量判断，不能让某头牛把这一分钟刚收到的奶又继续发送。
+
+```text
+old：这一分钟开始时的状态
+next：统一记录发送和接收后的结果
+```
+
+另外，应该先完成所有发送和接收，再处理容量溢出。不能在接收时立刻截断，因为接收者在同一分钟也可能送出一单位，从而腾出空间。
+
+这一点将在下一道题的朴素代码中体现。
+
+## 七、真题：Milk Exchange——从同步模拟到连续段汇总
+
+📌 **USACO 2024 February，Bronze，Problem 2。**
+
+- [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=1396)
+- [官方题解](https://usaco.org/current/data/sol_prob2_bronze_feb24.html)
+
+> 本章只讨论铜组版本。同场金组也有一道同名题，不能混淆；本题不是银组题。
 
 ### 问题概括
 
-每位救生员负责一个时间区间。必须恰好解雇一人，求剩余救生员能覆盖的最长总时间。人数不超过 `100`，时间在 `0 ~ 1000`。
+奶牛围成一圈，每头牛有容量为 `a[i]` 的桶，初始全部装满。每分钟，当前有奶的牛按固定方向 `L` 或 `R` 发送一升，所有传递同步发生，超过容量的部分丢失。求 `M` 分钟后的总奶量。
 
-### 用结构体表示区间
+完整范围中 `N ≤ 2×10^5`、`M ≤ 10^9`、`a[i] ≤ 10^9`。总奶量需要 `long long`。
 
-```cpp
-struct Shift {
-    int start;
-    int finish;
-};
-```
+### 1. 朴素方法：逐分钟模拟（部分解）
 
-### 先理解半开区间
+1. 复制当前奶量到 `next`。
+2. 根据当前旧奶量，决定每头牛是否发送，并在 `next` 上一减一加。
+3. 所有传递完成后，将 `next[i]` 截断到容量以内。
+4. 用 `next` 作为下一分钟状态。
 
-班次从 `4` 到 `7`，覆盖的是三个单位时间段：
-
-| 下标 `t` | 代表的时间段 |
-|---|---|
-| 4 | `[4, 5)` |
-| 5 | `[5, 6)` |
-| 6 | `[6, 7)` |
-
-所以循环为 `t < finish`，不是 `t <= finish`。区间长度是 `finish - start`，不能额外加一。
-
-### 思路
-
-1. 用 `coverage[t]` 统计每个单位时间段有几位救生员值班。
-2. 统计所有人的总覆盖时间 `total`。
-3. 枚举解雇哪一位；只有该人值班且 `coverage[t] == 1` 的时间会丢失。
-4. 计算 `total - lost`，取最大值。
-
-不需要真的删除再恢复所有区间；只统计被解雇者独自覆盖的部分即可。本题也不需要排序。
-
-### 参考代码
+#### 参考代码：只用于小数据与理解规则
 
 ```cpp
-// program: lifeguards_bronze
+// program: milk_exchange_direct
 #include <bits/stdc++.h>
 using namespace std;
-
-struct Shift {
-    int start;
-    int finish;
-};
+using ll = long long;
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int n;
-    cin >> n;
-    vector<Shift> shifts(n);
-    vector<int> coverage(1000, 0);
+    int N;
+    ll M;
+    cin >> N >> M;
+    string direction;
+    cin >> direction;
+    vector<ll> capacity(N);
+    for (ll &value : capacity) cin >> value;
+    vector<ll> milk = capacity;
 
-    for (auto &shift : shifts) {
-        cin >> shift.start >> shift.finish;
-        for (int t = shift.start; t < shift.finish; t++) {
-            coverage[t]++;
+    for (ll minute = 0; minute < M; minute++) {
+        vector<ll> next = milk;
+
+        for (int i = 0; i < N; i++) {
+            if (milk[i] == 0) continue;
+            int destination = (direction[i] == 'R')
+                              ? (i + 1) % N : (i - 1 + N) % N;
+            next[i]--;
+            next[destination]++;
         }
+
+        for (int i = 0; i < N; i++) {
+            next[i] = min(next[i], capacity[i]);
+        }
+        milk = next;
     }
 
-    int total = 0;
-    for (int t = 0; t < 1000; t++) {
-        if (coverage[t] > 0) total++;
-    }
+    cout << accumulate(milk.begin(), milk.end(), 0LL) << '\n';
+    return 0;
+}
+```
 
-    int answer = 0;
-    for (const auto &shift : shifts) {
-        int lost = 0;
-        for (int t = shift.start; t < shift.finish; t++) {
-            if (coverage[t] == 1) lost++;
+**复杂度：**时间 `O(NM)`，空间 `O(N)`。题面有 `N,M ≤ 1000` 的部分数据；这份代码不适合直接跑完整范围。
+
+### 2. 先看全部方向相同的情况
+
+如果全部为 `R` 或全部为 `L`，每个满桶同时送出一升、接收一升，奶量不变。
+
+对 `N = 1` 也成立：发送给自己，不产生损失。
+
+### 3. 找相向的 RL 桶对
+
+假设相邻的两个位置满足：
+
+```text
+方向：…… R | L ……
+          i   j
+```
+
+这两头牛每分钟互相交换一升，所以它们始终保留自己的满桶奶量。如果还从外侧收到额外奶，就会溢出。
+
+**不能理解为 RL 两桶之间的互相交换本身就会损失奶。真正丢失的是外侧额外流入的部分。** 只有 RL 桶对而没有外侧供应时，可以完全不损失。
+
+### 4. 统计外侧供应链，排除 RL 自身
+
+对一对 `R | L`：
+
+- 从 `R` 的左邻居开始，向左收集连续的 `R`，容量和记为 `sumR`。
+- 从 `L` 的右邻居开始，向右收集连续的 `L`，容量和记为 `sumL`。
+- **相向的 `R`、`L` 两个端点自身都不加入容量和。**
+
+例如：
+
+```text
+位置：  0  1  2  3  4
+方向：  R  R  R  L  L
+容量：  2  3  4  5  6
+```
+
+相向桶对是位置 `2、3`：
+
+```text
+sumR = a[0] + a[1] = 5
+sumL = a[4] = 6
+```
+
+位置 `2` 的容量 `4` 和位置 `3` 的容量 `5` 必须保留，不能算入供应链损失。
+
+### 5. 为什么单侧损失为 min(供应链容量和, M)？
+
+1. 每侧每分钟最多有一升从外侧进入对应的满桶，因此损失最多 `M`。
+2. 外侧连续同向链的初始奶量总和有限，因此损失最多为链容量和。
+3. 初始各桶非空且装满，链上的奶逐步向相向桶对推进；在链耗尽之前，其末端持续每分钟提供一升。
+
+所以这对桶产生的总损失为：
+
+$$
+\min(sumR,M)+\min(sumL,M)
+$$
+
+不能写成 `min(sumR + sumL, M)`：左右两侧可能在同一分钟各损失一升。
+
+上例若 `M = 4`：初始总量 `20`，损失 `min(5,4) + min(6,4) = 8`，最终剩 `12`。
+
+### 6. 所有供应链会不会重复统计？
+
+不会。每段连续 `R` 只会供应它右端的相向 `R`；每段连续 `L` 只会供应它左端的相向 `L`。
+
+各段按方向分别处理，环形下标让跨数组首尾的同向段也能正确连接。没有 RL 时不进行任何向外扫描，也就不会在同向整圈中无限循环。
+
+### 参考代码：完整数据解法
+
+```cpp
+// program: milk_exchange_fast
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N;
+    ll M;
+    cin >> N >> M;
+    string direction;
+    cin >> direction;
+    vector<ll> capacity(N);
+    for (ll &value : capacity) cin >> value;
+
+    ll answer = accumulate(capacity.begin(), capacity.end(), 0LL);
+
+    for (int i = 0; i < N; i++) {
+        int next = (i + 1) % N;
+        if (direction[i] != 'R' || direction[next] != 'L') continue;
+
+        // 当前相向桶对：i 是 R，next 是 L
+        // 左侧供应链：不包括 i
+        ll sumR = 0;
+        int j = (i - 1 + N) % N;
+        while (direction[j] == 'R') {
+            sumR += capacity[j];
+            j = (j - 1 + N) % N;
         }
-        answer = max(answer, total - lost);
+
+        // 右侧供应链：不包括 next
+        ll sumL = 0;
+        j = (next + 1) % N;
+        while (direction[j] == 'L') {
+            sumL += capacity[j];
+            j = (j + 1) % N;
+        }
+
+        answer -= min(sumR, M);
+        answer -= min(sumL, M);
     }
 
     cout << answer << '\n';
@@ -812,99 +690,36 @@ int main() {
 }
 ```
 
+**复杂度：**外层扫描 `N` 个位置，各供应链只在对应桶对处处理一次，所有 `while` 的累计扫描量为 `O(N)`。因此总时间 `O(N)`，空间 `O(N)`，不能因为存在嵌套循环就直接判断为 `O(N²)`。
+
+### 官方样例
+
 ```text
-输入：
-3
-5 9
-1 4
-3 7
+输入 1：
+3 1
+RRL
+1 1 1
 
-输出：
-7
+输出 1：
+2
 ```
 
-总覆盖为 `[1, 9)`，长度 `8`。解雇 `[3, 7)` 的救生员，只会失去 `[4, 5)`，剩余覆盖为 `7`。
+```text
+输入 2：
+5 20
+LLLLL
+3 3 2 3 3
 
-**复杂度：**设时间范围为 `T = 1000`，时间 `O(nT)`，记录与覆盖数组空间 `O(n + T)`。如果坐标扩展到 `10^9`，不能再逐格枚举时间，需要其他处理方式。
-
-## 十一、Air Cownditioning II
-
-📌 **USACO 2023 January，Bronze，Problem 2。**
-
-- [洛谷 P9011](https://www.luogu.com.cn/problem/P9011)
-- [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=1276)
-- 前置：已学习 DFS 的选 / 不选枚举。
-
-每台空调同时有“左端点、右端点、降温量、费用”四个属性，适合打包成：
-
-```cpp
-struct Conditioner {
-    int left;
-    int right;
-    int power;
-    int price;
-};
-
-vector<Conditioner> conditioners;
+输出 2：
+14
 ```
 
-### 思路衔接
+```text
+输入 3：
+9 5
+RRRLRRLLR
+5 8 4 9 3 4 9 5 4
 
-1. 保存每头牛占据的区间及降温需求。
-2. 保存每台空调的四个属性。
-3. 最多 `10` 台空调，每台选择开启或关闭，DFS 枚举 `2^M` 个子集。
-4. 检查降温需求，更新最小费用；回溯时撤销选中空调的降温效果。
-
-## 十二、拓展：结构体嵌套与 `pair`
-
-### ✔️ 结构体可以嵌套
-
-```cpp
-struct StudentInfo {
-    string name;
-    int age;
-
-    struct Score {
-        int math;
-        int english;
-    } score;
-};
-
-StudentInfo student{"Tom", 17, {90, 85}};
-cout << student.score.math << '\n'; // 90
+输出 3：
+38
 ```
-
-含义：学生拥有一个成绩对象，这个成绩对象又有数学、英语两个成员。当前阶段会读懂即可，不必为了使用 `struct` 而增加嵌套层级。
-
-### ✔️ `struct` 与 `pair` 怎么选？
-
-| 场景 | 建议 |
-|---|---|
-| 两个简单坐标，含义明确 | `pair<int, int>` 简洁 |
-| 属性较多，或两个属性含义容易混淆 | 用 `struct` 命名成员 |
-| 按多个条件排序的记录 | 用 `struct` + 比较函数 |
-
-```cpp
-pair<int, int> point{2, 5};
-cout << point.first << ' ' << point.second;
-
-struct Point {
-    int x;
-    int y;
-};
-Point p{2, 5};
-cout << p.x << ' ' << p.y;
-```
-
-`pair` 默认先比较 `first`，相同再比较 `second`。自定义结构体不会自动按照声明顺序排序，C++17 下通常要提供比较函数或自己定义 `<`。
-
-## 十三、练习题单
-
-| 顺序 | 题目 | 来源 | 结构体设计 | 主要算法 |
-|---|---|---|---|---|
-| 1 | [P5116 Mixing Milk B](https://www.luogu.com.cn/problem/P5116) | 2018 December Bronze | `Bucket{capacity, milk}` | 固定次数模拟 |
-| 2 | [Shell Game](https://usaco.org/index.php?page=viewproblem2&cpid=891) | 2019 January Bronze | `Operation{a, b, guess}` | 枚举初始位置 + 模拟 |
-| 3 | [P1208 Mixing Milk](https://www.luogu.com.cn/problem/P1208) | Training 1.3，不标作月赛铜组 | `Farmer{price, amount}` | 排序 + 贪心 |
-| 4 | [Milk Measurement](https://usaco.org/index.php?page=viewproblem2&cpid=761) | 2017 December Bronze | `Record{day, name, change}` | 事件排序 + 模拟 |
-| 5 | [P1697 Lifeguards B](https://www.luogu.com.cn/problem/P1697) | 2018 January Bronze | `Shift{start, finish}` | 枚举 + 覆盖统计 |
-| 6 | [P9011 Air Cownditioning II B](https://www.luogu.com.cn/problem/P9011) | 2023 January Bronze | `Conditioner{left, right, power, price}` | DFS 子集枚举；学搜索后再做 |
