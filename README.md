@@ -19,11 +19,10 @@
 | Bronze_01 | 2 小时 | 枚举暴力、贪心、递推递归算法 |
 | Bronze_02 | 2 小时 | 二分查找与双指针、滑动窗口 |
 | Presum+Diff | 2 小时 | 前缀和、差分算法（一维二维）                               |
-|  Chapter 17 | 2 小时 | 矩形几何（Rectangle Geometry）                             |
-| Chapter 18 | 2 小时 | 完整搜索 / 穷举搜索（Complete Search） |
-| Chapter 19 | 2 小时 | 全排列、子集与回溯（Permutation, Subset and Backtracking） |
-| Chapter 20 | 2 小时 | 简单贪心算法（Greedy Algorithm） |
-| Chapter 21 | 2 小时 | 简单图论（Graph Theory） |
+| DFS_BFS | 2 小时 | DFS深搜（全排列、子集、回溯） |
+|   Bronze_04 | 2 小时 | 结构体与模拟                  |
+|   Bronze_05 | 2 小时 | 字符串、矩形几何学            |
+|   Bronze_05 | 2 小时 | 简单图论（Graph Theory） |
 
 ### Unit 3：真题讲解（10 小时）
 

@@ -1,310 +1,466 @@
-## 二分查找（Binary Search）
+## USACO Bronze 02：二分查找与双指针
 
-------
+## 一、二分查找：每次排除一半候选
 
-## 🥇 一、核心思想
+### 1. 使用前提
 
-**二分查找（Binary Search）** 是一种在有序区间内查找目标值的算法。
- 它利用“单调性”性质，每次把搜索空间缩小一半，从而在
-$$
-O(\log N)
-$$
-时间内找到答案。
+二分查找通常用于有序数组。以升序数组为例，比较中间元素与目标后，可以确定目标不会出现在哪一半。
 
-### ✅ 基本思路：
+例如在 `a = {1, 3, 4, 6, 8, 10}` 中查找 `8`：
 
-假设有一个升序数组 `a[0...N-1]`，我们要查找一个目标值 `x`：
+| 步骤 | 左下标 `l` | 右下标 `r` | 中点 `mid` | `a[mid]` | 下一步 |
+|---|---:|---:|---:|---:|---|
+| 1 | 0 | 5 | 2 | 4 | 目标更大，令 `l = 3` |
+| 2 | 3 | 5 | 4 | 8 | 找到，返回下标 4 |
 
-1. 取中点 `mid = (l + r) / 2`
-2. 比较 `a[mid]` 和 `x`
-3. 根据结果缩小搜索区间：
-   - 若 `a[mid] < x` → 搜右边；
-   - 若 `a[mid] > x` → 搜左边；
-   - 若相等 → 找到目标。
+每次排除约一半候选，查找复杂度为 O(log N)。若输入无序，先排序需要 O(N\log N)，不能把这部分成本忽略。
 
-### 🔁 动态示意图：
+### 2. 查找某个目标值
 
-```
-初始： l=0        mid        r=N-1
-         ↓---------↓----------↓
-
-若 a[mid] < x → 往右移 l
-若 a[mid] > x → 往左移 r
-```
-
-每一步搜索区间都减半。
-
-## 🧱 二、模板代码
-
-```c++
-#include <bits/stdc++.h>
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
 using namespace std;
-int binary_search(vector<int>& a, int x) {
-    int l = 0, r = (int)a.size() - 1;
+
+// 要求 a 已升序排序；找到返回下标，否则返回 -1。
+int findIndex(vector<int>& a, int target) {
+    int l = 0;
+    int r = (int)a.size() - 1;
+
     while (l <= r) {
-        int mid = l + (r - l) / 2; // 更安全的写法，避免溢出
-        if (a[mid] == x) return mid;      // 找到
-        else if (a[mid] < x) l = mid + 1; // 去右半边
-        else r = mid - 1;                 // 去左半边
+        int mid = l + (r - l) / 2;
+
+        if (a[mid] == target) return mid;
+        if (a[mid] < target) l = mid + 1;
+        else r = mid - 1;
     }
-    return -1; // 没找到
+
+    return -1;
 }
+
 int main() {
-    int n;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, target;
     cin >> n;
     vector<int> a(n);
-    for (int i = 0; i < n; i++) cin >> a[i];
-    int x;
-    cin >> x;
-    // 二分查找要求数组已排序（非降序）
-    // 如果你的输入数组不保证有序，可以先排序：
-    // sort(a.begin(), a.end());
-    cout << binary_search(a, x) << "\n";
-    return 0;
+    for (int& x : a) cin >> x;
+    cin >> target;
+
+    sort(a.begin(), a.end());
+    cout << findIndex(a, target) << '\n';
 }
 ```
 
-## 🧮 三、模板代码（查找“最小满足条件”）
+注意：
 
-这是 USACO 和算法竞赛中最常用的二分形式 👇
+- 这里维护闭区间 `[l, r]`，因此循环条件是 `l <= r`。
+- 中点已被排除时，更新到 `mid + 1` 或 `mid - 1`，避免死循环。
+- 有多个相同值时，这个模板返回其中一个位置，不保证是第一次出现的位置。
+- 排序后返回的是排序后的下标。如果需要原始编号，应在排序前保存编号。
+- `l + (r - l) / 2` 可以避免直接计算 `l + r` 带来的溢出风险。
 
-```c++
-int l = 0, r = N; // 区间 [l, r)
+## 二、查找边界：lower_bound 与 upper_bound
+
+以下用法要求数组已升序排序。
+
+| 函数 | 返回的位置 | 找不到时 |
+|---|---|---|
+| `lower_bound(begin, end, x)` | 第一个大于等于 `x` 的元素 | 返回 `end` |
+| `upper_bound(begin, end, x)` | 第一个严格大于 `x` 的元素 | 返回 `end` |
+
+例如：
+
+```cpp
+vector<int> a = {1, 3, 3, 3, 6, 8};
+
+int first = lower_bound(a.begin(), a.end(), 3) - a.begin();
+int after = upper_bound(a.begin(), a.end(), 3) - a.begin();
+
+// first = 1，after = 4
+// 数值 3 出现了 after - first = 3 次。
+```
+
+返回值是迭代器，减去 `a.begin()` 才得到下标。若返回 `a.end()`，换算得到下标 `a.size()`，不能访问 `a[a.size()]`。
+
+### 真题应用：Counting Haybales（银组拓展）
+
+**USACO 2016 December Silver，Problem 1**  
+[官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=666)
+
+给定草垛的位置，多次询问闭区间 `[L, R]` 内有多少个草垛。
+
+排序后：
+
+- `lower_bound(L)` 找到第一个不小于 `L` 的位置。
+- `upper_bound(R)` 找到第一个大于 `R` 的位置。
+- 两个位置之差就是区间内的数量。
+
+核心代码：
+
+```cpp
+auto left = lower_bound(a.begin(), a.end(), L);
+auto right = upper_bound(a.begin(), a.end(), R);
+cout << right - left << '\n';
+```
+
+预处理排序 $O(N\log N)$，每次查询 $O(\log N)$。这个边界写法也适用于包含重复元素的有序数组。
+
+## 三、二分答案：先证明条件具有单调性
+
+普通二分查找比较数组值；二分答案判断某个候选答案是否可行。
+
+例如我们要求“最小可行值”，并且判断结果随候选值增大只能从不成立变成成立：
+
+| 候选值 | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| `check` | false | false | false | true | true | true |
+
+这时可以二分寻找第一个 `true`。
+
+### 1. 最小可行值模板
+
+```cpp
+// 前提：答案在闭区间 [L, R] 内，并且 check(R) 为 true。
+// check(x) 的结果从 false 单调变为 true。
+int l = L, r = R;
+
 while (l < r) {
-    int mid = (l + r) / 2;
-    if (check(mid)) r = mid;   // 条件成立，往左找更小解
-    else l = mid + 1;          // 条件不成立，往右找更大解
+    int mid = l + (r - l) / 2;
+
+    if (check(mid)) r = mid;  // mid 可行，保留它并尝试更小的值
+    else l = mid + 1;        // mid 不可行，排除 mid 及更小的值
 }
-cout << l; // l 即最小满足条件的值
+
+// l == r，即最小可行值。
+cout << l << '\n';
 ```
 
-**关键在于：**
+这个模板维护的是闭区间 `[l, r]`。使用前要确认至少存在一个可行值；不能在没有可行答案时直接把最终的 `l` 当成答案。
 
-- `check(mid)` 表示“当前 mid 是否可行”；
-- 整个搜索空间必须**单调**（即可行性不会来回跳变）。
+判断是否能二分时，先回答三个问题：
 
-### 🐮 USACO 2019 Dec Bronze t2
+1. `check(x)` 判断的是什么？
+2. 为什么 `x` 可行之后，更大的值一定可行？
+3. 初始范围为什么包含答案？
 
-**题意简述：**
- 给一个字符串，找最小的 k，使得所有长度为 k 的子串都唯一。
+若一次判断需要 T 时间，候选值数量为 V，二分部分复杂度为 O(Tlog V)。
 
-**思路分析：**
+### 2. 铜组真题：Where Am I?
 
-- 若长度 k 可行（所有子串唯一） → 长度 > k 也可行；
-- 若长度 k 不可行 → 长度 < k 也不可行。
-   这就构成了单调性结构。
+**USACO 2019 December Bronze，Problem 2**  
+[官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=964)
 
-**所以可用二分法** 找最小可行 k。
+**题意概括：** 给定一个字符串，求最小的长度 `k`，使所有长度为 `k` 的连续子串互不相同。
 
-```c++
-bool unique(int k, string s) {
-    unordered_set<string> seen;
-    for (int i = 0; i + k <= s.size(); i++) {
+例如字符串 `ABCDABC`：长度 3 时，`ABC` 出现两次；长度 4 时，没有重复子串，因此答案为 4。
+
+**为什么可以二分？**
+
+如果长度 `k` 的子串都不相同，那么长度 `k+1` 的子串也不可能相同：否则两个相同长子串的前 `k` 个字符也会相同，与前提矛盾。
+
+因此可行性具有单调性。`k = n` 时只有一个子串，一定可行。
+
+```cpp
+#include <iostream>
+#include <set>
+#include <string>
+using namespace std;
+
+bool check(int k, const string& s) {
+    set<string> seen;
+    int n = (int)s.size();
+
+    for (int i = 0; i + k <= n; i++) {
         string sub = s.substr(i, k);
-        if (seen.count(sub)) return false;
-        seen.insert(sub);
+        if (!seen.insert(sub).second) return false;
+        // sub 原来不存在，现在已经加入 seen
     }
     return true;
 }
 
 int main() {
-    int n; string s;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    string s;
     cin >> n >> s;
-    int l = 1, r = n, ans = n;
-    while (l <= r) {
-        int mid = (l + r) / 2;
-        if (unique(mid, s)) ans = mid, r = mid - 1;
+
+    int l = 1, r = n;
+    while (l < r) {
+        int mid = l + (r - l) / 2;
+        if (check(mid, s)) r = mid;
         else l = mid + 1;
     }
-    cout << ans;
+
+    cout << l << '\n';
 }
-//二分查找
-//哈希表
-//string
 ```
 
-***
+`seen.insert(sub).second` 表示是否成功加入一个新字符串；若为 `false`，说明此前已经出现过。
 
-## 🧭 USACO 双指针（Two Pointers）
+本题 N<=100，从小到大枚举 `k` 也能通过，不必为了使用二分而强行优化。这里用它练习“可行性判断 + 单调性证明”。上述实现包含子串构造和字符串比较，最坏上界可估为 $O(N^2\log^2N)$，不能把一次 `check` 简单看成 $O(N)$。
 
-###  一、核心思想
+## 四、双指针：利用不回退的移动减少重复工作
 
-**双指针（Two Pointers）** 是一种常见的数组遍历与区间控制技巧。
- 通过 **两个变量（指针）i, j** 同时在数组上移动，
- 避免多重循环，从而把 O(N²) 降为 O(N)。
+双指针通常用两个整数下标控制扫描位置。
 
-###  核心原理：
+常见形式：
 
-> 当数组或序列具有“**单调性**”时，我们可以让两个指针分别代表 **区间的左右端点**，
->  通过调整它们的位置，动态维护一个满足条件的区间。
+| 形式 | 指针如何移动 | 适用场景 |
+|---|---|---|
+| 同向双指针 / 滑动窗口 | 左右端点都向右 | 最长合法区间、区间计数 |
+| 相向双指针 | 从两端向中间 | 有序数组中的两数之和 |
+| 多序列合并 | 分别扫描两个序列 | 合并有序数组 |
 
-### **举个直观例子** 👇
+滑动窗口属于同向双指针；不必将它们理解成两种完全独立的算法。
 
-要找所有满足 `a[j] - a[i] <= K` 的区间：
+## 五、同向双指针（滑动窗口）：维护合法窗口
+
+### 1. 用例：最大值与最小值之差不超过 K
+
+先将数组升序排序。对于窗口 `[left, right]`：
+
+$$
+\max-\min=a[right]-a[left]
+$$
+
+当右端点右移导致差值超过 `K` 时，继续右移左端点，直到窗口重新合法。
+
+```cpp
+// 前提：a 已升序排序，K >= 0。
+int left = 0;
+int best = 0;
+
+for (int right = 0; right < n; right++) {
+    while (1LL * a[right] - a[left] > K) {
+        left++;
+    }
+    best = max(best, right - left + 1);
+}
+```
+
+例如 `a = {1, 1, 3, 4, 6}`，`K = 3`：
+
+| `right` | 当前值 | 调整后的 `left` | 合法窗口的值 | 窗口大小 |
+|---:|---:|---:|---|---:|
+| 0 | 1 | 0 | 1 | 1 |
+| 1 | 1 | 0 | 1, 1 | 2 |
+| 2 | 3 | 0 | 1, 1, 3 | 3 |
+| 3 | 4 | 0 | 1, 1, 3, 4 | 4 |
+| 4 | 6 | 2 | 3, 4, 6 | 3 |
+
+最大窗口大小为 4。
+
+### 2. 为什么 for + while 仍是 O(N)？
+
+右指针总共移动 `N` 次。左指针不会回退，总共也最多移动 `N` 次。内层循环的执行次数要在整个算法中累计，不能机械地将两层循环相乘。
+
+因此窗口扫描为 O(N)，加上排序后的总复杂度为 O(N\log N)。
+
+### 3. 2016 US Open Bronze：[Diamond Collector](https://usaco.org/index.php?page=viewproblem2&cpid=639)
+
+**题意概括：** 从不同大小的钻石中选择尽可能多的钻石，使最大与最小尺寸之差不超过 `K`。
+
+排序后，最佳选择可以表示为一个连续窗口：只要两端的差值合法，中间的钻石也都可以加入。因此直接使用上一节的双指针。
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, K;
+    cin >> n >> K;
+    vector<int> a(n);
+    for (int& x : a) cin >> x;
+    sort(a.begin(), a.end());
+
+    int left = 0, answer = 0;
+    for (int right = 0; right < n; right++) {
+        while (1LL * a[right] - a[left] > K) left++;
+        answer = max(answer, right - left + 1);
+    }
+
+    cout << answer << '\n';
+}
+```
+
+### 4. 固定左端点，推进右端点的等价写法
+
+```cpp
+// 前提：a 已升序排序，K >= 0。
+int right = 0;
+int answer = 0;
+
+for (int left = 0; left < n; left++) {
+    while (right < n && 1LL * a[right] - a[left] <= K) {
+        right++;
+    }
+
+    // right 是第一个不合法的位置，或 n。
+    // 当前合法窗口为 [left, right)，长度为 right - left。
+    answer = max(answer, right - left);
+}
+```
+
+这份代码使用左闭右开窗口 `[left, right)`，与上一份闭区间窗口的长度公式不同。关键是始终保持同一套边界约定。
+
+双指针不能直接套在任何问题上。例如用窗口统计“区间和不超过 K”时，若数组中有负数，扩大窗口可能降低总和，常见的单向收缩逻辑就不再保证正确。
+
+### 5. [洛谷P1638 逛画展](https://www.luogu.com.cn/problem/P1638)
 
 ```c++
-int j = 0;
-for (int i = 0; i < N; i++) {
-    while (j < N && a[j] - a[i] <= K) j++;
-    // 此时区间 [i, j-1] 都满足条件
+//双指针+滑动区间
+//1.右指针不断向右移动，将画作加入窗口。
+//2.当窗口包含全部m位画家后，左指针不断向右移动，并更新最短区间，
+//3.当删除某幅画后，不再包含全部画家，停止移动左指针。
+//4.继续向右移动右指针，直到right到达N。
+#include<bits/stdc++.h>
+using namespace std;
+const int Nmax=10^6+5;
+int paintings[Nmax];
+int cnt[2005];
+int num=0;
+int main(){
+    int n,m;
+    cin>>n>>m;
+    for(int i=1;i<=n;i++){
+        cin>>paintings[i];
+    }
+    int bestLeft=1;
+    int bestRight=n;
+    int maxLen=Nmax;
+    
+    int left=1;
+    for(int right=1;right<=n;right++){
+        if(cnt[paintings[right]]==0) num++;
+        cnt[paintings[right]]++;
+        while(num==m){
+            int len=right-left+1;
+            if(len<maxLen){
+                maxLen=len;
+                bestLeft=left;
+                bestRight=right;
+            }
+            //left向左移
+            cnt[paintings[left]]--;
+            if(cnt[paintings[left]]==0) num--;
+            left++;
+        }
+    }
+    cout<<bestLeft<<" "<<bestRight<<"\n";
+    return 0;
+}
+/* 滑动窗口模版
+for (右指针) {
+    加入右端元素;
+
+    while (窗口满足条件) {
+        更新答案;
+        删除左端元素;
+        左指针++;
+    }
+}
+*/
+```
+
+## 六、相向双指针：两数之和
+
+在有序数组中，判断是否存在两个不同下标，使两数之和等于 `target`。
+
+```cpp
+bool pairSum(const vector<int>& a, long long target) {
+    int left = 0;
+    int right = (int)a.size() - 1;
+
+    while (left < right) {
+        long long sum = 1LL * a[left] + a[right];
+
+        if (sum == target) return true;
+        if (sum < target) left++;
+        else right--;
+    }
+
+    return false;
 }
 ```
 
-这就是典型的 “滑动窗口 / 双指针” 思想。
+使用前必须排序：
 
-------
+```cpp
+sort(a.begin(), a.end());
+cout << (pairSum(a, target) ? "yes" : "no") << '\n';
+```
 
-## 🧩 二、双指针的常见类型
+**为什么可以移动指针？**
 
-| 类型                                    | 说明                                  | 示例题目                    |
-| --------------------------------------- | ------------------------------------- | --------------------------- |
-| **1️⃣ 滑动窗口（Sliding Window）**        | i、j 一起向右移动，维护窗口满足某条件 | Subarray with Sum ≤ K       |
-| **2️⃣ 相向双指针（Opposite Directions）** | 从两端开始向中间移动                  | Two Sum、Pair Sum           |
-| **3️⃣ 同向双指针（Moving Endpoints）**    | 先固定 i，再移动 j 来扩展范围         | USACO “Photoshoot” 优化     |
-| **4️⃣ 多序列指针（Merge Two Lists）**     | 两个有序数组合并                      | USACO “Sleepy Cow Sorting”  |
-| **5️⃣ 区间统计（Counting）**              | 用 j 的移动代替内层循环               | USACO “Angry Cows” (Silver) |
+- 当前和太小时，`a[left]` 与当前候选范围内任何更小的右端值相加，都不会达到目标，因此可以排除这个左端点。
+- 当前和太大时，`a[right]` 与当前候选范围内任何更大的左端值相加，都仍然过大，因此可以排除这个右端点。
+- `left < right` 保证使用两个不同的元素。相同数值可以使用，只要它们来自不同下标。
 
-------
+例如 `{1, 3, 4, 6, 8, 10}`，目标为 9：先比较 `1+10=11`，右指针左移；再比较 `1+8=9`，找到答案。
 
-## 🧱 三、基础模板
+排序后扫描为 $O(N)$，总复杂度为 $O(N\log N)$。如果题目要求输出原始编号，排序时应同时保存原始下标。
 
-### 模板 1：滑动窗口模板
+## 七、多序列指针：合并两个有序数组
 
-```c++
-int j = 0;
-for (int i = 0; i < N; i++) {
-    while (j < N && condition(i, j)) j++;
-    // 此时 [i, j-1] 满足条件
+两个数组都按升序排列，每次选两个当前元素中较小的那个。某个数组处理完后，还要加入另一个数组的剩余元素。
+
+```cpp
+vector<int> mergeSorted(const vector<int>& A, const vector<int>& B) {
+    int i = 0, j = 0;
+    int n = (int)A.size(), m = (int)B.size();
+    vector<int> result;
+    result.reserve(n + m);
+
+    while (i < n && j < m) {
+        if (A[i] <= B[j]) result.push_back(A[i++]);
+        else result.push_back(B[j++]);
+    }
+
+    while (i < n) result.push_back(A[i++]);
+    while (j < m) result.push_back(B[j++]);
+
+    return result;
 }
 ```
 
-特点：
+例如 `A = {1, 4, 7}`、`B = {2, 3, 8}`，合并得到 `{1, 2, 3, 4, 7, 8}`。
 
-- i 右移时，j 永不回退；
-- 总复杂度 O(N)。
+复杂度为 O(n+m)，结果数组占用 O(n+m) 空间。这里合并会保留重复值，不会自动去重。
 
-------
+## 八、综合拓展：二分答案 + 线性扫描
 
-### 模板 2：相向双指针模板
+> 2021 Feb Silver-Problem 3. Just Green Enough
 
-```c++
-int l = 0, r = N - 1;
-while (l < r) {
-    if (a[l] + a[r] == target) { /* found */ }
-    else if (a[l] + a[r] < target) l++;
-    else r--;
-}
-```
+### Angry Cows（银组，可选）
 
-用于：
+**USACO 2016 January Silver，Problem 1**  
+[官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=594)
 
-- 两数之和
-- 找最接近目标值的一对数
+给定草垛位置和 `K` 头牛，求能覆盖所有草垛的最小整数爆炸半径 `R`。本节讨论银组版本，不是有连锁爆炸规则的同名铜组或金组题。
 
-------
+1. 将草垛位置排序。
+2. 判断某个半径 `R`：从最左边尚未覆盖的位置 `x` 开始，一头牛最多覆盖到 `x + 2R`，用下标跳过这段中的所有草垛。
+3. 重复覆盖，统计所需奶牛数；不超过 `K` 则可行。
+4. 半径越大越容易覆盖，满足单调性，因此二分最小可行半径。
 
-### 模板 3：归并（Merge）模板
+这个例子用来理解“二分减少候选答案，单向扫描减少一次判断的工作量”。铜组学生可先掌握前面的两个铜组例题，再学习本题。
 
-```c++
-int i = 0, j = 0;
-while (i < A.size() && j < B.size()) {
-    if (A[i] < B[j]) result.push_back(A[i++]);
-    else result.push_back(B[j++]);
-}
-```
+## 九、习题
 
-这是 **归并排序 (Merge Sort)** 的核心思想。
-
-------
-
-## 🧠 四、双指针常考场景（USACO 实例）
-
-- ### 🧮 题目：Pair Sum（双指针求两数之和）
-
-  ### 📄 **题意**
-
-  给定一个**有序数组** `a[0…N−1]` 和一个目标值 `target`，
-   判断数组中是否存在两个不同元素 `a[i] + a[j] == target`。
-
-  ## 💡 **思路分析**
-
-  数组是 **升序** 的，这是关键。
-   我们可以用两个指针：
-  
-  - `l` 指向最左（最小值）；
-  - `r` 指向最右（最大值）。
-  
-  每次计算：
-
-  ```c++
-  sum = a[l] + a[r]
-  ```
-  
-  然后根据 sum 和 target 的关系移动指针：
-
-  | 情况            | 说明       | 下一步操作        |
-  | --------------- | ---------- | ----------------- |
-  | `sum == target` | 找到答案 ✅ | 返回 true         |
-  | `sum < target`  | 当前和太小 | `l++`（让和变大） |
-  | `sum > target`  | 当前和太大 | `r--`（让和变小） |
-  
-  由于数组是升序的，
-   当我们右移左指针或左移右指针时，`sum` 的变化是**单调可预测**的。
-   这样可以在 **O(N)** 的时间内找到结果。
-  
-  ------
-
-  ## 💻 **代码实现**
-
-  ```c++
-  #include <bits/stdc++.h>
-  using namespace std;
-  // 判断是否存在一对数之和等于 target（要求 a 已升序排序）
-  bool pair_sum(vector<int>& a, int target) {
-      int l = 0, r = (int)a.size() - 1;
-      while (l < r) {
-          long long sum = (long long)a[l] + a[r]; // 防止 int 溢出
-          if (sum == target) return true;
-          else if (sum < target) l++;
-          else r--;
-      }
-      return false;
-  }	
-  int main() {
-      int n;
-      cin >> n;
-      vector<int> a(n);
-      for (int i = 0; i < n; i++) cin >> a[i];
-      int target;
-      cin >> target;
-      cout << (pair_sum(a, target)?"yes":"no") << "\n";
-      return 0;
-  }
-  ```
-
-  
-  
-  假设：
-  
-  ```
-  a = [1, 3, 4, 6, 8, 10]
-  target = 9
-  ```
-
-  | 步骤 | l    | r    | a[l]+a[r] | 关系 | 动作   |
-  | ---- | ---- | ---- | --------- | ---- | ------ |
-  | 1    | 0    | 5    | 1+10=11   | >9   | r--    |
-  | 2    | 0    | 4    | 1+8=9     | ==9  | ✅ 找到 |
-  
-  结果：存在。
-
-  ------
-  
-  ## 📊 **复杂度分析**
-  
-  | 项目       | 复杂度 | 说明                  |
-  | ---------- | ------ | --------------------- |
-  | 时间复杂度 | O(N)   | 每个指针最多移动 N 次 |
-  | 空间复杂度 | O(1)   | 仅用常数空间          |
-  
-  相比于暴力枚举 `O(N^2)`，效率显著提升。
+| 顺序 | 题目 | 练习重点 |
+|---:|---|---|
+| 1 | [洛谷 P2249：查找](https://www.luogu.com.cn/problem/P2249) | `lower_bound`、首次出现位置、1-based 输出 |
+| 2 | [Where Am I?（铜组）](https://usaco.org/index.php?page=viewproblem2&cpid=964) | 写 `check`，证明可行性单调 |
+| 3 | [Diamond Collector（铜组）](https://usaco.org/index.php?page=viewproblem2&cpid=639) | 排序、窗口长度、双指针 |
+| 4 | [Counting Haybales（银组拓展）](https://usaco.org/index.php?page=viewproblem2&cpid=666) | 使用两次二分统计闭区间 |
+| 5 | [Angry Cows（银组拓展）](https://usaco.org/index.php?page=viewproblem2&cpid=594) | 二分答案与线性判断结合 |
