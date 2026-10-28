@@ -1,16 +1,5 @@
 ## DFS 与 BFS：从搜索入门到 USACO 银组
 
-## 📌 本章学习目标
-
-| 阶段 | 核心内容 | 练习 |
-|---|---|---|
-| 入门 | 递归、选择与撤销 | 全排列；Air Cownditioning II；Back and Forth |
-| 基础 | 路径枚举、递归依赖 | Walking Home；Alchemy（拓展） |
-| 基础 | Flood Fill、连通块 | Lake Counting；Fence Planning |
-| 基础 | 普通 BFS、距离数组 | 自编迷宫；Corn Maze |
-| 进阶 | 连通块统计、多源起点 | Icy Perimeter；多源 BFS 模板 |
-| 拓展 | 队列维护连锁反应、扩充状态 | Comfortable Cows；Maze Tac Toe |
-
 ## 一、先建模，再选择 DFS / BFS
 
 ![DFS](./images/dfs.png)
@@ -1554,7 +1543,18 @@ int main() {
 | 10 | [Comfortable Cows](https://usaco.org/index.php?page=viewproblem2&cpid=1110) | 2021 February Silver | 队列、局部更新、连锁反应 | 进阶 |
 | 11 | [Maze Tac Toe](https://usaco.org/index.php?page=viewproblem2&cpid=1134) | 2021 US Open Silver | 三进制、完整状态、终局去重 | 挑战 |
 
-### ✔️ DFS 与 BFS 对比
+## 本章总结
+
+| 阶段 | 核心内容                   | 练习                                         |
+| ---- | -------------------------- | -------------------------------------------- |
+| 入门 | 递归、选择与撤销           | 全排列；Air Cownditioning II；Back and Forth |
+| 基础 | 路径枚举、递归依赖         | Walking Home；Alchemy（拓展）                |
+| 基础 | Flood Fill、连通块         | Lake Counting；Fence Planning                |
+| 基础 | 普通 BFS、距离数组         | 自编迷宫；Corn Maze                          |
+| 进阶 | 连通块统计、多源起点       | Icy Perimeter；多源 BFS 模板                 |
+| 拓展 | 队列维护连锁反应、扩充状态 | Comfortable Cows；Maze Tac Toe               |
+
+### DFS 与 BFS 对比
 
 | 比较内容               | DFS 深度优先搜索            | BFS 广度优先搜索         |
 | ---------------------- | --------------------------- | ------------------------ |
