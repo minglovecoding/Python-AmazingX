@@ -1,4 +1,5 @@
 #管理界面和动画：显示细胞、处理按钮和鼠标操作，调用算法推进下一代，并刷新颜色。
+#点击 Start → 定时执行 _tick() → 调用算法 → 绘制网格 → 更新文字。
 import tkinter as tk
 from tkinter import messagebox
 from GA import GA
@@ -11,14 +12,14 @@ except ImportError:
     PIL_AVAILABLE = False
 
 
-class CellMap(tk.Frame):
+class CellMap(tk.Frame):  #CellMap 是一个容器，不只是一个格子
     """School cellular-automaton GUI adapted to spatial prisoner dilemma."""
 
     def __init__(self, parent, x_dim, y_dim, cell_size):
         super().__init__(parent, bg="lightgray")
 
         self.gen_count = 0
-        self.gen_skip = 1
+        self.gen_skip = 1  #一次刷新先连续计算n代，再显示最后一代；中间n-1代仍计算，只是不画出来
         self.size = cell_size
         self.rows = x_dim
         self.cols = y_dim
@@ -37,8 +38,9 @@ class CellMap(tk.Frame):
         self.ga = GA(self.rows, self.cols, length=20, mutRate=0.03)
         self.cells = self.ga.pop
 
-        self._build_controls()
+        self._build_controls()  #创建按钮与输入框
 
+        #创建画布并注册鼠标操作
         self.canvas = tk.Canvas(
             self,
             width=self.cols * self.size,
@@ -48,7 +50,7 @@ class CellMap(tk.Frame):
         )
         self.canvas.grid(row=1, column=0, rowspan=8, columnspan=6, sticky="nw",
                          padx=1, pady=1)
-
+        #鼠标动作
         self.canvas.bind("<Button-1>", self.on_mouse_press)
         self.canvas.bind("<B1-Motion>", self.on_mouse_drag)
         self.canvas.bind("<Motion>", self.on_mouse_move)
@@ -57,7 +59,7 @@ class CellMap(tk.Frame):
         self._update_labels()
         self.after_id = self.after(self.speeds[self.speed_index], self._tick)
 
-    def _build_controls(self):
+    def _build_controls(self):  
         tk.Button(self, text="Start", command=self.start).grid(row=0, column=0, padx=2)
         tk.Button(self, text="Stop", command=self.stop).grid(row=0, column=1, padx=2)
         tk.Button(self, text="Reset", command=self.clear).grid(row=0, column=2, padx=2)
@@ -104,7 +106,7 @@ class CellMap(tk.Frame):
             if isinstance(widget, tk.Entry):
                 widget.bind("<Return>", lambda event: self.update_rules())
 
-    def update_rules(self):
+    def update_rules(self): #进化输入参数
         # 所有输入先校验成功，再统一应用。
         try:
             skip = int(self.gen_skip_text.get())
@@ -161,13 +163,13 @@ class CellMap(tk.Frame):
         self.gen_count = self.ga.generation
 
     @staticmethod
-    def cell_color(cell):
+    def cell_color(cell):#根据合作比例算颜色
         cooperation = cell.code.count("C") / len(cell.code)
         red = round(230 * (1 - cooperation) + 35 * cooperation)
         green = round(55 * (1 - cooperation) + 190 * cooperation)
         return f"#{red:02x}{green:02x}46"
 
-    def _render(self):
+    def _render(self):  #绘制网格
         self.canvas.delete("all")
         for row in range(self.rows):
             y1 = row * self.size
@@ -177,7 +179,7 @@ class CellMap(tk.Frame):
                     x1, y1, x1 + self.size, y1 + self.size,
                     fill=self.cell_color(self.cells[row][col]), outline="lightgray")
 
-    def _update_labels(self):
+    def _update_labels(self):  #更新文字
         self.generations_label.config(
             text=f"Generations: {self.gen_count} | C: {self.ga.cooperation():.1%}")
         row, col = self.mouse_coords
@@ -243,7 +245,8 @@ class CellMap(tk.Frame):
                 "To save a PNG, install Pillow by running:\npython3 -m pip install pillow",
             )
 
-    def _tick(self):
+    #暂停后，_tick() 仍会被调用，只是不再推进 GA。点击 Start 也不会额外创建一条计时链，它只改变 is_running。
+    def _tick(self):    #定时刷新函数，让模拟自动一代代运行
         if self.is_running:
             self.update_cells()
             self._render()
