@@ -122,11 +122,9 @@ while (!st.empty()) {
 // program: permutations
 #include <bits/stdc++.h>
 using namespace std;
-
 int n;
 vector<int> path;
 vector<bool> used;
-
 void dfs() {
     if ((int)path.size() == n) {
         for (int i = 0; i < n; i++) {
@@ -134,20 +132,15 @@ void dfs() {
         }
         return;
     }
-
     for (int x = 1; x <= n; x++) {
         if (used[x]) continue;
-
         used[x] = true;
         path.push_back(x);
-
         dfs();
-
         path.pop_back();
         used[x] = false;
     }
 }
-
 int main() {
     cin >> n;
     used.assign(n + 1, false);
@@ -166,7 +159,9 @@ int main() {
 2. 如果省略 `path.pop_back()`，下一个分支会受到什么影响？
 3. 为什么这里不能用全局 `visited` 永久禁止一个数字再次出现？
 
-### 2.  在 `8 × 8` 棋盘上放置八个皇后，使任意两个皇后都不在同一行、同一列或同一条对角线上。求合法方案总数（八皇后）。
+### 2.  在 `8 × 8` 棋盘上放置八个皇后，使任意两个皇后都不在同一行、同一列或同一条对角线上。求合法方案总数。
+
+![](./images/eight.png)
 
 **思路：**
 
@@ -220,19 +215,6 @@ int main() {
 92
 ```
 
-其中一种合法摆法如下，`Q` 表示皇后，`.` 表示空格：
-
-```
-Q.......
-....Q...
-.......Q
-.....Q..
-..Q.....
-......Q.
-.Q......
-...Q....
-```
-
 > 课堂提问：为什么不需要标记行是否被占用？
 > 答：每层递归只处理一行，放一个皇后后就进入下一行，已经保证每行恰好一个。
 
@@ -240,7 +222,7 @@ Q.......
 
 **Flood Fill 的意思是从一个格子出发，把与它连通的一整片区域找出来。DFS、BFS 都可以实现。**
 
-### ✔️ 四方向与八方向
+### 四方向与八方向
 
 ```cpp
 // 四方向：上下左右
@@ -250,9 +232,7 @@ int dy[4] = {0, 0, 1, -1};
 
 八方向还包含四个对角线方向。务必依据题意选择，不能看到网格就固定使用四方向。
 
-### ✔️ 坐标约定
-
-本章网格统一采用：
+### 坐标约定
 
 - `x` 表示行，范围 `[0, n)`。
 - `y` 表示列，范围 `[0, m)`。
@@ -277,35 +257,27 @@ int dy[4] = {0, 0, 1, -1};
 // program: lake_counting
 #include <bits/stdc++.h>
 using namespace std;
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
     int n, m;
     cin >> n >> m;
     vector<string> grid(n);
     for (string &row : grid) cin >> row;
-
     int answer = 0;
-
     for (int x = 0; x < n; x++) {
         for (int y = 0; y < m; y++) {
             if (grid[x][y] != 'W') continue;
-
             answer++;
             stack<pair<int, int>> st;
             grid[x][y] = '.';
             st.push({x, y});
-
             while (!st.empty()) {
                 auto [cx, cy] = st.top();
                 st.pop();
-
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         if (dx == 0 && dy == 0) continue;
-
                         int nx = cx + dx;
                         int ny = cy + dy;
                         if (nx < 0 || nx >= n || ny < 0 || ny >= m)
@@ -319,26 +291,12 @@ int main() {
             }
         }
     }
-
     cout << answer << '\n';
     return 0;
 }
 ```
 
 **复杂度：**每个格子最多入栈一次，时间、最坏额外空间均为 `O(nm)`。
-
-### 自测
-
-```text
-输入：
-3 3
-W..
-.W.
-..W
-
-输出：
-1
-```
 
 ## 六、BFS：广度优先搜索与最短路
 
@@ -690,37 +648,21 @@ int main() {
 
 可以加入费用剪枝：若 `cost >= answer`，继续选择只会更贵，可以直接返回。
 
-#### 小例子
-
-一个牛栏需要降温 `3`。有三台都覆盖它的空调：
-
-| 空调 | 降温 | 费用 |
-|---|---|---|
-| A | 2 | 4 |
-| B | 1 | 2 |
-| C | 3 | 9 |
-
-单独选择 C 的费用为 `9`，选择 A、B 的费用为 `6`。DFS 会比较这些子集，答案为 `6`。不能只按单台空调的降温量作选择。
-
 #### 参考代码
 
 ```cpp
 // program: air_cownditioning_ii
 #include <bits/stdc++.h>
 using namespace std;
-
 struct Conditioner {
     int left, right, power, price;
 };
-
 int N, M;
 int need[101], cool[101];
 vector<Conditioner> conditioners;
 int answer = INT_MAX;
-
 void dfs(int index, int cost) {
     if (cost >= answer) return; // 费用只会增加
-
     if (index == M) {
         for (int pos = 1; pos <= 100; pos++) {
             if (cool[pos] < need[pos]) return;
@@ -728,28 +670,22 @@ void dfs(int index, int cost) {
         answer = cost;
         return;
     }
-
     // 情况一：不选择这台空调
     dfs(index + 1, cost);
-
     // 情况二：选择这台空调
     const auto &ac = conditioners[index];
     for (int pos = ac.left; pos <= ac.right; pos++) {
         cool[pos] += ac.power;
     }
-
     dfs(index + 1, cost + ac.price);
-
     // 回溯：撤销这台空调的效果
     for (int pos = ac.left; pos <= ac.right; pos++) {
         cool[pos] -= ac.power;
     }
 }
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
     cin >> N >> M;
     for (int i = 0; i < N; i++) {
         int left, right, amount;
@@ -758,12 +694,10 @@ int main() {
             need[pos] = amount;
         }
     }
-
     conditioners.resize(M);
     for (auto &ac : conditioners) {
         cin >> ac.left >> ac.right >> ac.power >> ac.price;
     }
-
     dfs(0, 0);
     cout << answer << '\n';
     return 0;
@@ -773,20 +707,6 @@ int main() {
 题面保证全部空调一起开启时有解。牛占据的区间互不相交，所以建立 `need` 时可以直接赋值。
 
 **复杂度：**设牛栏坐标上限为 `L = 100`，DFS 时间为 `O(L · 2^M)`，额外空间为 `O(L + M)`。这里在递归过程中增减区间效果，不需要在每个叶子重新扫描所有空调。
-
-```text
-输入：
-2 4
-1 5 2
-7 9 3
-2 9 2 3
-1 6 2 8
-1 2 4 2
-6 9 1 5
-
-输出：
-10
-```
 
 #### 💬 课堂提问
 
@@ -1140,9 +1060,9 @@ int main() {
 5
 ```
 
-### ✔️ 5. Wormholes：配对回溯与判环（挑战）
+### 5. Wormholes：配对回溯与判环（挑战）
 
-📌 USACO 2013 December，Bronze，Problem 3。
+ USACO 2013 December，Bronze，Problem 3。
 
 [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=360)
 
@@ -1565,4 +1485,3 @@ int main() {
 | 所有边代价相同的最短路 | 普通 DFS 首次到达不保证最短 | 首次发现即可确定最短距离 |
 | 主要空间问题           | 递归深度可能过大            | 队列可能较大             |
 
-## 
