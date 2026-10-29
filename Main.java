@@ -11,3 +11,5 @@ for (int i = 1; i <= 4; i++) {
 System.out.println(count);
     }
 }
+
+//git push ssh://git@ssh.github.com:443/minglovecoding/Python-AmazingX.git HEAD
