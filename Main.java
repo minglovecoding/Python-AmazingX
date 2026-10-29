@@ -1,29 +1,13 @@
 import java.util.*;
 public class Main{  
-    public static boolean haveSameContents(int[] arr1,int[] arr2){
-        if(arr1.length!=arr2.length) return false;
-        for(int k=0;k<arr1.length;k++){
-            if(arr1[k]!=arr2[k]) return false;
-        }
-        return true;
-    } 
-    
-    public static void printInreverseOrder(ArrayList<String>names){
-
-    } 
     public static void main(String[] args){
-        int t=0;
-        for(int v=1;v<20;v=v*3){
-            t=t+v;
-            System.out.print(t+" ");
-        }
-        System.out.println(t);
+    int count = 0;
+for (int i = 1; i <= 4; i++) {
+    for (int j = i; j <= 4; j++) {
+        count++;
+    }
+    System.out.print(count+" ");
+}
+System.out.println(count);
     }
 }
-
-// 0 1 2
-// 1 1 2
-
-
-// 1 0 2
-// 1 1 2

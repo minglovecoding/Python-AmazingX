@@ -318,6 +318,7 @@ boolean a = true;
 boolean b = false;
 boolean c = false;
 System.out.println((a || b && c) + " " + ((a || b) && c));
+//逻辑运算符：! > && > ||
 ```
 
 A. `false false`  
@@ -505,9 +506,9 @@ while (n > 1) {
 System.out.println(count + " " + n);
 ```
 
-A. `4 1`  
-B. `5 0`  
-C. `4 0`  
+A. `4 1` 
+B. `5 0` 
+C. `4 0` 
 D. `3 2`
 
 ### MCQ 15｜嵌套循环次数
@@ -632,8 +633,6 @@ public static boolean isLeapYear(int year)
 | `scoreBand(59)` | `"D"` |
 | `isLeapYear(1900)` | false |
 | `isLeapYear(2000)` | true |
-
-其中 (c) 保留原稿闰年判断的知识点，改成方法题；不将它标为 AP 官方真题。
 
 ### FRQ 2｜TierBilling：分段计费
 
