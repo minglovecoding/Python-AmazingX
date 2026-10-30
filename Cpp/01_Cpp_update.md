@@ -642,6 +642,7 @@ Lambda 适合临时定义一小段函数。先掌握普通函数，再学习这�
 auto add = [](int a, int b) {
     return a + b;
 };
+//[&] 表示：以引用方式捕获 Lambda 内使用的外部局部变量
 
 cout << add(3, 5); // 8
 ```
