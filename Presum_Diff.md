@@ -64,12 +64,43 @@ $$
 
 例如区间花瓣数为 `{1,3}`，平均数为 2，但区间中没有 2，因此不合法。
 
-**做法层次：**
-
-1. 枚举 `[l,r]`，用前缀和 $O(1)$ 求和，再扫描区间查找平均数，总时间仍是 O(N^3)；本题 N\le100，可以通过。
-2. 固定 `l`，向右移动 `r`，维护当前区间各花瓣数的频次，就能 O(1) 判断平均数是否出现，将总复杂度降为 O(N^2)。
-
-本题说明：前缀和只优化“求和”这一步，不能自动消除其他枚举。
+```c++
+//1.注意直接除可能会损失精度
+//2.i、j从1开始需注意开辟数组大小
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int N;
+    int x,sum=0;
+    cin>>N;
+    vector<int>flower(N+1,0);
+    vector<int>pre(N+1,0);
+    for(int i=1;i<=N;i++){
+        cin>>x;
+        flower[i]=x;
+        pre[i]=pre[i-1]+x;
+    }
+    for(int i=1;i<=N;i++){
+        for(int j=i;j<=N;j++){
+            if(i==j){
+                sum+=1;
+                continue;
+            }
+            for(int k=i;k<=j;k++){
+                if(pre[j]-pre[i-1]==flower[k]*(j-i+1)){
+                    sum+=1;
+                    break;
+                } 
+            }
+        }
+    }
+    cout<<sum<<"\n";
+    return 0;
+}
+```
 
 ### 4. 银组真题：Breed Counting
 
@@ -324,10 +355,6 @@ diff[l] += v;
 diff[r + 1] -= v;
 ```
 
-- 在 `l` 处开始增加 `v`。
-- 区间内部，相邻两项同时增加 `v`，差值不变。
-- 从 `r+1` 开始取消这份增加。
-
 例如长度为 5、初始全零的数组：
 
 | 步骤 | diff[1] | diff[2] | diff[3] | diff[4] | diff[5] | diff[6] |
@@ -446,26 +473,21 @@ $$
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<long long> p(n + 1), need(n + 2, 0);
-    for (int i = 1; i <= n; i++) cin >> p[i];
-
-    for (int i = 1; i <= n; i++) {
-        long long temperature;
-        cin >> temperature;
-        need[i] = p[i] - temperature;
+	int N;
+	cin >> N;
+	vector<int> p(N + 1), t(N + 1), d1(N + 2),d2(N+2);
+	for (int i = 1; i <= N; ++i)
+		cin >> p[i];
+	for (int i = 1; i <= N; ++i)
+		cin >> t[i];
+	for (int i = 1; i <= N+1; ++i){
+        d1[i] = p[i] - p[i-1];
+        d2[i] = t[i] - t[i-1];
     }
-
-    long long totalChange = 0;
-    for (int i = 1; i <= n + 1; i++) {
-        totalChange += abs(need[i] - need[i - 1]);
-    }
-
-    cout << totalChange / 2 << '\n';
+	int ans = 0;
+	for (int i = 1; i <= N+1; ++i)
+		ans += abs(d1[i] - d2[i]);
+	cout << ans / 2<<"\n";
 }
 ```
 
@@ -655,36 +677,33 @@ int main() {
 
 时间 O(N+M^2)，空间 O(M)，无须 FFT。`(i,j)` 是有序对，`(i,i)` 也允许，所以对同一个端点频次为 `c` 的情况要用 `c*c`，不是 `c*(c-1)`。计数最大可达 N^2，必须用 `long long`。
 
-## 八、前缀和与差分怎么选？
+## 八、往年真题
 
-| 比较项 | 前缀和 | 普通差分 |
+| 比赛            | 题目（官方链接）                                             | 相关考点                                                   |
 |---|---|---|
-| 主要解决的问题 | 静态区间查询 | 批量区间加减 |
-| 保存的内容 | 从起点开始的累计值 | 相邻元素的变化量 |
-| 一次区间求和 | 预处理后 $O(1)$ | 需还原，再构建前缀和才可 $O(1)$ |
-| 一次区间加法 | 一般需更新受影响的前缀值，最坏 $O(N)$ | 记录两个端点，$O(1)$ |
-| 是否适合修改与查询频繁交错 | 不能直接高效支持 | 不能直接高效支持 |
+| 2020 Dec P2     | [Daisy Chains](https://usaco.org/index.php?page=viewproblem2&cpid=1060) | 用前缀和求区间花瓣总数，再判断区间中是否存在平均值         |
+| 2021 Dec P2     | [Air Cownditioning](https://usaco.org/index.php?page=viewproblem2&cpid=1156) | 将目标温差看成数组，研究区间加减与相邻差值的关系           |
+| 2023 Jan P2     | [Air Cownditioning II](https://usaco.org/index.php?page=viewproblem2&cpid=1276) | 枚举空调子集，用差分记录每台空调对区间的降温，前缀累加还原 |
+| 2024 Jan P3     | [Balancing Bacteria](https://usaco.org/index.php?page=viewproblem2&cpid=1373) | 对后缀加减等差数列，通过两次差分转化为单点操作             |
+| 2024 US Open P2 | [Walking Along a Fence](https://usaco.org/index.php?page=viewproblem2&cpid=1420) | 预处理沿围栏到各位置的累计距离，用距离相减回答询问         |
 
-### 两种工具可以串起来用
+第二类：可以练前缀统计，但主要考点还包括其他思路
 
-如果题目是“先完成全部区间修改，再回答全部区间查询”：
+| 比赛            | 题目（官方链接）                                             | 前缀和的用法                                            | 需要注意                                                     |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
+| 2021 Dec P1     | [Lonely Photo](https://usaco.org/index.php?page=viewproblem2&cpid=1155) | 建立 G/H 的前缀计数，快速判断区间是否恰有一头某品种的牛 | **枚举所有区间仍是 \(O(N^2)\)，不能满分**；还需进一步优化计数 |
+| 2022 Feb P1     | [Sleeping in Class](https://usaco.org/index.php?page=viewproblem2&cpid=1203) | 用区间和理解“将数组分成若干个和相等的连续段”            | 核心是枚举目标段和＋贪心扫描，滚动累加即可                   |
+| 2022 US Open P2 | [Counting Liars](https://usaco.org/index.php?page=viewproblem2&cpid=1228) | 排序后建立 L/G 前缀计数，统计某候选位置左右的说谎者     | \(O(N^2)\) 枚举也能通过；前缀统计是优化路线                  |
+| 2023 Jan P1     | [Leaders](https://usaco.org/index.php?page=viewproblem2&cpid=1275) | 用品种前缀计数判断 \([i,E_i]\) 是否包含该品种的全部牛   | 关键仍是领导者候选的分类讨论                                 |
+| 2024 US Open P1 | [Logical Moos](https://usaco.org/index.php?page=viewproblem2&cpid=1419) | 按 `or` 分组，对组内 `false`、值为真的组建立前缀计数    | **逻辑分组＋区间统计**，也可用首尾位置预处理                 |
 
-1. 差分记录修改。
-2. 对差分累加，得到最终数组 `a`。
-3. 对最终数组再构建一次前缀和 `pre`。
-4. 用 `pre[r] - pre[l-1]` 回答查询。
-
-第 2 步的累加得到的是“每个位置的最终值”，并不直接等于第 3 步的“前缀总和”。
-
-## 九、练习顺序与课堂安排
+Others：
 
 | 顺序 | 真题 | 组别与时间 | 主要训练点 |
 |---:|---|---|---|
-| 1 | [Daisy Chains](https://usaco.org/index.php?page=viewproblem2&cpid=1060) | 2020 Dec 铜组 | 前缀和辅助区间枚举，整数平均数判断 |
 | 2 | [Breed Counting](https://usaco.org/index.php?page=viewproblem2&cpid=572) | 2015 Dec 银组 | 分类前缀计数，多次区间查询 |
 | 3 | [Subsequences Summing to Sevens](https://usaco.org/index.php?page=viewproblem2&cpid=595) | 2016 Jan 银组 | 相同余数的两个前缀，空前缀初始化 |
 | 4 | [Haybale Stacking](https://usaco.org/index.php?page=viewproblem2&cpid=104) | 2012 Jan 铜组 | 一维差分、恢复、中位数 |
-| 5 | [Air Cownditioning](https://usaco.org/index.php?page=viewproblem2&cpid=1156) | 2021 Dec 铜组 | 改变量、相邻差、最少区间操作 |
 | 6 | [Painting the Barn](https://usaco.org/index.php?page=viewproblem2&cpid=919) | 2019 Feb 银组 | 二维差分、单位格面积、半开边界 |
 | 7 | [Rectangular Pasture](https://usaco.org/index.php?page=viewproblem2&cpid=1063) | 2020 Dec 银组 | 离散化、二维前缀和、去重计数 |
 | 8 | [Convoluted Intervals](https://usaco.org/index.php?page=viewproblem2&cpid=1160) | 2021 Dec 银组 | 端点频次、乘法计数、差分 |
