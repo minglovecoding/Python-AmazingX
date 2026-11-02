@@ -437,7 +437,7 @@ cout << height[n / 2] << '\n';
 
 总时间 O(N\log N+K)，空间 O(N)。
 
-## 五、差分建模与贪心：Air Cownditioning
+## 五、差分建模与贪心：Air Conditioning
 
 **2021 December Bronze，Problem 2**  
 [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=1156) · [官方题解](https://usaco.org/current/data/sol_prob2_bronze_dec21.html)
