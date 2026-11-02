@@ -1,6 +1,21 @@
-## USACO 铜组：复杂度、枚举、贪心、递推与递归
+## 🥉USACO 铜组：
 
-## 1. 时间复杂度与空间复杂度
+| 知识模块                                                     | 主要内容                                                     | 对应铜组真题                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **语法与复杂度基础                                            ** | 数组、字符串、结构体、`vector`、函数、`long long`、时间复杂度 | [Word Processor](https://usaco.org/index.php?page=viewproblem2&cpid=987)（2020.01）：字符串输入、长度统计与格式输出；[Cow College](https://usaco.org/index.php?page=viewproblem2&cpid=1251)（2022.12）：数组、排序、复杂度与 long long |
+| **模拟**                                                     | 按规则更新状态、移动、交换、循环过程、同时更新               | [Shell Game](https://usaco.org/index.php?page=viewproblem2&cpid=891)（2019.01）：模拟交换与位置变化；[Candy Cane Feast](https://usaco.org/index.php?page=viewproblem2&cpid=1347)（2023.12）：按顺序模拟进食，维护糖果剩余区间 |
+| **枚举与暴力搜索**                                           | 枚举单点、数对、区间、答案、子集、排列                       | [Daisy Chains](https://usaco.org/index.php?page=viewproblem2&cpid=1060)（2020.12）：枚举区间与平均花；[Non-Transitive Dice](https://usaco.org/index.php?page=viewproblem2&cpid=1180)（2022.01）：枚举第三个骰子的四个面；[Air Cownditioning II](https://usaco.org/index.php?page=viewproblem2&cpid=1276)（2023.01）：枚举空调子集 |
+| **排序与查找**                                               | 自定义排序、排序后扫描、二分查找                             | [Do You Know Your ABCs?](https://usaco.org/index.php?page=viewproblem2&cpid=1059)（2020.12）：排序后利用最小值、最大值恢复答案；[Cow College](https://usaco.org/index.php?page=viewproblem2&cpid=1251)（2022.12）：排序后枚举学费，快速计算人数与收益 |
+| **计数与去重**                                               | 频次数组、布尔标记、`set`、`map`                             | [Guess the Animal](https://usaco.org/index.php?page=viewproblem2&cpid=893)（2019.01）：统计动物之间共有的特征；[Herdle](https://usaco.org/index.php?page=viewproblem2&cpid=1179)（2022.01）：先匹配位置，再用频次数组匹配剩余字母 |
+| **前缀和与差分**                                             | 区间求和、前后缀统计、区间增减                               | [Daisy Chains](https://usaco.org/index.php?page=viewproblem2&cpid=1060)（2020.12）：用前缀和计算区间平均值；[Lonely Photo](https://usaco.org/index.php?page=viewproblem2&cpid=1155)（2021.12）：前后缀连续段统计与贡献计数；[Air Cownditioning](https://usaco.org/index.php?page=viewproblem2&cpid=1156)（2021.12）：温差数组、相邻差分与区间增减 |
+| **基础贪心**                                                 | 排序后选择、局部决策、交换思考                               | [Drought](https://usaco.org/index.php?page=viewproblem2&cpid=1181)（2022.01）：根据相邻差值执行被迫操作；[Feeding the Cows](https://usaco.org/index.php?page=viewproblem2&cpid=1252)（2022.12）：从左向右扫描，尽量扩大每个草地的覆盖范围 |
+| **递归与回溯**                                               | 选或不选、状态恢复、简单剪枝                                 | [Livestock Lineup](https://usaco.org/index.php?page=viewproblem2&cpid=965)（2019.12）：可用回溯枚举奶牛排列，检查相邻限制；[Air Cownditioning II](https://usaco.org/index.php?page=viewproblem2&cpid=1276)（2023.01）：选或不选、恢复降温状态、按费用剪枝 |
+| **基础数学与几何**                                           | 奇偶、整除取整、取模、坐标、矩形、简单不等式                 | [Triangles](https://usaco.org/index.php?page=viewproblem2&cpid=1011)（2020.02）：坐标关系、直角三角形面积与整数计算；[Do You Know Your ABCs?](https://usaco.org/index.php?page=viewproblem2&cpid=1059)（2020.12）：利用大小关系与加法等式恢复未知数 |
+| **分类讨论与构造**                                           | 不变量、逆向思考、必要条件、构造合法方案                     | [Reverse Engineering](https://usaco.org/index.php?page=viewproblem2&cpid=1253)（2022.12）：寻找可确定输出的分支，逐步消除样例；[Moo Operations](https://usaco.org/index.php?page=viewproblem2&cpid=1277)（2023.01）：根据中间字符与两端字符分类；[Feeding the Cows](https://usaco.org/index.php?page=viewproblem2&cpid=1252)（2022.12）：在求最少数量的同时构造合法布局 |
+
+***
+
+## 📚1. 时间复杂度与空间复杂度
 
 ### 1.1 什么是输入规模
 
