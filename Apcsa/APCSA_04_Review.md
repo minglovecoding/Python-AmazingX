@@ -468,9 +468,9 @@ for (int value : values) {
 System.out.println(values[1]);
 ```
 
-A. `14`  
-B. `12`  
-C. `16`  
+A. `14`
+B. `12` 
+C. `16`
 D. `4`
 
 ### MCQ 12｜正向删除漏元素
