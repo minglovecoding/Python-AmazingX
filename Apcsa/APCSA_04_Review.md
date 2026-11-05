@@ -748,10 +748,6 @@ public static void collapseRuns(ArrayList<Integer> list)
 
 与本章 ListCleaner 对照：同样操作列表，但原地修改与新建结果的契约不同。阅读题面后先圈出“保持不变”或“更新”的要求。
 
-### 6.4 真题选用说明
-
-先做原创专项，再限时完成对应真题。官方旧题与修订框架不完全对齐，不能拿旧卷的时间、单元编号和题型分布代替现行规则。更多材料见[官方历年题入口](https://apcentral.collegeboard.org/courses/ap-computer-science-a/exam/past-exam-questions)。
-
 ## 7. MCQ 答案与解析
 
 ### 7.1 答案速查
