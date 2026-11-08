@@ -1,4 +1,4 @@
-## USACO 铜组专题：字符串、矩形几何与简单图论
+## USACO 铜组专题：字符串、矩形几何
 
 ## 1.字符与字符串
 
@@ -622,303 +622,7 @@ for (int x = x1; x < x2; x++) {
 
 **课堂练习（自编）：**A 为 `(0,0)-(3,2)`，B 为 `(2,1)-(4,3)`。用格子标记或公式都应得到交集 1、并集 9。
 
-## 3：简单图论
-
-## 3.1 图：把对象和关系画出来
-
-图由点和边组成，常写成 `G=(V,E)`。
-
-| 题目中的对象 | 建模为点 | 建模为边 |
-|---|---|---|
-| 牧场种草 | 每块牧场 | 两块牧场不能种同种草 |
-| 工厂传送带 | 每个站点 | 一条单向传送带 |
-| 奶牛排队 | 每头奶牛 | 两头奶牛必须相邻 |
-
-### 无向图与有向图
-
-- 无向边 `{u,v}`：关系是双向的，例如“必须相邻”。
-- 有向边 `u→v`：只允许从 u 到 v，例如传送带。
-
-```mermaid
-flowchart TD
-    A["站点 1"] --> B["站点 2"]
-    C["站点 3"] --> B
-    B --> D["站点 4"]
-```
-
-上图中，1 能沿有向路径到达 4，但 4 不能沿图中的边返回 1。
-
-### 基本术语
-
-| 术语 | 含义 |
-|---|---|
-| 相邻 | 两点之间有直接的边 |
-| 路径 | 沿边从一个点走到另一个点的一串步骤 |
-| 可达 | 存在符合方向要求的路径，不一定直接相邻 |
-| 无向图的度数 | 与该点相连的边数 |
-| 入度 | 指向该点的边数 |
-| 出度 | 从该点指出去的边数 |
-| 连通 | 无向图中任意两点之间都有路径 |
-| 树 | 连通且无环的无向图；N 个点有 N-1 条边 |
-
-**注意：**仅有 `N-1` 条边不足以断定是树，还需要连通等条件。
-
-## 3.2 存储图
-
-### 邻接矩阵
-
-```cpp
-vector<vector<bool>> edge(n + 1, vector<bool>(n + 1, false));
-edge[u][v] = true;
-edge[v][u] = true; // 无向图；有向图不能自动补这一条
-```
-
-适合点数小、经常判断是否有直接边的情况。空间 `O(N²)`，遍历一个点所有可能邻居为 `O(N)`。
-
-### 邻接表
-
-```cpp
-vector<vector<int>> graph(n + 1);
-graph[u].push_back(v);
-graph[v].push_back(u); // 无向图
-```
-
-`graph[u]` 保存 u 的所有邻居：
-
-```cpp
-for (int v : graph[u]) {
-    // 处理邻居 v
-}
-```
-
-空间 `O(N+M)`。无向边保存两次，有向边只保存规定的方向。
-
-### 只需要度数时
-
-```cpp
-vector<int> indegree(n + 1), outdegree(n + 1);
-// 读到有向边 u -> v
-outdegree[u]++;
-indegree[v]++;
-```
-
-不必为了“用了图论”而总是存下全部边；根据解法需要决定存什么。
-
-## 3.3 真题 7：The Great Revegetation——无向图与贪心染色
-
-- 比赛：2019 February，Bronze，Problem 2。
-- [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=916)
-- [官方题解](https://usaco.org/current/data/sol_revegetate_bronze_feb19.html)
-
-### 题意与模型
-
-每块牧场选择 1 至 4 号草种；指定的两块牧场必须不同。每块牧场参与至多 3 条约束。输出字典序最小的方案。
-
-牧场是点，约束是无向边，草种是颜色。
-
-### 贪心
-
-按编号 `1..N`，标记已染色邻居使用的颜色，然后选择最小可用颜色。
-
-**为什么总能继续？**一个点最多 3 个邻居，即使都已染色，也最多禁用 3 种颜色，4 种中至少剩 1 种。这个保证对后面的点同样成立。
-
-**为什么字典序最小？**在前面选择不变时，当前点取最小合法颜色，而且任何这样的选择都能继续完成后续染色。
-
-### 参考代码
-
-```cpp
-#include <iostream>
-#include <vector>
-using namespace std;
-
-int main() {
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> graph(n + 1);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        graph[u].push_back(v);
-        graph[v].push_back(u);
-    }
-    vector<int> color(n + 1, 0); // 0 表示尚未染色
-    for (int u = 1; u <= n; u++) {
-        bool used[5] = {};
-        for (int v : graph[u]) {
-            if (color[v] != 0) used[color[v]] = true;
-        }
-        for (int c = 1; c <= 4; c++) {
-            if (!used[c]) {
-                color[u] = c;
-                break;
-            }
-        }
-    }
-    for (int u = 1; u <= n; u++) cout << color[u];
-    cout << '\n';
-}
-```
-
-时间 `O(N+M)`，空间 `O(N+M)`。
-
-**易错点：**这是利用最大度数限制的贪心，不是“所有图都能这样用 4 种颜色染色”，也不是套用四色定理。
-
-## 3.4 真题 8：Milk Factory——有向树与出度
-
-- 比赛：2019 US Open，Bronze，Problem 2。
-- [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=940)
-- [官方题解](https://usaco.org/current/data/sol_factory_bronze_open19.html)
-
-### 题意与条件
-
-原本连通的 `N` 个站点用 `N-1` 条通道连接；每条通道设为单向。找一个其他所有站点都能到达的站点。
-
-忽略方向后是树，所以沿有向边不可能绕圈。
-
-### 关键结论
-
-**恰有一个出度为 0 的点时，它就是答案。**
-
-- 必要性：一个出度为 0 的点无法离开，因此它只能到达自己；若有两个，答案不可能存在。目标点本身也不能有出边，否则该出边另一端无法在树上绕路回来。
-- 充分性：从任意点沿出边走，无环且点数有限，最终会停在某个出度为 0 的点；若这样的点唯一，所有出发点都会到达它。
-
-### 参考代码
-
-```cpp
-#include <iostream>
-#include <vector>
-using namespace std;
-
-int main() {
-    int n;
-    cin >> n;
-    vector<int> outdegree(n + 1, 0);
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        outdegree[u]++; // 边是 u -> v
-    }
-    int answer = -1;
-    for (int u = 1; u <= n; u++) {
-        if (outdegree[u] == 0) {
-            if (answer != -1) {
-                cout << -1 << '\n';
-                return 0;
-            }
-            answer = u;
-        }
-    }
-    cout << answer << '\n';
-}
-```
-
-时间 `O(N)`，空间 `O(N)`。`N=1` 时答案为 1。
-
-**限制：**该结论依赖题目的树结构。一般有向图可能存在一个无法离开的环，即使另有唯一零出度点，环内也未必能到达它。
-
-## 3.5 DFS 作为可达性工具：
-
-如果没有 Milk Factory 的特殊性质，可以枚举候选终点，检查所有点能否到达它。一个常见技巧是**反向建图**：把 `u→v` 改成 `v→u`，再从候选终点出发。
-
-```cpp
-void dfs(int u, const vector<vector<int>>& graph,
-         vector<bool>& visited) {
-    visited[u] = true;
-    for (int v : graph[u]) {
-        if (!visited[v]) dfs(v, graph, visited);
-    }
-}
-```
-
-- 一次 DFS 的时间为 `O(N+M)`。
-- 每次更换起点，要重置 `visited`。
-- 标记访问状态，防止在一般图上沿环重复递归。
-- 递归过深可能耗尽调用栈，本节只讨论小规模图。
-
-若反图上从候选点能到所有点，就说明原图所有点能到该候选点。枚举所有候选点的上界为 `O(N(N+M))`。
-
-**本讲义不要求学生先学最短路。**BFS 和系统的图搜索可以在后续章节继续学习。
-
-## 3.6 真题 9：Livestock Lineup——邻接约束与全排列
-
-- 比赛：2019 December，Bronze，Problem 3。
-- [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=965)
-- [官方题解](https://usaco.org/current/data/sol_lineup_bronze_dec19.html)
-
-### 题意与模型
-
-8 头指定名字的牛排成一列，若干对牛必须相邻，输出字典序最小的合法排列。
-
-“必须相邻”可以画成无向边；但解题不一定需要图搜索。
-
-### 铜组做法
-
-只有 `8!=40320` 种排列，可以全部尝试。先按名字排序，再用 `next_permutation` 依字典序生成排列。
-
-用 `pos[name]` 记录位置，每条约束 `(a,b)` 都应满足：
-
-$$
-|pos[a]-pos[b]|=1
-$$
-**正确性：**检查所有约束就能确定排列是否合法；依字典序生成时，第一个合法排列就是最小答案。
-
-### 参考代码
-
-```cpp
-#include <algorithm>
-#include <cstdlib>
-#include <iostream>
-#include <map>
-#include <string>
-#include <utility>
-#include <vector>
-using namespace std;
-
-int main() {
-    int m;
-    cin >> m;
-    vector<pair<string, string>> rules;
-    for (int i = 0; i < m; i++) {
-        string a, b, word;
-        cin >> a;
-        for (int j = 0; j < 4; j++) cin >> word; // must be milked beside
-        cin >> b;
-        rules.push_back({a, b});
-    }
-    vector<string> cows = {
-        "Bessie", "Buttercup", "Belinda", "Beatrice",
-        "Bella", "Blue", "Betsy", "Sue"
-    };
-    sort(cows.begin(), cows.end());
-    do {
-        map<string, int> pos;
-        for (int i = 0; i < 8; i++) pos[cows[i]] = i;
-        bool good = true;
-        for (const auto& rule : rules) {
-            if (abs(pos[rule.first] - pos[rule.second]) != 1) {
-                good = false;
-                break;
-            }
-        }
-        if (good) {
-            for (const string& name : cows) cout << name << '\n';
-            return 0;
-        }
-    } while (next_permutation(cows.begin(), cows.end()));
-}
-```
-
-推广到 `K` 个名字，使用本代码的 map，时间约为 `O(K! (K+M) log K)`，额外空间 `O(K+M)`；本题固定 `K=8`，完全可行。
-
-**易错点：**只要求有边的两头牛必须相邻；没有边的两头牛也可以相邻。图中的边是“必须满足的约束”，并非排列中所有相邻关系的完整清单。
-
-### 图结构拓展
-
-可行排列中，每头牛最多有左右两个邻居。因此约束图中的有效结构可以视为若干条链及孤立点。也可以按链组织答案，但要小心不同链及方向的字典序。
-
-初学者先写对全排列解法，再尝试结构优化。
-
-## 4.1 基础练习
+## 3.1 基础练习
 
 ### 练习 A：子串去重
 
@@ -950,7 +654,7 @@ A 为 `(0,0)-(10,6)`，分别考虑：
 
 在一般有向图中，若恰好一个点出度为 0，是否一定所有点都能到它？给出理由或反例。
 
-## 4.2 参考答案
+## 3.2 参考答案
 
 | 题号 | 答案 | 关键理由 |
 |---|---|---|
@@ -965,7 +669,7 @@ A 为 `(0,0)-(10,6)`，分别考虑：
 
 练习 F 也有 5 个点、5 条边且底层不连通，正好说明不能把有向树中的结论无条件推广到一般图。
 
-## 4.3 真题训练顺序
+## 3.3 真题训练顺序
 
 | 顺序 | 真题 | 本次训练目标 | 建议定位 |
 |---|---|---|---|
@@ -980,7 +684,7 @@ A 为 `(0,0)-(10,6)`，分别考虑：
 | 9 | [Livestock Lineup](https://usaco.org/index.php?page=viewproblem2&cpid=965) | 相邻约束与全排列 | 综合 |
 | 10 | [It's Mooin' Time](https://usaco.org/index.php?page=viewproblem2&cpid=1445) | 字符串局部更新 | 提高 |
 
-## 4.4 旧题输入
+## 4. 旧题输入
 
 ```cpp
 freopen("whereami.in", "r", stdin);
