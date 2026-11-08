@@ -1,36 +1,71 @@
 #include <bits/stdc++.h>
-using namespace std;
-
-long long cnt_diff(long long N) {
-    int digits = to_string(N).size();
-    long long ans = 0;
-    for (int digit = 1; digit <= digits; ++digit) {
-        // upper = min(N, int('5' + '0'*(digit-1)) - 1)
-        long long upper = 0;
-        {
-            string s = "5" + string(digit - 1, '0'); // "5", "50", "500", ...
-            long long bound = stoll(s) - 1;          // 4, 49, 499, ...
-            upper = min(N, bound);
+using namespace std; 
+ 
+void solve(){
+    int n, k;
+    cin >> n >> k;
+ 
+    vector<int> A(n);
+    for (int &i : A)
+        cin >> i;
+    
+    auto check1 = [&](int l, int r){
+        for (int i = l + 1; i <= r; i++)
+            if (A[i] != A[i - 1])
+                return false;
+        return true;
+    };
+    auto check2 = [&](int l, int r){
+        vector<pair<int, int>> blk;
+ 
+        for (int i = l; i <= r; i++){
+            if (blk.size() and A[i] == A[i - 1])
+                blk.back().second++;
+            else
+                blk.push_back({A[i], 1});
         }
-        // lower = int('4' * digit)  -> "4", "44", "444", ...
-        long long lower = stoll(string(digit, '4'));
-        if (upper > lower) ans += (upper - lower);  // max(upper - lower, 0)
-        // 注意：与原 Python 一样，不包含 lower 本身
-    }
-    return ans;
+        if (blk.size() <= 2 or blk.size() % 2 == 0){
+            for (int i = 0; i + 2 < blk.size(); i++)
+                if (blk[i] != blk[i + 2])
+                    return false;
+            return true;
+        }
+        return false;
+    };
+    auto check3 = [&](int l, int r){
+        for (int blkLen = 1; blkLen <= r - l + 1; blkLen++){
+            if ((r - l + 1) % blkLen)
+                continue;
+ 
+            bool ok = true;
+ 
+            for (int i = l; i + blkLen <= r; i++)
+                ok &= (A[i] == A[i + blkLen]);
+            
+            if (!ok)
+                continue;
+            
+            // Check the prefix
+            for (int i = l; i < l + blkLen; i++)
+                if ((check1(l, i) and check2(i + 1, l + blkLen - 1)) or (check2(l, i) and check1(i + 1, l + blkLen - 1)))
+                    return true;
+        }
+        return false;
+    };
+ 
+    if (k == 1)
+        cout<<(check1(0, n - 1) ? "YES" : "NO")<<"\n";
+    else if (k == 2)
+        cout<<(check2(0, n - 1) ? "YES" : "NO")<<"\n";
+    else
+        cout<<(check3(0, n - 1) ? "YES" : "NO")<<"\n";
 }
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int T;
-    cin >> T;
-    while (T--) {
-        long long N;
-        cin >> N;
-        cout << cnt_diff(N) << '\n';
-    }
-    return 0;
+ 
+int main(){
+    ios_base::sync_with_stdio(0); cin.tie(0); 
+    int tc; 
+    cin >> tc;
+ 
+    while (tc--) 
+        solve();
 }
-//std::stoll 是 C++ <string> 里的函数，用来把字符串转换成 long long 整数
