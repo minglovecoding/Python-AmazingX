@@ -63,14 +63,6 @@ public class Student {
 
 ### 2.2 从调用表反推类的契约
 
-写类之前，先回答五个问题：
-
-1. 对象需要长期保存什么？这些通常是实例字段。
-2. 哪些值只在一次方法调用中临时使用？这些通常是局部变量。
-3. 构造器要接受什么，并建立什么初始值？
-4. 每个方法是读取状态、修改状态，还是返回对象？
-5. 空对象集合、并列、阈值相等时如何处理？
-
 | 需求 | 合适的签名例子 |
 | --- | --- |
 | 修改当前学生分数 | `public void setScore(int newScore)` |
@@ -88,7 +80,7 @@ private 是类的访问控制，不是“只有这个对象能访问”。Studen
 
 ```java
 Student alex = new Student("Alex", 92);
-Course course = new Course("AP CSA");
+Course course = new Course("APCSA");
 course.addStudent(alex);
 alex.setScore(98);
 ```
@@ -130,7 +122,7 @@ students[0] = new Student("Alex", 90);
 // students[1]、students[2] 仍为 null
 ```
 
-原稿若直接对以上数组的所有元素调用 getName，会遇到 NullPointerException。要么题目保证每个位置已初始化，要么检查 null。
+若直接对以上数组的所有元素调用 getName，会遇到 NullPointerException。要么题目保证每个位置已初始化，要么检查 null。
 
 ```java
 for (Student s : students) {
@@ -228,17 +220,6 @@ public static int firstIndex(int[] arr, int target) {
 ```
 
 每个长度为 k 的正确连续段贡献 `2*k + max(0,k-2)`。这个公式可用于手工核对，不要求替代循环代码。
-
-## 3. 类设计与数组 FRQ 作答流程
-
-1. 圈出前提、返回类型、是否允许修改原数据。
-2. 从调用表确定构造器及方法头，先搭合法类结构。
-3. 区分字段与临时变量：长期状态不要每次调用都重新清零。
-4. 写清空输入与并列规则；不能自己猜。
-5. 数组算法先写当前状态含义，再写循环边界和更新。
-6. 检查单元素、最后一段、全相等、全递减及共享引用。
-
-**画状态表时对象只画一份，多个变量/列表槽位可以指向同一对象。** 不要因为出现另一个引用名，就认为多创建了一个 Student。
 
 ## 4. MCQ 训练（18 题）
 
@@ -350,8 +331,8 @@ D. 编译错误
 
 ```java
 public static void change(int[] arr) {
-    arr[0] = 8;
-    arr = new int[] {1, 2};
+    arr[0] = 8;  //真的能修改
+    arr = new int[] {1, 2};  //修改局部变量
 }
 ```
 
@@ -517,8 +498,6 @@ C. `0 true true`
 D. 编译错误，因为数组元素未初始化
 
 ## 5. FRQ 训练（4 题）
-
-除另有说明，参数非 null，按前提可直接作答；无需 main 或键盘输入。各题 9 分仅用于课堂反馈。题目保证的状态与数值范围无须额外校验。
 
 ### FRQ 1｜GymMember：完整类设计
 
