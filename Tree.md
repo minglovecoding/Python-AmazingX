@@ -1,19 +1,6 @@
 ## 📚基础树算法：遍历、子树统计与路径性质
 
-## 1. 内容
-
-| 阶     段 | 内容 | 配套练习 | 课堂重点 |
-| --- | --- | --- | --- |
-| 入门 | 树的性质、度数、叶子与方向 | [Milk Factory，2019 US Open Bronze](https://usaco.org/index.php?page=viewproblem2&cpid=940) | 无向树加上方向后，哪些性质仍然成立 |
-| 基础 | 邻接表、DFS、BFS、父节点和深度 | 自编基础练习 A | 为什么只跳过父节点就不会重复访问 |
-| 基础 | 子树大小、子树权值和、后序汇总 | 自编基础练习 B | 为什么必须先处理孩子，再统计父节点 |
-| 迁移 | 边权条件与树上可达性 | [MooTube，2018 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=788) | 把路径最小值条件转成边的筛选条件 |
-| 迁移 | 孩子数量与局部贪心 | [Cowntagion，2020 December Silver](https://usaco.org/index.php?page=viewproblem2&cpid=1062) | 度数和孩子数有什么区别 |
-| 综合 | 同色连通块与唯一路径 | [Milk Visits，2019 December Silver](https://usaco.org/index.php?page=viewproblem2&cpid=968) | 利用只有两种颜色，把路径询问化简为 O(1) |
-| 提高 | 深度奇偶、二分染色与模运算 | [Clock Tree，2020 February Silver](https://usaco.org/index.php?page=viewproblem2&cpid=1016) | 树的结构如何帮助发现不变量 |
-| 拓展 | DFS 序、树的直径、边的贡献 | 自编基础练习 C、D | 将树转化为区间，或把路径计数转成边计数 |
-
-## 2. 什么是树
+## 1. 什么是树
 
 **树是连通、无环的无向图。**
 
@@ -27,7 +14,7 @@
 
 **只有 `N-1` 条边还不够，必须同时检查连通性。** 例如，三个节点构成一个三角形，再加一个孤立点，共有 4 个点、3 条边，却不是树。
 
-### 2.1 本讲统一使用的示例树
+### 1.1 本讲统一使用的示例树
 
 ```mermaid
 graph TD
@@ -59,7 +46,7 @@ graph TD
 | 5 | 2 | 2 | 无 | 5 |
 | 6 | 3 | 2 | 无 | 6 |
 
-### 2.2 根、父节点、深度与子树
+### 1.2 根、父节点、深度与子树
 
 - **根节点**：人为选择的起点。换根会改变父子关系，但不会改变原树的边。
 - **父节点**：除根以外，节点沿着通往根的路径遇到的第一个节点。
@@ -70,7 +57,7 @@ graph TD
 
 **树不等于二叉树。** USACO 中一般树的一个节点可以有任意多个孩子，通常使用邻接表存储。
 
-### 2.3 度数与叶子
+### 1.3 度数与叶子
 
 `degree[u]` 表示与 `u` 相连的边数。
 
@@ -100,9 +87,9 @@ $$
 
 **答案：**度数 `3`，孩子数 `2`。
 
-## 3. 邻接表：如何存储一棵树
+## 2. 邻接表：如何存储一棵树
 
-### 3.1 无权树
+### 2.1 无权树
 
 以下为建图片段，假设已经读入 `n`：
 
@@ -118,7 +105,7 @@ for (int i = 0; i < n - 1; i++) {
 
 `adj[u]` 存储的是所有邻居，**不只是孩子**。选根后遍历时，才区分父节点与孩子。
 
-### 3.2 带权树
+### 2.2 带权树
 
 ```cpp
 vector<vector<pair<int, int>>> adj(n + 1);
@@ -138,9 +125,9 @@ for (auto [v, w] : adj[u]) {
 
 邻接表存储整棵树的空间复杂度是 `O(N)`。
 
-## 4. DFS：父节点与深度
+## 3. DFS：父节点与深度
 
-### 4.1 为什么只需要跳过父节点
+### 3.1 为什么只需要跳过父节点
 
 一般图存在环，通常需要 `visited` 数组。
 
@@ -159,7 +146,7 @@ void dfs(int u, int p) {
 
 这段方法依赖输入是树，不能直接照搬到有环图。
 
-### 4.2 先序与后序
+### 3.2 先序与后序
 
 ```cpp
 void dfs(int u, int p) {
@@ -186,9 +173,9 @@ void dfs(int u, int p) {
 
 **不是看到 DFS 就把所有计算放在递归之前。要看当前计算依赖谁。**
 
-## 5. 子树大小与子树权值和
+## 4. 子树大小与子树权值和
 
-### 5.1 子树大小
+### 4.1 子树大小
 
 定义：`sz[u]` 表示以 `u` 为根的子树节点数，包含 `u` 自己。
 
@@ -217,7 +204,7 @@ void dfs(int u, int p) {
 
 **正确性：**叶子的子树只有自己，大小为 `1`。假设孩子的统计正确，当前节点的子树恰好由自己和互不重叠的孩子子树组成，因此求和得到正确答案。
 
-### 5.2 子树权值和
+### 4.2 子树权值和
 
 若节点权值为 `weight[u]`，定义 `sum[u]` 为子树权值和：
 
@@ -229,7 +216,7 @@ $$
 
 若有 `10^5` 个节点，每个权值可达 `10^9`，总和可达 `10^14`，应使用 `long long`。
 
-### 5.3 完整递归模板：父节点、深度、子树大小、权值和
+### 4.3 完整递归模板：父节点、深度、子树大小、权值和
 
 自编输入格式：先读 `n`，再读 `n` 个节点权值，最后读 `n-1` 条无向边。以 `1` 为根，按节点编号输出四项统计。
 
@@ -287,7 +274,7 @@ int main() {
 
 时间复杂度 `O(N)`，包括邻接表、数组及最坏递归栈在内的空间复杂度 `O(N)`。链很长时，采用下一节的写法。
 
-## 6. 非递归写法：先确定父子关系，再逆序汇总
+## 5. 非递归写法：先确定父子关系，再逆序汇总
 
 递归后序的关键是：**孩子必须先于父节点完成统计。**
 
@@ -332,9 +319,9 @@ for (int i = (int)order.size() - 1; i >= 0; i--) {
 
 注意：反向汇总时只应沿一条父边上交一次，不能既在孩子处上交，又在父节点处重复累加同一份信息。
 
-## 7. 子树统计的两个直接应用
+## 6. 子树统计的两个直接应用
 
-### 7.1 删除一条边
+### 6.1 删除一条边
 
 若 `v` 是 `u` 的孩子，删除边 `(u,v)` 后，两部分节点数为：
 
@@ -346,7 +333,7 @@ $$
 
 **常见错误：**输入边 `(a,b)` 并不保证 `b` 是孩子，必须根据 `parent` 判断方向。
 
-### 7.2 有多少条无序点对的路径经过某条边
+### 6.2 有多少条无序点对的路径经过某条边
 
 删除一条边后两侧大小为 `s` 和 `N-s`。一条点对路径经过该边，当且仅当两个端点分处两侧，因此：
 
@@ -373,7 +360,9 @@ $$
 
 带权树的唯一路径权值和也有对应式：每条边再乘自己的权值。
 
-## 8. 真题 1：Milk Factory——方向与度数
+***
+
+## 真题 1：Milk Factory——方向与度数
 
 - 比赛：**2019 US Open，Bronze，Problem 2**。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=940)
@@ -386,6 +375,57 @@ $$
 
 枚举终点，将边反向后从终点搜索。如果能访问全部节点，原图中所有节点都能到达它。复杂度 `O(N²)`，本题可行。
 
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+const int Nmax = 105;
+int N;
+vector<int> adj[Nmax];
+bool reachable[Nmax][Nmax];
+// 从 start 出发，当前到达 u
+void dfs(int start, int u) {
+    if (reachable[start][u]) return;
+    reachable[start][u] = true;
+    for (int v : adj[u]) {
+        dfs(start, v);
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    // freopen("factory.in", "r", stdin);
+    // freopen("factory.out", "w", stdout);
+    cin >> N;
+    for (int i = 0; i < N - 1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b); // 单向边
+    }
+    // 每个站作为起点，分别搜索
+    for (int start = 1; start <= N; start++) {
+        dfs(start, start);
+    }
+    // 检查是否存在能被所有站到达的终点
+    for (int target = 1; target <= N; target++) {
+        bool allReach = true;
+
+        for (int start = 1; start <= N; start++) {
+            if (!reachable[start][target]) {
+                allReach = false;
+                break;
+            }
+        }
+        if (allReach) {
+            cout << target << '\n';
+            return 0;
+        }
+    }
+    cout << -1 << '\n';
+    return 0;
+}
+```
+
 ### 利用树的性质优化
 
 能够作为答案的节点必须出度为 `0`。否则从它的出边走向另一侧后，由于原图底层没有环，那一侧无法再沿有向路径回到它。
@@ -395,129 +435,40 @@ $$
 因此只需判断出度为 `0` 的节点是否恰好有一个。
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
-
-int main() {
+int main()
+{
+    freopen("factory.in", "r", stdin);
+    freopen("factory.out", "w", stdout);
     int n;
-    cin >> n;
-    vector<int> out(n + 1, 0);
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;  // a -> b
-        out[a]++;
+    cin>>n;
+    vector<int>outDegree(n+1,0);
+    for(int i=0;i<n-1;i++){
+        int a,b;
+        cin>>a>>b;
+        outDegree[a]++;
     }
-
-    int answer = -1, count = 0;
-    for (int u = 1; u <= n; u++) {
-        if (out[u] == 0) {
-            answer = u;
-            count++;
+    int ans=-1,cnt=0;
+    for(int i=1;i<=n;i++){
+        if(outDegree[i]==0){
+            ans=i;
+            cnt++;
         }
     }
-    cout << (count == 1 ? answer : -1) << '\n';
+    cout<<(cnt==1?ans:-1)<<"\n";
+    return 0;
 }
 ```
 
-时间 `O(N)`，空间 `O(N)`。
+时间复杂度`O(N)`，空间复杂度 `O(N)`。
 
 **检查边界：**`N=1` 时，唯一节点出度为 `0`，答案为 `1`。
 
 **课堂追问：**“唯一零出度点”能否直接用于一般有向图？不能，有向环可能永远到不了该点。
 
-## 9. 真题 2：MooTube——路径条件变成边条件
-
-- 比赛：**2018 January，Silver，Problem 3**。
-- [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=788)
-- 数据：`N,Q≤5000`。
-- 知识点：带权邻接表、树的唯一路径、条件搜索。
-
-### 题意
-
-树上两点的相关度定义为它们之间路径上的最小边权。每次给出阈值 `k` 和起点 `v`，询问与 `v` 的相关度至少为 `k` 的其他节点有多少个。
-
-### 思路推导
-
-直接对每个目标节点单独找路径会重复计算。
-
-路径上的最小边权至少是 `k`，等价于**路径上的每条边都至少是 `k`**。因此，从起点出发，只经过权值 `≥k` 的边，数能到达多少节点即可。
-
-等价地，把所有权值 `<k` 的边暂时删掉，答案是起点所在连通块大小减 `1`。
-
-### 手算示例（自编）
-
-```text
-4 3
-1 2 5
-2 3 2
-2 4 4
-4 1
-5 1
-1 3
-```
-
-输出：
-
-```text
-2
-1
-3
-```
-
-- `k=4，v=1`：可到达 `2、4`，不能经过权值 `2` 的边去 `3`。
-- `k=5，v=1`：只能到达 `2`。
-- `k=1，v=3`：其他三个节点均可到达。
-
-### 参考代码
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-    vector<vector<pair<int, int>>> adj(n + 1);
-    for (int i = 0; i < n - 1; i++) {
-        int u, v, w;
-        cin >> u >> v >> w;
-        adj[u].push_back({v, w});
-        adj[v].push_back({u, w});
-    }
-
-    while (q--) {
-        int k, start;
-        cin >> k >> start;
-        stack<pair<int, int>> st;  // 当前节点、父节点
-        st.push({start, 0});
-        int answer = 0;
-
-        while (!st.empty()) {
-            auto [u, p] = st.top();
-            st.pop();
-            for (auto [v, w] : adj[u]) {
-                if (v == p || w < k) continue;
-                answer++;
-                st.push({v, u});
-            }
-        }
-        cout << answer << '\n';
-    }
-}
-```
-
-**正确性：**搜索到的节点，其起点路径上的所有边都满足阈值；任何符合条件的节点，其唯一路径上也没有被搜索跳过的边，所以一定会被访问。
-
-复杂度：每次搜索 `O(N)`，总时间 `O(NQ)`，空间 `O(N)`。银组数据范围内可行；同名金组题的规模更大，不能直接沿用这一复杂度。
-
-**易错点：**起点本身不计入答案；边权等于 `k` 时可以通过。
-
----
-
-## 10. 真题 3：Cowntagion——孩子数与局部贪心
+## 真题 2：Cowntagion——孩子数与局部贪心
 
 - 比赛：**2020 December，Silver，Problem 1**。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=1062)
@@ -605,7 +556,7 @@ int main() {
 
 **易错点：**需要 `children+1` 头，而不是 `children` 头；根不应减去一个不存在的父节点。
 
-## 11. 真题 4：Milk Visits——同色连通块代替逐条路径搜索
+## 真题 3：Milk Visits——同色连通块代替逐条路径搜索
 
 - 比赛：**2019 December，Silver，Problem 3**。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=968)
@@ -618,7 +569,57 @@ int main() {
 
 ### 先想暴力
 
-每次找出 `a→b` 的路径并检查颜色，最坏 `O(NM)`，不可行。
+每次找出 `a→b` 的路径并检查颜色，最坏 `O(NM)`，只能通过测试点 2-5。
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+const int Nmax = 100005;
+int N, M;
+string milk;
+vector<int> adj[Nmax];
+// has：从起点到当前节点 u 的路径上，是否有喜欢的牛奶
+bool dfs(int u, int parent, int target, char wanted, bool has) {
+    if (milk[u] == wanted) {
+        has = true;
+    }
+    // 到达终点，判断这条路径是否符合要求
+    if (u == target) {
+        return has;
+    }
+    for (int v : adj[u]) {
+        if (v == parent) continue;
+        if (dfs(v, u, target, wanted, has)) {
+            return true;
+        }
+    }
+    return false;
+}
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    freopen("milkvisits.in", "r", stdin);
+    freopen("milkvisits.out", "w", stdout);
+    cin >> N >> M;
+    cin >> milk;
+    milk = " " + milk; // 编号从 1 开始
+    for (int i = 1; i < N; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    for (int i = 0; i < M; i++) {
+        int a, b;
+        char wanted;
+        cin >> a >> b >> wanted;
+        cout << (dfs(a, 0, b, wanted, false) ? '1' : '0');
+    }
+    cout << '\n';
+    return 0;
+}
+```
 
 ### 观察：只有两种颜色
 
@@ -650,8 +651,6 @@ int main() {
 
 对应输出 `0101`。
 
-### 参考代码
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -659,13 +658,14 @@ using namespace std;
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
+    freopen("milkvisits.in", "r", stdin);
+    freopen("milkvisits.out", "w", stdout);
+  
     int n, m;
     cin >> n >> m;
     string type;
     cin >> type;
     type = " " + type;  // 节点编号从 1 开始
-
     vector<vector<int>> adj(n + 1);
     for (int i = 0; i < n - 1; i++) {
         int u, v;
@@ -673,7 +673,6 @@ int main() {
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-
     vector<int> component(n + 1, 0);
     int id = 0;
     for (int start = 1; start <= n; start++) {
@@ -682,7 +681,6 @@ int main() {
         stack<int> st;
         st.push(start);
         component[start] = id;
-
         while (!st.empty()) {
             int u = st.top();
             st.pop();
@@ -693,7 +691,6 @@ int main() {
             }
         }
     }
-
     string answer;
     while (m--) {
         int a, b;
@@ -710,49 +707,41 @@ int main() {
 
 **课堂追问：**如果有三种颜色，不同连通块是否保证出现指定颜色？不保证。银组做法依赖“只有两种颜色”。同名金组题不能直接套这个结论。
 
-## 12. 真题 5：Clock Tree——深度奇偶与不变量
+## 真题 4：Clock Tree——深度奇偶与不变量
 
 - 比赛：**2020 February，Silver，Problem 3**。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=1016)
 - [官方题解](https://usaco.org/current/data/sol_clocktree_silver_feb20.html)
-- 数据：`2≤N≤2500`。
-- 定位：提高题，建议在熟悉基础遍历后学习。
 
 ### 题意
 
 每个节点有一个 1 到 12 的时钟。每沿边进入一个节点，该节点时钟前进一格，12 之后回到 1。起点在最初不加一。问有多少个起点能通过一段行走，使所有时钟最终指向 12。
 
-### 12.1 树可以按深度奇偶二分染色
+### **1. 把树分成两组**
 
-任取根，令：
+任选一个点 DFS，按深度奇偶把节点分为 A、B 两组。树上每条边都连接不同组，所以走路时一定交替进入两组。
 
-```cpp
-color[root] = 0;
-color[v] = color[u] ^ 1;
-```
+统计两组的节点数 `countA、countB`，以及初始钟面数字总和 `sumA、sumB`。
 
-每条边两端颜色不同，因为孩子深度比父节点大 `1`。走一步就切换颜色。
+### **2. 考虑从 A 组出发**
 
-把时钟读数按模 `12` 理解，`12` 等价于 `0`。
-
-### 12.2 固定起点，观察交替和
-
-对于起点 `s`，定义：
-
+令：
 $$
-Q=\sum_{dist(s,u)\text{ 为偶数}}a[u]
--\sum_{dist(s,u)\text{ 为奇数}}a[u]\pmod{12}.
+D=(sumA-sumB)\bmod12
 $$
+起点的时钟最初不增加。之后：
 
-从起点走第一步，进入奇数距离组，`Q` 减 `1`；第二步进入偶数组，`Q` 加 `1`。之后交替变化。
+- 第一步进入 B 组，`sumB` 加一，差值变为 \(D-1\)。
+- 第二步进入 A 组，`sumA` 加一，差值恢复为 \(D\)。
 
-因此走偶数步时仍为初始 `Q`，走奇数步时为初始 `Q-1`。所有时钟变成 `12` 时，交替和必须为 `0`，所以必要条件是：
+因此，无论走多久，这个差值只会在 D 和 D-1 之间交替。
 
+最终所有时钟都指向 12，两组的和模 12 都为 0，所以差值必须为 0。因此，从 A 组出发必要条件满足：
 $$
-\boxed{Q\equiv0\text{ 或 }1\pmod{12}}.
+D=0\quad\text{或}\quad D=1
 $$
 
-### 12.3 为什么条件也充分（提高阅读）
+### 3. 证明是充分条件
 
 先看两节点树：设起点读数为 `a`，另一个为 `b`。走偶数步时两者增加次数相同，可以同时归零当且仅当 `a-b≡0`；走奇数步时另一个节点多增加一次，可以同时归零当且仅当 `a-b≡1`。
 
@@ -760,13 +749,26 @@ $$
 
 这等价于从当前局面中消去一个叶子，余下仍是一棵树。沿起点到 `p` 的路径来到当前局面，只会让“以当前位置为起点的交替和”在 `0、1` 之间切换，因此归纳条件得以保持。递归消去叶子，归约到两节点情形，便可构造满足要求的行走。
 
-课堂先理解“往返让相邻两点同时加一，因此不改变交替差”，再看归纳证明。
+### **4. 根据差值直接统计起点**
 
-### 12.4 O(N²) 基础解法
+统一计算非负余数：
+
+```
+int D = ((sumA - sumB) % 12 + 12) % 12;
+```
+
+| `D`  | 合法起点   | 答案     |
+| ---- | ---------- | -------- |
+| 0    | 两组都可以 | `N`      |
+| 1    | 只有 A 组  | `countA` |
+| 11   | 只有 B 组  | `countB` |
+| 其他 | 都不可以   | `0`      |
+
+其中D=11时，所以从 B 组看，差值恰好是 1。
+
+### 5. O(N²) 基础解法
 
 枚举每个起点，做一次 DFS，按深度奇偶累加时钟。得到的交替和模 `12` 后为 `0` 或 `1`，该起点可行。
-
-这已经能满足本题数据范围，不需要立刻优化。
 
 ```cpp
 #include <bits/stdc++.h>
@@ -811,7 +813,10 @@ int main() {
 
 复杂度：时间 `O(N²)`，空间 `O(N)`。
 
-### 12.5 O(N) 优化：只需要一次染色
+### 6. O(N) 优化：只需要一次染色
+
+- **\(O(N^2)\)**：每个起点都重新遍历，计算交替和。
+- **\(O(N)\)**：发现同组起点的交替和相同，另一组恰好取相反数，因此只计算一次。
 
 固定一种二分染色，令两组读数和模 `12` 分别为 `S0、S1`，节点数为 `C0、C1`，设：
 
@@ -828,13 +833,130 @@ $$
 
 原因：同组任意两点的距离为偶数，选其中哪个作为起点都不会改变正负分组；换到另一组则交替和取相反数。
 
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    cin >> n;
+
+    vector<int> a(n + 1);
+    for (int u = 1; u <= n; u++) {
+        cin >> a[u];
+    }
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    int sumA = 0, sumB = 0;
+    int countA = 0, countB = 0;
+    // 节点、父节点、所属组（1 或 -1）
+    stack<tuple<int, int, int>> st;
+    st.push({1, 0, 1});
+    while (!st.empty()) {
+        auto [u, parent, sign] = st.top();
+        st.pop();
+        if (sign == 1) {
+            sumA += a[u];
+            countA++;
+        } else {
+            sumB += a[u];
+            countB++;
+        }
+        for (int v : adj[u]) {
+            if (v == parent) continue;
+            st.push({v, u, -sign});
+        }
+    }
+    int q = ((sumA - sumB) % 12 + 12) % 12;
+    int answer = 0;
+    if (q == 0) answer = n;
+    else if (q == 1) answer = countA;
+    else if (q == 11) answer = countB;
+    cout << answer << '\n';
+    return 0;
+}
+```
+
 **手算官方样例：**以节点 `2` 所在组为 0 组，`S0=10`，`S1=(11+11+11)%12=9`，`d=1`，只有节点 `2` 可作为起点，答案 `1`。
 
 **易错点：**起点初始不加一；C++ 的负数取模可能为负，使用 `(q%12+12)%12` 归一化。
 
-## 13. BFS、树上距离与直径
+## 真题 5：MooTube——路径条件变成边条件
 
-### 13.1 无权树上的距离
+- 比赛：**2018 January，Silver，Problem 3**。
+- [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=788)
+- 数据：`N,Q≤5000`。
+- 知识点：带权邻接表、树的唯一路径、条件搜索。
+
+### 题意
+
+树上两点的相关度定义为它们之间路径上的最小边权。每次给出阈值 `k` 和起点 `v`，询问与 `v` 的相关度至少为 `k` 的其他节点有多少个。
+
+### 思路推导
+
+直接对每个目标节点单独找路径会重复计算。
+
+路径上的最小边权至少是 `k`，等价于**路径上的每条边都至少是 `k`**。因此，从起点出发，只经过权值 `≥k` 的边，数能到达多少节点即可。
+
+等价地，把所有权值 `<k` 的边暂时删掉，答案是起点所在连通块大小减 `1`。
+
+### 参考代码
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+    vector<vector<pair<int, int>>> adj(n + 1);
+    for (int i = 0; i < n - 1; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w});
+    }
+
+    while (q--) {
+        int k, start;
+        cin >> k >> start;
+        stack<pair<int, int>> st;  // 当前节点、父节点
+        st.push({start, 0});
+        int answer = 0;
+
+        while (!st.empty()) {
+            auto [u, p] = st.top();
+            st.pop();
+            for (auto [v, w] : adj[u]) {
+                if (v == p || w < k) continue;
+                answer++;
+                st.push({v, u});
+            }
+        }
+        cout << answer << '\n';
+    }
+}
+```
+
+**正确性：**搜索到的节点，其起点路径上的所有边都满足阈值；任何符合条件的节点，其唯一路径上也没有被搜索跳过的边，所以一定会被访问。
+
+复杂度：每次搜索 `O(N)`，总时间 `O(NQ)`，空间 `O(N)`。银组数据范围内可行；同名金组题的规模更大，不能直接沿用这一复杂度。
+
+**易错点：**起点本身不计入答案；边权等于 `k` 时可以通过。
+
+## BFS、树上距离与直径
+
+### 1 无权树上的距离
 
 固定起点 `s`，DFS 或 BFS 都可以计算到所有节点的距离。因为路径唯一，不存在另一条路径需要比较。
 
@@ -866,7 +988,7 @@ vector<int> getDist(int start, const vector<vector<int>>& adj) {
 
 带权树可以沿唯一的路径累加边权，但一般带权图不能使用普通 BFS 求最短路。
 
-### 13.2 树的直径
+### 2 树的直径
 
 无权树的直径是最长简单路径的边数。
 
@@ -899,7 +1021,7 @@ cout << da[b] << '\n';
 
 示例树的一条直径是 `6→3→1→2→4`，长度为 `4` 条边。端点也可以选 `6` 和 `5`。注意直径长度按边数计算，这条路径包含 `5` 个节点。
 
-## 14. DFS 序：把子树变成连续区间
+## DFS 序：把子树变成连续区间
 
 DFS 进入节点时给它分配一个编号，记为 `tin[u]`；完成整棵子树后，记录此时最后一个编号 `tout[u]`。
 
@@ -962,9 +1084,9 @@ bool inside = tin[u] <= tin[v] && tin[v] <= tout[u];
 
 **易错点：**有的教材使用进入、退出都计时的版本，区间长度公式不能混用。
 
-## 15. 自编基础练习
+## 自编基础练习
 
-以下练习是本讲配套题，**不是 USACO 官方真题**。统一使用第 2 节的六节点树；未说明时，以 `1` 为根。
+统一使用第 2 节的六节点树；未说明时，以 `1` 为根。
 
 ### A. 父节点与深度
 
@@ -1013,7 +1135,7 @@ bool inside = tin[u] <= tin[v] && tin[v] <= tout[u];
 3. 节点 `2` 的子树区间是什么？答案：`[2,4]`。
 4. 节点 `3` 是节点 `6` 的祖先吗？是；节点 `2` 是节点 `6` 的祖先吗？不是。
 
-## 16. 练习题目
+## 练习题目
 
 | 真题                                                         | 比赛                        | 考察知识点                                           | 课后完成要求                                                 |
 | ------------------------------------------------------------ | --------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
