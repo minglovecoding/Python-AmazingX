@@ -86,7 +86,7 @@ public static void change(int[] arr) {
 
 `int[] copy = original;` 也只复制引用，不复制数组内容。若要独立副本，可以创建新数组后逐个复制。
 
-### 2.4 两种反转：契约先于代码
+### 2.4 两种反转：
 
 **返回新数组：**
 
@@ -194,7 +194,7 @@ public static boolean allEven(int[] arr) {
 **小值域优化：**若题面保证值在 0..10，可用长度 11 的 freq。
 
 ```java
-int[] freq = new int[11];
+int[] freq = new int[11];  
 for (int i = 0; i < values.length; i++) {
     int smaller = 0;
     for (int v = 0; v < values[i]; v++) {
@@ -595,7 +595,7 @@ reverseInPlace(a);
 
 ### FRQ 3｜EarlierSmaller：两个思路解决同一任务
 
-本题根据原稿 P1428 重编为方法型练习，题意是每个位置统计左侧严格更小元素的个数。长度 0—1000，元素在 0—10，不能改动输入。两问均返回长度与输入相同的新数组。
+题意是每个位置统计左侧严格更小元素的个数。长度 0—1000，元素在 0—10，不能改动输入。两问均返回长度与输入相同的新数组。
 
 **(a)** byScanning：用两个位置索引枚举此前元素，不能用频数表。
 
@@ -654,12 +654,8 @@ public static int countPairs(int[] chinese, int[] math, int[] english)
 
 这是官方样题，不是实考年份题。针对“最大值从 0 开始”构造全负数反例，判断修复方案。
 
-<details>
-<summary>教师核对</summary>
 
 答案 A，使用数组第一个元素初始化最大值。与本章 MCQ 10、FRQ 1(a) 对照：官方样题用 int，本章还要求注意 double 类型一致。
-
-</details>
 
 ### 6.2 进阶真题：2025 Q3 Round 的构造器部分
 
