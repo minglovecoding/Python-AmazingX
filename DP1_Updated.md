@@ -219,6 +219,49 @@ int main() {
 }
 ```
 
+***
+
+### 滚动数组：
+
+动态规划中节省空间的一种方法：只保存后续计算还会用到的状态，覆盖不再需要的旧状态。
+
+例如： dp[i]=dp[i-1]+dp[i-2] ，计算当前项只需要前两项，因此不必保存整个数组，用两个变量就够了：
+
+```c++
+int previous2 = 0; // dp[0]
+int previous1 = 1; // dp[1]
+
+for (int i = 2; i <= n; i++) {
+    int current = previous1 + previous2;
+    previous2 = previous1;
+    previous1 = current;
+}
+```
+
+空间从 \(O(N)\) 降为 **\(O(1)\)**，时间仍是 \(O(N)\)。
+
+对于多维 DP，例如：
+
+```
+dp[i][j] = max(dp[i-1][j], dp[i-1][j-w] + v);
+```
+
+当前层只依赖上一层，可以只保留两个数组：
+
+```c++
+next = dp; // 不选当前物品
+
+for (int j = w; j <= W; j++) {
+    next[j] = max(next[j], dp[j - w] + v);
+}
+
+dp.swap(next);
+```
+
+计算完一层后，新旧数组交换角色，反复使用，所以称为“滚动”。
+
+***
+
 ### USACO 主讲：Printing Sequences
 
 **2025 February Bronze** · [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=1493)

@@ -1,61 +1,58 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int Nmax = 100005;
-
-int N, M;
-string milk;
-vector<int> adj[Nmax];
-
-// has：从起点到当前节点 u 的路径上，是否有喜欢的牛奶
-bool dfs(int u, int parent, int target, char wanted, bool has) {
-    if (milk[u] == wanted) {
-        has = true;
-    }
-
-    // 到达终点，判断这条路径是否符合要求
-    if (u == target) {
-        return has;
-    }
-
-    for (int v : adj[u]) {
-        if (v == parent) continue;
-
-        if (dfs(v, u, target, wanted, has)) {
-            return true;
-        }
-    }
-
-    return false;
-}
+struct Friend {
+    int popularity;
+    int cost;
+    int exchange;
+};
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    // 需要文件输入输出时，取消下面两行注释。
-    freopen("milkvisits.in", "r", stdin);
-    freopen("milkvisits.out", "w", stdout);
+    int N, A, B;
+    cin >> N >> A >> B;
 
-    cin >> N >> M;
-    cin >> milk;
-    milk = " " + milk; // 编号从 1 开始
-
-    for (int i = 1; i < N; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+    vector<Friend> friends(N);
+    for (auto &f : friends) {
+        cin >> f.popularity >> f.cost >> f.exchange;
     }
 
-    for (int i = 0; i < M; i++) {
-        int a, b;
-        char wanted;
-        cin >> a >> b >> wanted;
+    // 预算不超过 money、cones 时的最大人气
+    vector<vector<int>> dp(A + 1, vector<int>(B + 1, 0));
 
-        cout << (dfs(a, 0, b, wanted, false) ? '1' : '0');
+    for (const auto &f : friends) {
+        // 不邀请当前朋友
+        vector<vector<int>> next = dp;
+
+        for (int money = 0; money <= A; money++) {
+            for (int cones = 0; cones <= B; cones++) {
+                int minDiscount = max(0, f.cost - money);
+                int maxDiscount = min(f.cost, cones / f.exchange);
+
+                // 枚举用冰激凌抵扣多少现金
+                for (int discount = minDiscount;
+                     discount <= maxDiscount;
+                     discount++) {
+
+                    int moneyNeeded = f.cost - discount;
+                    int conesNeeded = discount * f.exchange;
+
+                    // 给当前朋友分配资源后，
+                    // 剩余预算用于前面处理过的朋友
+                    next[money][cones] = max(
+                        next[money][cones],
+                        dp[money - moneyNeeded][cones - conesNeeded]
+                            + f.popularity
+                    );
+                }
+            }
+        }
+
+        dp.swap(next);
     }
 
-    cout << '\n';
+    cout << dp[A][B] << '\n';
     return 0;
 }

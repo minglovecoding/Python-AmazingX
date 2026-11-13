@@ -888,7 +888,240 @@ int main() {
 
 **易错点：**起点初始不加一；C++ 的负数取模可能为负，使用 `(q%12+12)%12` 归一化。
 
-## 真题 5：MooTube——路径条件变成边条件
+## 真题 5：Milk Visits
+
+> 核心方法：LCA + 树上前缀计数 + 离线 DFS。
+
+### 1. 预处理深度和倍增祖先
+
+以节点 1 为根，遍历整棵树，计算：
+
+- `depth[u]`：节点 u 的深度。
+- `up[u][j]`：节点 u 向上走 2^j 步到达的祖先。
+
+利用倍增，可以在 O(\log N) 时间内求两个节点的最近公共祖先。
+
+### 2. 将路径查询转化为根路径计数
+
+定义：
+
+$$
+F(u,c)=\text{根节点到 }u\text{ 的路径上，品种 }c\text{ 的节点数量}
+$$
+
+对于询问 `(a,b,c)`，设 `l = LCA(a,b)`，则路径 a 到 b 上品种 c 的数量为：
+
+$$
+F(a,c)+F(b,c)-2F(l,c)+[type[l]=c]
+$$
+
+其中，[type[l]=c] 在条件成立时为 1，否则为 0。
+
+两条根路径的公共部分被计算了两遍，需要减去；最近公共祖先 l 本身属于查询路径，所以最后补回一次。
+
+### 3. 将每个询问拆成三个事件
+
+不能为每个节点保存所有品种的前缀计数，否则需要 $O(N^2)$ 空间。
+
+因此，先读入所有询问，将第 id 个询问拆为：
+
+- 在节点 a 上，给 `answer[id]` 加上 `F(a,c)`。
+- 在节点 b 上，给 `answer[id]` 加上 `F(b,c)`。
+- 在节点 l 上，给 `answer[id]` 减去 `2 * F(l,c)`。
+
+同时初始化：
+
+    answer[id] = (type[l] == c);
+
+每个事件保存：询问编号、目标品种和贡献系数。
+
+### 4. 使用 DFS 维护当前根路径的品种数量
+
+维护：
+
+    cnt[c] = 当前根到所在节点的路径上，品种 c 的数量
+
+进入节点 u 时：
+
+1. 执行 `cnt[type[u]]++`。
+2. 处理挂在 u 上的全部事件：
+
+       answer[id] += coefficient * cnt[c];
+
+3. 继续遍历所有孩子。
+
+所有孩子的子树处理完后，离开节点 u：
+
+    cnt[type[u]]--;
+
+这样，处理节点 u 的事件时，始终有：
+
+$$
+cnt[c]=F(u,c)
+$$
+
+### 5. 用显式栈模拟 DFS 的进入与离开
+
+栈中保存 `{u, leaving}`：
+
+- `{u, false}`：进入节点 u。
+- `{u, true}`：离开节点 u。
+
+进入 u 后，先压入“离开 u”，再压入“进入孩子”。
+
+由于栈后进先出，会先处理完所有孩子，最后才执行离开 u 的操作，完成回溯。
+
+每个节点只进入、离开各一次，多个查询在对应节点进入时统一处理。
+
+### 6. 按输入顺序输出答案
+
+DFS 完成后，`answer[id]` 就是该查询路径上目标品种的数量：
+
+- 大于 0，输出 `1`。
+- 等于 0，输出 `0`。
+
+所有结果按原询问顺序连续输出。
+
+### 复杂度
+
+- 预处理倍增祖先：O(N\log N)。
+- M 次 LCA 查询：O(M\log N)。
+- DFS 与全部事件处理：O(N+M)。
+
+总时间复杂度：O((N+M)\log N) 空间复杂度：O(N\log N+M)
+
+```c++
+//1.求 LCA：对每个询问 (a,b,c)，找到最近公共祖先 l。
+//2.拆成根路径计数：设 F(u,c) 为根到 u 路径上品种 c 的数量，则：count=F(a,c)+F(b,c)-2F(l,c)+[type[l]=c]
+//3.离线挂事件：在 a、b 上分别挂 +1 事件，在 l 上挂 -2 事件，并提前补上 LCA 自己的贡献。
+//4.一次 DFS 统一计算：维护当前根路径上的品种数量。进入节点时加一并处理该节点的所有事件，离开时减一。
+//5.输出结果：每个询问最终数量大于 0 输出 1，否则输出 0。
+#include <bits/stdc++.h>
+using namespace std;
+const int LOG = 20;
+struct Event {
+    int id;           // 询问编号
+    int type;         // 查询的牛奶品种
+    int coefficient;  // 系数：+1 或 -2
+};
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    // freopen("milkvisits.in", "r", stdin);
+    // freopen("milkvisits.out", "w", stdout);
+
+    int N, M;
+    cin >> N >> M;
+    vector<int> type(N + 1);
+    for (int u = 1; u <= N; u++) {
+        cin >> type[u];
+    }
+    vector<vector<int>> adj(N + 1);
+    for (int i = 1; i < N; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    // 1. 预处理深度与倍增祖先
+    // up[u][j]：u 向上走 2^j 步到达的祖先
+    vector<array<int, LOG>> up(N + 1);
+    vector<int> depth(N + 1, 0);
+    vector<int> order{1};//用来辅助 LCA 预处理的：保证先处理父节点，再处理孩子，从而计算深度和倍增祖先
+
+    for (int i = 0; i < (int)order.size(); i++) {
+        int u = order[i];
+        for (int v : adj[u]) {
+            if (v == up[u][0]) continue;
+            depth[v] = depth[u] + 1;
+            up[v][0] = u;
+            for (int j = 1; j < LOG; j++) {
+                up[v][j] = up[up[v][j - 1]][j - 1];
+            }
+            order.push_back(v);
+        }
+    }
+
+    // 2. 求最近公共祖先
+    auto lca = [&](int u, int v) {
+        if (depth[u] < depth[v]) swap(u, v);
+        int difference = depth[u] - depth[v];
+        // 先把两个节点提升到相同深度
+        for (int j = 0; j < LOG; j++) {
+            if (difference & (1 << j)) {
+                u = up[u][j];
+            }
+        }
+        if (u == v) return u;
+        // 同时向上跳，直到位于 LCA 的下一层
+        for (int j = LOG - 1; j >= 0; j--) {
+            if (up[u][j] != up[v][j]) {
+                u = up[u][j];
+                v = up[v][j];
+            }
+        }
+        return up[u][0];
+    };
+
+    // 3. 将每个询问拆成三个事件
+    vector<vector<Event>> events(N + 1);
+    vector<int> answer(M, 0);
+    for (int id = 0; id < M; id++) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        int ancestor = lca(a, b);
+        // F(a,c) + F(b,c) - 2F(ancestor,c)
+        events[a].push_back({id, c, 1});
+        events[b].push_back({id, c, 1});
+        events[ancestor].push_back({id, c, -2});
+        // 补回最近公共祖先自己
+        answer[id] = (type[ancestor] == c);
+    }
+
+    // 4. DFS 维护当前根路径上的品种数量
+    vector<int> cnt(N + 1, 0);
+
+    // 第二个元素：false 表示进入，true 表示离开
+    stack<pair<int, bool>> st;
+    st.push({1, false});
+
+    while (!st.empty()) {
+        auto [u, leaving] = st.top();
+        st.pop();
+
+        if (leaving) {
+            cnt[type[u]]--;
+            continue;
+        }
+
+        // 进入节点
+        cnt[type[u]]++;
+
+        // 此时 cnt[c] 就是根到 u 路径上的品种 c 数量
+        for (const Event &event : events[u]) {
+            answer[event.id] += event.coefficient * cnt[event.type];
+        }
+
+        // 先压入离开事件，再压入孩子，保证回溯时恢复计数
+        st.push({u, true});
+
+        for (int v : adj[u]) {
+            if (v == up[u][0]) continue;
+            st.push({v, false});
+        }
+    }
+
+    // 5. 按原询问顺序输出
+    for (int id = 0; id < M; id++) {
+        cout << (answer[id] > 0 ? '1' : '0');
+    }
+    cout << '\n';
+
+    return 0;
+}
+```
+
+## 真题 6：MooTube——路径条件变成边条件
 
 - 比赛：**2018 January，Silver，Problem 3**。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=788)
