@@ -13,6 +13,7 @@
 | 并查集 DSU          | find、union、路径压缩、按大小合并、逆序处理  | [Closing the Farm - 2016 Open Silver](https://usaco.org/index.php?page=viewproblem2&cpid=644) |
 | 树的 DFS / BFS      | 父节点、深度、子树大小、树的遍历与简单贪心   | [Cowntagion - 2020 Dec Silver](https://usaco.org/index.php?page=viewproblem2&cpid=1062) |
 | 二分图染色          | 两种颜色分配、相同/不同约束、冲突检测        | [The Great Revegetation - 2019 Feb Silver](https://usaco.org/index.php?page=viewproblem2&cpid=920) |
+| 环与置换环          | 识别循环，把重复操作转化为环上的统计         | P7298 Dance Mooves                                           |
 | 树上路径与连通块    | 树上唯一路径、相同类型连通块、路径查询       | [Milk Visits - 2019 Dec Silver](https://usaco.org/index.php?page=viewproblem2&cpid=968) |
 | 拓扑排序            | 入度统计、Kahn 算法、依赖关系、DAG           | 银组进阶拓展                                                 |
 | 0-1 BFS             | 边权为 0 或 1、双端队列、最短路松弛          | 银组进阶拓展                                                 |
