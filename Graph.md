@@ -1,6 +1,29 @@
-## 🌲 什么是图论（Graph Theory）？
+## 📚图论（Graph Theory）
 
-**图论 = 研究“点 + 边”之间关系的数学和算法学科。**
+| 知识点              | 考查重点                                     | 往年真题                                                     |
+| ------------------- | -------------------------------------------- | ------------------------------------------------------------ |
+| 图的建模与存储      | 邻接表、邻接矩阵、有向图、无向图、隐式建图   | [Moocast - 2016 Dec Silver](https://usaco.org/index.php?page=viewproblem2&cpid=668) |
+| DFS 深度优先搜索    | 递归搜索、访问标记、可达性判断、连通区域遍历 | [Moocast - 2016 Dec Silver](https://usaco.org/index.php?page=viewproblem2&cpid=668) |
+| BFS 广度优先搜索    | 队列、逐层遍历、访问标记、无权图搜索         | [Moocast - 2016 Dec Silver](https://usaco.org/index.php?page=viewproblem2&cpid=668) |
+| Flood Fill 洪水填充 | 网格 DFS/BFS、四方向搜索、面积与周长计算     | [Icy Perimeter - 2019 Jan Silver](https://usaco.org/index.php?page=viewproblem2&cpid=895) |
+| 连通块与连通性      | 连通块计数、判断连通、删除节点后的连通性     | [Closing the Farm - 2016 Open Silver](https://usaco.org/index.php?page=viewproblem2&cpid=644) |
+| 网格图搜索          | 二维坐标、边界判断、障碍物、状态访问         | [Icy Perimeter - 2019 Jan Silver](https://usaco.org/index.php?page=viewproblem2&cpid=895) |
+| BFS 最短路          | 无权图最短距离、距离数组、最少操作次数       | 建议配合无权图最短路专项题训练                               |
+| 多源 BFS            | 多个起点同时入队、最近源点距离、距离传播     | 建议配合多源 BFS 专项题训练                                  |
+| 并查集 DSU          | find、union、路径压缩、按大小合并、逆序处理  | [Closing the Farm - 2016 Open Silver](https://usaco.org/index.php?page=viewproblem2&cpid=644) |
+| 树的 DFS / BFS      | 父节点、深度、子树大小、树的遍历与简单贪心   | [Cowntagion - 2020 Dec Silver](https://usaco.org/index.php?page=viewproblem2&cpid=1062) |
+| 二分图染色          | 两种颜色分配、相同/不同约束、冲突检测        | [The Great Revegetation - 2019 Feb Silver](https://usaco.org/index.php?page=viewproblem2&cpid=920) |
+| 树上路径与连通块    | 树上唯一路径、相同类型连通块、路径查询       | [Milk Visits - 2019 Dec Silver](https://usaco.org/index.php?page=viewproblem2&cpid=968) |
+| 拓扑排序            | 入度统计、Kahn 算法、依赖关系、DAG           | 银组进阶拓展                                                 |
+| 0-1 BFS             | 边权为 0 或 1、双端队列、最短路松弛          | 银组进阶拓展                                                 |
+| Dijkstra 最短路     | 非负权图、优先队列、松弛操作、复杂度优化     | 金组                                                         |
+| 最小生成树 MST      | Kruskal、并查集、最小连接成本                | 金组                                                         |
+| LCA 最近公共祖先    | 树上路径、倍增、公共祖先查询                 | 金组                                                         |
+| 树形 DP             | 子树状态、后序遍历、状态合并、换根 DP        | 金组                                                         |
+
+***
+
+### 图论 = 研究“点 + 边”之间关系的数学和算法学科。
 
 一个图包含：
 
@@ -18,39 +41,6 @@ D ------- E
 ```
 
 这是一个图，5 个节点、5 条边。
-
-## 🧠 图论能解决什么问题？
-
-图论用来解决各种“连接关系”的问题，例如：
-
-- 两点之间能否到达？
-- 到达需要几步？最短路径？
-- 有哪些连通区域？
-- 网络是否有环？
-- 哪些节点之间必须在同一个集合？
-- 树形结构如何遍历？
-
-## 📊 图论中的常见图类型
-
-### **① 无向图（undirected graph）**
-
-A-B 和 B-A 是一样的（双向）。
-
-### **② 有向图（directed graph）**
-
-A → B 和 B → A 不一样。
-
-### **③ 加权图（weighted graph）**
-
-每条边有权重，例如距离、时间。
-
-### **④ 树（tree）**
-
-- 没有环
-- N 个点有 N-1 条边
-- 任意两点只有唯一一条路径
-
-树是图的一种特殊情况。
 
 ## 🎯 图常用的建图方式
 

@@ -194,39 +194,42 @@ pos[场次][牛编号] = 排名位置
 代码枚举有方向的牛对 (a, b)，要求 a 每次都领先 b。每个合法无序牛对恰好有一个方向成立，因此不需要除以 2。
 
 ```cpp
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
-int pos[15][25];
-int main() {
-   int N,K;
-   int cow;
-   int ans=0;
-   bool flag;
-   //freopen("gymnastics.in", "r", stdin);
-   //freopen("gymnastics.out", "w", stdout);
-   cin>>K>>N;
-   for(int i=0;i<K;i++){
-      for(int j=0;j<N;j++){
-         cin>>cow;
-         pos[i][cow]=j+1;
-      }
-   }
+int cow[15][25];
 
-   for(int i=1;i<=N;i++){
-      for(int j=1;j<=N;j++){
-         flag=true;
-         if(i==j) continue;
-         for(int k=0;k<K;k++){
-            if(pos[k][i]<pos[k][j]){
-               flag=false;
-               break;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+  
+    freopen("gymnastics.in", "r", stdin);
+    freopen("gymnastics.out", "w", stdout);
+
+    int K,N;
+    int ans=0;
+    cin>>K>>N;
+    for(int i=0;i<K;i++){
+        for(int j=0;j<N;j++){
+            int id;
+            cin>>id;
+            cow[i][id]=j+1;  //i轮的id牛在第j+1位
+        }
+    }
+        for(int j=1;j<=N;j++){
+            for(int t=1;t<=N;t++){
+                bool flag=true;
+                if(j==t) continue;
+                for(int i=0;i<K;i++){
+                    if(cow[i][j]<cow[i][t]){
+                        flag=false;
+                        break;
+                    } 
+                }
+                if(flag) ans++;
             }
-         }
-         if(flag) ans++;
-      }
-   }
-   cout<<ans<<endl;
-   return 0;
+        }
+    cout<<ans<<endl;
+    return 0;
 }
 ```
 
@@ -328,21 +331,20 @@ n × m 个小方格组成棋盘，统计正方形和非正方形长方形，n、
 只需枚举正方形边长，再用全部矩形数减去正方形数。
 
 ```cpp
-#include <iostream>
-#include <algorithm>
+#include<iostream>
 using namespace std;
-
+long long n,m,rec,sqr;
 int main() {
-    long long n, m;
-    cin >> n >> m;
-    long long squares = 0;
-    for (long long side = 1; side <= min(n, m); side++) {
-        squares += (n - side + 1) * (m - side + 1);
-    }
-    long long all = n * (n + 1) / 2 * (m * (m + 1) / 2);
-    cout << squares << ' ' << all - squares << '\n';
+    cin>>n>>m;
+    for(int i=0; i<n; i++)//循环，从n-0到n-(n-1)
+        for(int j=0; j<m; j++) {//循环，从m-0到m-(m-1)
+            if(i==j) sqr+=(n-i)*(m-j);//如果i==j，说明是正方形
+            else rec+=(n-i)*(m-j);//如果不等说明是矩形
+        }
+    cout<<sqr<<" "<<rec<<endl;//输出
     return 0;
 }
+
 ```
 
 时间 O(min(n, m))，辅助空间 O(1)。n、m 和乘积使用 long long。输入 2 3，输出 8 10。
