@@ -259,28 +259,7 @@ public static void insertionSortRemoveAdd(ArrayList<Integer> list) {
 
 每轮临时删除后必定重新插入，轮次结束时长度不变，因此 i 可以继续增加。**即使输入有序，反复 remove/add 仍移动后缀元素，总移动成本可达 Θ(n²)**；不能因为查找插入点的比较较少，就套用 set 版本的最好情况 Θ(n)。
 
-### 2.9 复杂度：区分输入情况与渐近记号
-
-O 是渐近上界，Ω 是渐近下界，Θ 是紧确阶。**O 不等于“最坏情况”，Ω 也不等于“最好情况”**；可以分别讨论最好、最坏情况下的 O、Ω、Θ。
-
-本表采用常见 ArrayList 随机访问、移动元素的成本模型，n 为元素数；讨论辅助空间时不包含输入。
-
-| 算法/操作 | 最好情况 | 最坏情况 | 辅助空间 |
-| --- | --- | --- | --- |
-| get / set / size | Θ(1) | Θ(1) | Θ(1) |
-| 末尾 add | 摊还 Θ(1)，单次通常常数成本 | 扩容的单次可为 Θ(n) | 可能扩容；不等同于算法临时变量空间 |
-| 指定位置插入/删除 | 末尾可为 Θ(1)，不计扩容 | 移动后缀 Θ(n) | 无需另建结果集合 |
-| 线性查找 | Θ(1)，立即找到 | Θ(n)，找到末尾或未找到 | Θ(1) |
-| 迭代二分查找 | Θ(1)，中点即目标 | Θ(log n)，n >= 2 | Θ(1) |
-| 上面的选择排序 | Θ(n²) | Θ(n²) | Θ(1) |
-| set 版本插入排序 | Θ(n)，已经有序 | Θ(n²)，如严格逆序 | Θ(1) |
-| remove/add 版本插入排序 | Θ(n²)，即使已经有序 | Θ(n²) | Θ(1) 个临时变量，不另建结果表 |
-
-倒序删除解决漏删，但不保证线性时间；多次删除仍可能反复搬移保留元素，最坏 Θ(n²)。嵌套循环也不自动等于平方：必须数实际执行次数。
-
-复杂度记号用于理解增长与比较实现，不代替 AP 题中要求的精确操作计数。排序稳定性、摊还成本和 remove(Object) 作为扩展辨析；本章不把原稿扩展为归并排序或递归专题。
-
-## 🎯 3. MCQ 训练（原创）
+## 3. MCQ 训练
 
 每题只有一个正确选项。代码片段均处于合法上下文，并已导入 ArrayList；除特别说明外，list 不含 null。题中 `[a, b]` 表示按顺序含 a、b 的列表。
 
@@ -432,7 +411,25 @@ D. 3、5、4
 
 ### MCQ 12：二分查找的边界错误
 
-将 2.6 的 `while (left <= right)` 改为 `while (left < right)`，其余不变。以下哪组输入会导致“目标存在却返回 -1”？
+```java
+public static int binarySearch(ArrayList<Integer> list, int target) {
+    int left = 0;
+    int right = list.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (list.get(mid) == target) {
+            return mid;
+        } else if (list.get(mid) > target) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return -1;
+}
+```
+
+将 `while (left <= right)` 改为 `while (left < right)`，其余不变。以下哪组输入会导致“目标存在却返回 -1”？
 
 A. list 为 `[4]`，target 为 4  
 B. list 为 `[4, 9]`，target 为 4  
@@ -441,7 +438,23 @@ D. list 为 `[2, 4, 9]`，target 为 4
 
 ### MCQ 13：选择排序逐轮状态
 
-对 `[8, 6, 3, 9, 2]` 执行 2.7 的选择排序。完成 i = 1 这一轮后，数组是什么？
+```java
+public static void selectionSort(int[] nums) {
+    for (int i = 0; i < nums.length - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < nums.length; j++) {
+            if (nums[j] < nums[minIndex]) {
+                minIndex = j;
+            }
+        }
+        int temp = nums[i];
+        nums[i] = nums[minIndex];
+        nums[minIndex] = temp;
+    }
+}
+```
+
+对 `[8, 6, 3, 9, 2]` 执行选择排序。完成 i = 1 这一轮后，数组是什么？
 
 A. `[3, 6, 8, 9, 2]`  
 B. `[2, 6, 3, 9, 8]`  
@@ -450,7 +463,7 @@ D. `[2, 3, 6, 8, 9]`
 
 ### MCQ 14：选择排序精确比较次数
 
-对长度为 6 的数组执行 2.7 的选择排序，表达式 `nums[j] < nums[minIndex]` 一共计算多少次？
+对长度为 6 的数组执行选择排序，表达式 `nums[j] < nums[minIndex]` 一共计算多少次？
 
 A. 5  
 B. 15  
@@ -459,7 +472,21 @@ D. 取决于输入是否有序
 
 ### MCQ 15：插入排序逐轮状态
 
-对 `[8, 6, 3, 9, 2]` 执行 2.8 的 set 版本。完成 i = 2 这一轮后，列表是什么？
+```java
+public static void insertionSort(ArrayList<Integer> list) {
+    for (int i = 1; i < list.size(); i++) {
+        int current = list.get(i);
+        int j = i - 1;
+        while (j >= 0 && list.get(j) > current) {
+            list.set(j + 1, list.get(j));
+            j--;
+        }
+        list.set(j + 1, current);
+    }
+}
+```
+
+对 `[8, 6, 3, 9, 2]` 执行 插入排序。完成 i = 2 这一轮后，列表是什么？
 
 A. `[2, 3, 6, 9, 8]`  
 B. `[6, 8, 3, 9, 2]`  
@@ -468,21 +495,12 @@ D. `[3, 6, 8, 9, 2]`
 
 ### MCQ 16：短路求值
 
-在 2.8 的 set 版本中，把 while 条件改成 `list.get(j) > current && j >= 0`。哪组输入会在第一轮外层循环中发生越界？
+把 insertionSort的while 条件改成 `list.get(j) > current && j >= 0`。哪组输入会在第一轮外层循环中发生越界？
 
 A. `[5, 2]`  
 B. `[2, 5]`  
 C. `[5, 5]`  
 D. `[]`
-
-### MCQ 17：插入排序的真实成本
-
-假设列表已按升序排列，长度 n 很大，get/set 成本为常数，插入/删除按移动的元素数计成本。关于 2.8 两个版本，哪项正确？
-
-A. 两个版本总成本都是 Θ(n)  
-B. set 版本 Θ(n²)，remove/add 版本 Θ(n)  
-C. set 版本 Θ(n)，remove/add 版本 Θ(n²)  
-D. 两个版本都只运行一次外层循环
 
 ### MCQ 18：有序插入的位置
 
@@ -501,9 +519,7 @@ B. `a.get(i) <= value`
 C. `a.get(i) > value`  
 D. `a.get(i) == value`
 
-## ✍️ 4. FRQ 训练（原创）
-
-每题 9 分用于课堂反馈。不得调用 Collections.sort、Arrays.sort、removeIf 或 Stream API；应使用本章循环与核心方法。以下方法均为 public static，已导入 ArrayList。
+## 4. FRQ 训练
 
 ### FRQ 1：ListCleaner（安全删除与建立新表）
 
@@ -531,11 +547,19 @@ public static ArrayList<Integer> copyAtLeast(ArrayList<Integer> values, int thre
 
 ### FRQ 2：SearchTools（查找与重复值）
 
-**(a)** `public static int firstIndex(ArrayList<String> words, String target)`
+**(a)** 
+
+```java
+public static int firstIndex(ArrayList<String> words, String target)
+```
 
 返回第一个与 target 内容相同的字符串索引；未找到或空表返回 -1。列表无须有序，必须比较字符串内容，不能用 ==。不得修改 words。
 
-**(b)** `public static int binaryIndex(ArrayList<Integer> values, int target)`
+**(b)** 
+
+```java
+public static int binaryIndex(ArrayList<Integer> values, int target)
+```
 
 前置条件：values 非递减有序。使用迭代二分查找返回某个匹配索引；未找到或空表返回 -1。不要求最左匹配，不得修改 values。
 
@@ -545,13 +569,21 @@ public static ArrayList<Integer> copyAtLeast(ArrayList<Integer> values, int thre
 
 ### FRQ 3：SortedRoster（有序插入与合并）
 
-**(a)** `public static int insertAfterEquals(ArrayList<Integer> values, int value)`
+**(a)** 
+
+```java
+public static int insertAfterEquals(ArrayList<Integer> values, int value)
+```
 
 前置条件：values 非递减有序。原地插入 value，放在所有已有相等元素之后，返回插入后的索引。若无相等元素，放在正常升序位置。空表插到 0。
 
 示例：`[2, 4, 4, 7]` 插入 4 → `[2, 4, 4, 4, 7]`，返回 3。
 
-**(b)** `public static ArrayList<Integer> mergeSorted(ArrayList<Integer> a, ArrayList<Integer> b)`
+**(b)** 
+
+```java
+public static ArrayList<Integer> mergeSorted(ArrayList<Integer> a, ArrayList<Integer> b)
+```
 
 前置条件：a、b 分别非递减有序。用双指针合并为新的有序表，保留所有重复元素；两原表均不变。相等时先取 a 中的值。要求总时间 O(a.size() + b.size())，按末尾 add 的摊还成本分析；不能先拼接再排序。
 
@@ -559,17 +591,23 @@ public static ArrayList<Integer> copyAtLeast(ArrayList<Integer> values, int thre
 
 ### FRQ 4：SortPractice（排序与操作计数）
 
-**(a)** `public static int selectionSortCount(int[] nums)`
+**(a)** 
+
+```java
+public static int selectionSortCount(int[] nums)
+```
 
 原地升序选择排序，结构与 2.7 相同。每次计算元素大小关系 `nums[j] < nums[minIndex]` 时计数一次，返回该次数。不要统计循环条件、赋值或交换。数组长度最多 1000；空数组返回 0。
 
 示例：`[5, 1, 4, 2]` → `[1, 2, 4, 5]`，返回 6。
 
-**(b)** `public static void insertionSort(ArrayList<Integer> list)`
+**(b)** 
+
+```java
+public static void insertionSort(ArrayList<Integer> list)
+```
 
 用保存 current、右移较大元素、放回 current 的方法原地升序排序。只允许 get/set/size，不允许 add/remove 或另建集合；空表、单元素、重复值均应正确。
-
-书面解释：为什么只把条件从 `>` 改成 `>=` 仍能按数值排序，却失去本实现对相等元素原始先后次序的保持？可以把相同数值标记为 4a、4b 追踪。
 
 ## 🏛️ 5. 官方真题迁移
 

@@ -1,13 +1,17 @@
+import java.util.*;
 public class Main {
-    public static void change(int[] arr) {
-    arr[0] = 8;
-    arr = new int[] {1, 2};
-}
+
 
     public static void main(String[] args) {
-        int[] counts = new int[1];
-boolean[] flags = new boolean[1];
-String[] names = new String[1];
-System.out.println(counts[0] + " " + flags[0] + " " + (names[0] == null));
-}
+        ArrayList<Integer> a =new ArrayList<Integer>();
+        a.add(3);
+        a.add(4);
+        ArrayList<Integer> b = a;
+        b.set(0, 9);
+        b = new ArrayList<Integer>();
+        b.add(7);
+        System.out.println(a + " " + b);
+
+
+    }
 }
