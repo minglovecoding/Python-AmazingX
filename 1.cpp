@@ -1,38 +1,49 @@
 #include <bits/stdc++.h>
 using namespace std;
-int cow[15][25];
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+struct DSU{
+    vector<int>parent;
+    int components;
 
-    freopen("gymnastics.in", "r", stdin);
-    freopen("gymnastics.out", "w", stdout);
+    explicit DSU(int n):parent(n+1,-1),components(n){}
 
-    int K,N;
-    int ans=0;
-    cin>>K>>N;
-    for(int i=0;i<K;i++){
-        for(int j=0;j<N;j++){
-            int id;
-            cin>>id;
-            cow[i][id]=j+1;  //i轮的id牛在第j+1位
-        }
+    int find(int x){
+        if(parent[x]<0) return x;
+        return parent[x]=find(parent[x]);
     }
 
-        for(int j=1;j<=N;j++){
-            for(int t=1;t<=N;t++){
-                bool flag=true;
-                if(j==t) continue;
-                for(int i=0;i<K;i++){
-                    if(cow[i][j]>cow[i][t]){
-                        flag=false;
-                        break;
-                    } 
-                }
-                if(flag) ans++;
-            }
-        }
-    cout<<ans<<endl;
+    bool unite(int a,int b){
+        a=find(a);
+        b=find(b);
+
+        if(a==b) return false;
+        if(parent[a]>parent[b]) swap(a,b);
+
+        parent[a]+=parent[b];
+        parent[b]=a;
+        components--;
+        return true;
+    }
+
+    bool same(int a,int b){
+        return find(a)==find(b);
+    }
+
+    int size(int x){
+        return -parent[find(x)];
+    }
+};
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int n,m;
+    cin>>n>>m;
+    DSU dsu(n);
+    while(m--){
+        int z,x,y;
+        cin>>z>>x>>y;
+        if(z==1) dsu.unite(x,y);
+        else cout<<(dsu.same(x,y)?"Y":"N")<<"\n";
+    }
     return 0;
 }
