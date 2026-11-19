@@ -453,48 +453,15 @@ $$
 
 [USACO 2022 January Silver — Cereal 2](https://usaco.org/index.php?page=viewproblem2&cpid=1184)
 
-### 1. 建模上的转变
-
-- 节点代表谷物。
-- 每头奶牛连接它的第一选择与第二选择，对应一条边。
-- 需要选择出场顺序，让尽可能多的奶牛吃到谷物。
-
-这张图可能有重边；每条边都对应不同奶牛，不能简单去重。
-
-### 2. 并查集能帮助什么
-
-逐条加入边：
-
-- 若 `unite(u,v)` 成功，这条边可以成为生成森林中的树边。
-- 若失败，这条边连接的两点已经连通，是一条非树边。
-
-对于一个有 V 个谷物节点、E 头奶牛的连通分量，最多能满足 $\min(V,E)$ 头牛：树形分量有 $E=V-1$；含环分量可以利用一个环，让 V 头牛分别占据 V 个谷物。
-
-### 3. 为什么不能只写并查集就结束
-
-题目还要求输出具体出场顺序，第一、第二选择也有优先关系。
-
-因此还需要：
-
-1. 对树形分量选择根，按合适顺序安排树边对应奶牛。
-2. 对含环分量保留一个环，利用它确定起始安排。
-3. 再遍历连接在环上的树，输出其余安排。
-
-**并查集用于识别结构，DFS 与构造用于完成答案。** 这是一道综合题，适合作为课后挑战，不建议第一次学并查集就从它开始。
-
-思路：并查集负责选择生成森林、识别成环的边，树遍历负责安排出场顺序。
-
 ### 1. 建图
 
-注意这里：
+- 每种谷物作为一个节点。
+- 每头奶牛作为一条边，连接它最喜欢和第二喜欢的谷物。
+- 不同连通块之间互不影响，可以分别安排出场顺序。
 
-- **节点代表谷物**，一共 `M` 个。
-- **边代表奶牛**，第 `i` 头牛连接 `first[i]` 和 `second[i]`。
-- 不同奶牛可能连接相同的两个谷物，不能去重。
+### 2. 用并查集建立生成森林
 
-### 2. 用并查集选择生成森林
-
-逐头处理奶牛：
+依次处理每头奶牛对应的边：
 
 ```c++
 if (dsu.unite(first[i], second[i])) {
@@ -504,6 +471,19 @@ if (dsu.unite(first[i], second[i])) {
 }
 ```
 
+- `unite(u,v)` 成功：保留为树边。
+- 合并失败：两端已经连通，记录为非树边。
+- 全部合并完成后，每个含环的连通块选一条非树边，记录对应奶牛 `cycleCow[root]`。
+
+### 3. 构造出场顺序
+
+- **树形连通块**：任选根，用 BFS 遍历，按发现树边的顺序安排奶牛。
+- **含环连通块**：先安排 `cycleCow[root]`，它拿走第一选择；再以这个谷物为根，BFS 遍历生成树，安排树边对应的奶牛。
+
+BFS 保证父边先于子边。每条树边处理时，子节点谷物还未被拿走，因此对应奶牛一定能吃到。
+
+### 4. 统计答案
+
 对每个连通块，设有 `V` 个谷物、`E` 头奶牛：
 
 | 结构         | 安排方法                                                  |
@@ -511,25 +491,36 @@ if (dsu.unite(first[i], second[i])) {
 | 树，`E=V-1`  | 按父边先于子边的顺序安排，全部能吃到                      |
 | 含环，`E>=V` | 先安排一条非树边对应的牛，再安排全部树边，保证 `V` 头吃到 |
 
-因此每块最少饿肚子的数量是：max(0,E-V)
+因此最少饥饿数量为：
+$$
+boxed{\sum_{\text{连通块}}\max(0,E-V)} 
+$$
+将尚未安排的奶牛放到队伍最后，输出饥饿数量与完整排列。
 
-### 3. 含环时，遍历起点很重要
+### 5. Case
 
-先安排选中的非树边对应的奶牛，它一定拿走自己的**第一选择**。
+![](./images/mermaid-diagram.png)
 
-然后以这个谷物为根遍历生成树：
+| 连通块               | 谷物数 \(V\) | 奶牛数 \(E\) | 最少饥饿数量 |
+| -------------------- | ------------ | ------------ | ------------ |
+| `{1,2,3,4}`          | 4            | 3            | 0            |
+| `{5,6,7,8}`          | 4            | 5            | 1            |
+| 孤立点 `{9}`、`{10}` | 各 1         | 各 0         | 0            |
 
-- 根已经被占用。
-- 一条父子边对应的奶牛处理时，父节点谷物已经被占用，子节点谷物还未占用。
-- 不论这头牛的第一选择是哪端，它最终都会拿走子节点谷物。
+### 6. 复杂度
 
-这样可以让全部树边对应的奶牛吃到谷物。剩余非树边对应的奶牛放到最后。
+设 N 为奶牛数，M  为谷物种类数：
 
-### 完整代码
+- 时间复杂度：O(M+N\alpha(M))
+- 空间复杂度：O(N+M)
 
-使用你刚学的**根节点存负数**版本，并采用 BFS 遍历生成树，避免递归过深。
+1.使用 并查集选生成森林 + BFS 构造出场顺序。
 
 ```c++
+//1.合并成功的边保留为树边；失败的边记录为非树边。
+//2.每个含环连通块选一条非树边，让对应奶牛先出场。
+//3.从这头牛的第一选择谷物开始，BFS 遍历生成树，依次安排树边对应的奶牛。
+//4.其余奶牛放到最后。
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -549,6 +540,7 @@ struct DSU {
 
         if (a == b) return false;
 
+        // 负数越小，集合越大
         if (parent[a] > parent[b]) swap(a, b);
 
         parent[a] += parent[b];
@@ -566,15 +558,16 @@ int main() {
 
     vector<int> first(N + 1), second(N + 1);
 
-    // tree[u]：{相邻谷物编号，对应奶牛编号}
+    // tree[u] 存储：{相邻谷物，对应奶牛编号}
     vector<vector<pair<int, int>>> tree(M + 1);
 
-    vector<int> extraEdges;              // 非树边对应的奶牛
-    vector<bool> selected(N + 1, false);  // 是否选入保证吃到的队伍
+    vector<int> extraEdges;
+    vector<bool> selected(N + 1, false);
 
-    DSU dsu(M); // 并查集维护的是 M 个谷物
+    // 并查集的节点是谷物
+    DSU dsu(M);
 
-    // 1. 用并查集构建生成森林
+    // 1. 建立生成森林
     for (int cow = 1; cow <= N; cow++) {
         cin >> first[cow] >> second[cow];
 
@@ -590,8 +583,7 @@ int main() {
         }
     }
 
-    // 2. 每个最终连通块，选一条非树边
-    // cycleCow[root]：这个块选中的额外奶牛，0 表示没有
+    // 2. 每个最终连通块选一条非树边
     vector<int> cycleCow(M + 1, 0);
 
     for (int cow : extraEdges) {
@@ -612,18 +604,18 @@ int main() {
 
         int start = root;
 
-        // 含环：先安排选中的额外奶牛
+        // 含环：额外边对应的奶牛先出场
         if (cycleCow[root] != 0) {
             int cow = cycleCow[root];
 
             order.push_back(cow);
             selected[cow] = true;
 
-            // 它先拿走第一选择，从这个谷物开始遍历
+            // 它会先拿走第一选择，从这个谷物开始遍历
             start = first[cow];
         }
 
-        // 4. BFS 安排树边，保证父边先于子边
+        // 4. BFS，保证父边先于子边
         visited[start] = true;
         q.push(start);
 
@@ -641,10 +633,10 @@ int main() {
         }
     }
 
-    // 此时 order 中的奶牛都能吃到谷物
+    // 当前 order 中的奶牛都能吃到谷物
     int hungry = N - int(order.size());
 
-    // 5. 剩余奶牛放到最后
+    // 5. 没有选中的奶牛放到最后
     for (int cow = 1; cow <= N; cow++) {
         if (!selected[cow]) {
             order.push_back(cow);
@@ -661,10 +653,157 @@ int main() {
 }
 ```
 
-时间复杂度：
-$$
-O(M+N\alpha(M)) 
-$$
+2. **纯 DFS 版本**: 第一次 DFS 用奶牛编号区分树边和非树边，因此能正确处理重边。 第二次只遍历已经建好的树，才可以直接跳过父节点。含环时，先安排非树边对应的牛，从它的第一选择谷物开始遍历
+
+   **建图**
+   谷物作为节点，奶牛作为边，连接它的第一、第二选择。
+
+   **第一次 DFS：找生成树与非树边**
+   每个连通块分别搜索：
+
+   - 走到未访问节点的边，保留为树边。
+   - 遇到已访问节点，且不是原来的父边，就发现了环，记录一条非树边。
+
+   **第二次 DFS：安排出场顺序**  
+
+   - 没有环：任选根，先输出树边对应的奶牛，再递归进入子节点。
+   - 有环：先输出非树边对应的奶牛，再从它的第一选择谷物出发，按上述方式遍历生成树。
+
+   **剩余奶牛放最后**
+   前面安排的奶牛都能吃到，剩下的就是最少需要饿肚子的奶牛。
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Edge {
+    int to;   // 相邻谷物
+    int cow;  // 对应奶牛编号
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N, M;
+    cin >> N >> M;
+
+    vector<int> first(N + 1), second(N + 1);
+
+    vector<vector<Edge>> adj(M + 1);
+    vector<vector<Edge>> tree(M + 1);
+
+    for (int cow = 1; cow <= N; cow++) {
+        cin >> first[cow] >> second[cow];
+
+        int u = first[cow];
+        int v = second[cow];
+
+        adj[u].push_back({v, cow});
+        adj[v].push_back({u, cow});
+    }
+
+    vector<bool> visited(M + 1, false);
+    vector<bool> isTreeEdge(N + 1, false);
+    vector<bool> selected(N + 1, false);
+
+    vector<int> order;
+
+    // 分别处理每个连通块
+    for (int start = 1; start <= M; start++) {
+        if (visited[start]) continue;
+
+        int extraCow = 0;
+
+        // 第一次 DFS：建立生成树，寻找非树边
+        // 栈中保存：当前节点、下一条待检查邻接边的下标
+        stack<pair<int, int>> st;
+
+        visited[start] = true;
+        st.push({start, 0});
+
+        while (!st.empty()) {
+            int u = st.top().first;
+            int index = st.top().second;
+
+            // 当前节点的所有邻接边都处理完了，回溯
+            if (index == int(adj[u].size())) {
+                st.pop();
+                continue;
+            }
+
+            st.top().second++;
+
+            auto [v, cow] = adj[u][index];
+
+            if (!visited[v]) {
+                visited[v] = true;
+
+                isTreeEdge[cow] = true;
+                selected[cow] = true;
+
+                tree[u].push_back({v, cow});
+                tree[v].push_back({u, cow});
+
+                st.push({v, 0});
+            } else if (!isTreeEdge[cow] && extraCow == 0) {
+                // 已经访问过，且不是树边：找到一条非树边
+                extraCow = cow;
+            }
+        }
+
+        int root = start;
+
+        // 含环：先安排额外奶牛
+        if (extraCow != 0) {
+            order.push_back(extraCow);
+            selected[extraCow] = true;
+
+            // 它先拿走第一选择，从这里开始遍历生成树
+            root = first[extraCow];
+        }
+
+        // 第二次 DFS：构造树边对应奶牛的出场顺序
+        // 当前节点、父节点、进入当前节点的边对应的奶牛
+        stack<tuple<int, int, int>> dfs;
+        dfs.push({root, 0, 0});
+
+        while (!dfs.empty()) {
+            auto [u, parent, cow] = dfs.top();
+            dfs.pop();
+
+            // 先安排父边对应的奶牛，再处理子树
+            if (cow != 0) {
+                order.push_back(cow);
+            }
+
+            for (auto [v, nextCow] : tree[u]) {
+                if (v == parent) continue;
+
+                dfs.push({v, u, nextCow});
+            }
+        }
+    }
+
+    // 当前 order 中的奶牛全部能吃到
+    int hungry = N - int(order.size());
+
+    // 其余奶牛安排在最后
+    for (int cow = 1; cow <= N; cow++) {
+        if (!selected[cow]) {
+            order.push_back(cow);
+        }
+    }
+
+    cout << hungry << '\n';
+
+    for (int cow : order) {
+        cout << cow << '\n';
+    }
+
+    return 0;
+}
+```
 
 ## 真题三：Closing the Farm
 
@@ -787,7 +926,7 @@ int main() {
 
 注意：模板中的 `dsu.components` 包含尚未开放的节点，不能直接拿来判断。本题另外维护 `activeComponents`。
 
-## 九、真题二：MooTube
+## 真题四：MooTube
 
 ### 1. 题意
 
@@ -918,9 +1057,9 @@ $$
 O(N\log N+Q\log Q+(N+Q)\alpha(N))
 $$
 
-空间复杂度：$O(N+Q)$。
+空间复杂度：O(N+Q)。
 
-## 十一、应用拓展：Kruskal 最小生成树
+## 拓展：Kruskal 最小生成树
 
 ### 1. 最小生成树是什么
 
@@ -1061,24 +1200,18 @@ $$
 
 ## 课后必做题
 
-| 阶段     | 往年真题                                                     | 考查重点                                                 |
-| -------- | ------------------------------------------------------------ | -------------------------------------------------------- |
-| 银组入门 | [Closing the Farm — 2016 US Open Silver](https://usaco.org/index.php?page=viewproblem2&cpid=644) | 连通性；先理解逐次搜索，再学习倒序开放                   |
-| 银组过渡 | [MooTube — 2018 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=788) | 阈值限制下的连通块；搜索与离线并查集的对比               |
-| 银组综合 | [Wormhole Sort — 2020 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=992) | 二分答案 + 并查集判定                                    |
-| 银组拓展 | [Cereal 2 — 2022 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=1184) | 图建模、生成森林、环与输出顺序构造                       |
-| 金组入门 | [Closing the Farm — 2016 US Open Gold](https://usaco.org/index.php?page=viewproblem2&cpid=646) | 逆序离线，删除变加入                                     |
-| 金组入门 | [MooTube — 2018 January Gold](https://usaco.org/index.php?page=viewproblem2&cpid=789) | 查询排序、边排序、离线维护集合大小                       |
-| 金组拓展 | [Fenced In — 2016 February Gold](https://usaco.org/index.php?page=viewproblem2&cpid=623) | 几何转图、最小生成树、批量处理同权边                     |
-| 22 Dec   | Gold: [Strongest Friendship Group](https://usaco.org/index.php?page=viewproblem2&cpid=1259) | 将删除操作倒过来处理，使用并查集合并连通块，并维护大小。 |
-| 22 Jan   | Gold: [Farm Updates](https://usaco.org/index.php?page=viewproblem2&cpid=1186) | 倒序 + DFS                                               |
-
-| 年份与比赛    | 组别 | 真题                                                         | 并查集的作用                                                 | 定位                             |
-| ------------- | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------- |
-| 2022 February | 金组 | [Moo Network](https://usaco.org/index.php?page=viewproblem2&cpid=1211) | 利用坐标特点减少候选边，再用 **Kruskal + 并查集**求最小生成树 | **核心练习**                     |
-| 2022 December | 金组 | [Strongest Friendship Group](https://usaco.org/index.php?page=viewproblem2&cpid=1259) | 正向按最小度数删点，**倒序加点**，维护连通块大小             | **核心练习**                     |
-| 2025 January  | 金组 | [Reachable Pairs](https://usaco.org/index.php?page=viewproblem2&cpid=1474) | 转换删点规则，倒序处理；维护每个连通块中的**有效节点数与连通点对数** | **核心练习**                     |
-| 2022 January  | 银组 | [Cereal 2](https://usaco.org/index.php?page=viewproblem2&cpid=1184) | 可用并查集选生成森林、识别非树边，再结合 DFS 构造顺序        | **可选实现**，也可纯 DFS         |
-| 2024 December | 银组 | [Deforestation](https://usaco.org/index.php?page=viewproblem2&cpid=1447) | 在“从右向左补选树”的贪心中，可用并查集跳过已选位置，配合树状数组统计区间数量 | **数据结构拓展**，并查集并非必需 |
+| 阶段     | 往年真题                                                     | 考查重点                                                     |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 银组综合 | [Wormhole Sort — 2020 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=992) | 二分答案 + 并查集判定                                        |
+| 银组     | [Cereal 2 — 2022 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=1184) | 图建模、生成森林、环与输出顺序构造                           |
+| 银组     | [Closing the Farm — 2016 US Open Silver](https://usaco.org/index.php?page=viewproblem2&cpid=644) | 连通性；先理解逐次搜索，再学习倒序开放                       |
+| 银组     | [MooTube — 2018 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=788) | 阈值限制下的连通块；搜索与离线并查集的对比                   |
+| 金组     | [MooTube — 2018 January Gold](https://usaco.org/index.php?page=viewproblem2&cpid=789) | 查询排序、边排序、离线维护集合大小                           |
+| 金组     | 22 Dec Gold: [Strongest Friendship Group](https://usaco.org/index.php?page=viewproblem2&cpid=1259) | 将删除操作倒过来处理，使用并查集合并连通块，并维护大小。     |
+| 金组     | 22 Jan Gold: [Farm Updates](https://usaco.org/index.php?page=viewproblem2&cpid=1186) | 倒序 + DFS                                                   |
+| 金组     | [Fenced In — 2016 February Gold](https://usaco.org/index.php?page=viewproblem2&cpid=623) | 几何转图、最小生成树、批量处理同权边                         |
+| 金组     | [Moo Network](https://usaco.org/index.php?page=viewproblem2&cpid=1211)-2022 February | 利用坐标特点减少候选边，再用 **Kruskal + 并查集**求最小生成树 |
+| 金组     | [Reachable Pairs](https://usaco.org/index.php?page=viewproblem2&cpid=1474)-2025 January | 转换删点规则，倒序处理；维护每个连通块中的**有效节点数与连通点对数** |
+| 银组     | [Deforestation](https://usaco.org/index.php?page=viewproblem2&cpid=1447)-2024 December | 在“从右向左补选树”的贪心中，可用并查集跳过已选位置，配合树状数组统计区间数量 |
 
 ***
