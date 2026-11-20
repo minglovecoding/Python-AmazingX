@@ -1060,7 +1060,7 @@ $$
 
 由于题目给出的是一棵树，可以通过 `fa` 记录父节点，避免重复访问，不需要额外使用 `vis` 数组。
 
-```
+```c++
 //1.DFS做法
 #include <bits/stdc++.h>
 using namespace std;
