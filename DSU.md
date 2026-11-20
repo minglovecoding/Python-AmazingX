@@ -984,6 +984,8 @@ int main() {
 
 ## 真题四：MooTube
 
+[MooTube — 2018 January Silver](https://usaco.org/index.php?page=viewproblem2&cpid=788)
+
 ### 1. 题意
 
 图是一棵树。两点的相关度等于唯一路径上的最小边权。
@@ -1078,6 +1080,7 @@ struct Query { int k, v, id; };
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
+  
     int n, q;
     cin >> n >> q;
     vector<Edge> edges(n - 1);
@@ -1093,8 +1096,10 @@ int main() {
     sort(queries.begin(), queries.end(), [](const Query &a, const Query &b) {
         return a.k > b.k;
     });
+  
     DSU dsu(n);
     vector<int> answer(q);
+  
     int p = 0;
     for (const auto &query : queries) {
         while (p < n - 1 && edges[p].w >= query.k) {
@@ -1213,7 +1218,7 @@ O(M\log M+(N+M)\alpha(N))
 $$
 若要求最大生成树，改为边权从大到小排序，仍由并查集判断是否成环。
 
-## 十二、金组拓展：Fenced In
+## 金组拓展：Fenced In
 
 [USACO 2016 February Gold — Fenced In](https://usaco.org/index.php?page=viewproblem2&cpid=623)
 
