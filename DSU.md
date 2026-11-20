@@ -815,8 +815,8 @@ int main() {
 
 | 版本 | 数据范围 | 适合的思路 |
 | --- | --- | --- |
-| 银组 | $N,M\le 3000$ | 每次关闭后 DFS/BFS，$O(N(N+M))$ |
-| 金组 | $N,M\le 200000$ | 逆序开放 + 并查集 |
+| 银组 | N,M < 3000 | 每次关闭后 DFS/BFS，O(N(N+M)) |
+| 金组 | N,M < 200000 | 逆序开放 + 并查集 |
 
 ### 2. 为什么不能直接删除
 
@@ -845,52 +845,111 @@ int main() {
 | 开放 4 | `{1,2,4}` | 2 | `answer[2]=NO` |
 | 开放 3 | `{1,2,3,4}` | 1 | `answer[1]=YES` |
 
-正序输出 `YES NO YES YES`。
-
-**`answer[i]` 表示关闭前 `i-1` 个节点后的状态。** 题目不要求输出所有节点都关闭后的空图状态。
+正序输出 `YES NO YES YES`。`answer[i]` 表示关闭前 `i-1` 个节点后的状态。 
 
 ### 5. 完整代码：银组、金组通用
 
+```c++
+//1.正序关闭 + 每次重新 DFS
+#include <bits/stdc++.h>
+using namespace std;
+
+const int Nmax = 3005;
+
+int N, M;
+vector<int> adj[Nmax];
+int order[Nmax];
+
+bool closed[Nmax];
+bool visited[Nmax];
+
+int cnt;
+
+// 统计从 u 出发能访问多少个开放农场
+void dfs(int u) {
+    visited[u] = true;
+    cnt++;
+
+    for (int v : adj[u]) {
+        if (closed[v] || visited[v]) continue;
+        dfs(v);
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    // freopen("closing.in", "r", stdin);
+    // freopen("closing.out", "w", stdout);
+
+    cin >> N >> M;
+
+    for (int i = 0; i < M; i++) {
+        int u, v;
+        cin >> u >> v;
+
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    for (int i = 1; i <= N; i++) {
+        cin >> order[i];
+    }
+
+    for (int i = 1; i <= N; i++) {
+        memset(visited, false, sizeof(visited));
+        cnt = 0;
+
+        // order[i] 尚未关闭，可以作为搜索起点
+        dfs(order[i]);
+
+        int remaining = N - i + 1;
+
+        cout << (cnt == remaining ? "YES" : "NO") << '\n';
+
+        // 输出当前状态后，再关闭这个农场
+        closed[order[i]] = true;
+    }
+
+    return 0;
+}
+```
+
 ```cpp
+//2.逆序开放 + 并查集
 #include <bits/stdc++.h>
 using namespace std;
 
 struct DSU {
-    vector<int> parent, sz;
-    int components;
+    vector<int> parent;
 
-    explicit DSU(int n) : parent(n + 1), sz(n + 1, 1), components(n) {
-        iota(parent.begin(), parent.end(), 0);
-    }
+    explicit DSU(int n) : parent(n + 1, -1) {}
 
     int find(int x) {
-        if (parent[x] == x) return x;
-        return parent[x] = find(parent[x]); // 路径压缩
-    }
-
-    bool same(int a, int b) {
-        return find(a) == find(b);
+        if (parent[x] < 0) return x;
+        return parent[x] = find(parent[x]);
     }
 
     bool unite(int a, int b) {
         a = find(a);
         b = find(b);
-        if (a == b) return false; // 已在同一集合，不重复合并
-        if (sz[a] < sz[b]) swap(a, b);
-        parent[b] = a;           // 小集合的根接到大集合的根
-        sz[a] += sz[b];
-        components--;
-        return true;
-    }
 
-    int size(int x) {
-        return sz[find(x)];
+        if (a == b) return false;
+
+        // 小集合合并到大集合
+        if (parent[a] > parent[b]) swap(a, b);
+
+        parent[a] += parent[b];
+        parent[b] = a;
+        return true;
     }
 };
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
+  
     int n, m;
     cin >> n >> m;
     vector<vector<int>> adj(n + 1);
@@ -920,11 +979,8 @@ int main() {
         cout << (answer[i] ? "YES" : "NO") << '\n';
     }
 }
+//复杂度：O(N+M*alpha(N))，空间 O(N+M)。
 ```
-
-复杂度：$O(N+M\alpha(N))$，空间 $O(N+M)$。
-
-注意：模板中的 `dsu.components` 包含尚未开放的节点，不能直接拿来判断。本题另外维护 `activeComponents`。
 
 ## 真题四：MooTube
 
@@ -948,8 +1004,8 @@ $$
 
 ### 3. 为什么银组能搜索，金组需要优化
 
-- 银组 $N,Q\le 5000$：每次 DFS/BFS，时间 $O(NQ)$，可以完成。
-- 金组 $N,Q\le 10^5$：反复搜索代价过高。
+- 银组 N,Q <= 5000：每次 DFS/BFS，时间 O(NQ)，可以完成。
+- 金组 N,Q <= 10^5：反复搜索代价过高。
 
 所有查询提前给出，可以先排序、再计算，最后恢复输出顺序。这叫**离线处理**。
 
@@ -1073,7 +1129,7 @@ $$
 2. 依次考虑每条边 `(u,v,w)`。
 3. 若 u、v 不连通，选这条边并合并两个集合。
 4. 若已经连通，加入会形成环，跳过。
-5. 选满 $N-1$ 条边后结束；若选不满，原图不连通。
+5. 选满 N-1 条边后结束；若选不满，原图不连通。
 
 并查集负责快速判断“这条边会不会成环”；排序与贪心决定“先考虑哪些边”。
 
@@ -1151,8 +1207,10 @@ int main() {
 }
 ```
 
-时间 $O(M\log M+(N+M)\alpha(N))$，空间 $O(N+M)$。边权总和用 `long long`。
-
+时间复杂度如下，空间 O(N+M)。边权总和用 `long long`。
+$$
+O(M\log M+(N+M)\alpha(N))
+$$
 若要求最大生成树，改为边权从大到小排序，仍由并查集判断是否成环。
 
 ## 十二、金组拓展：Fenced In
@@ -1189,7 +1247,7 @@ int id(int row, int col, int columns) {
 
 更适合本题的实现方式是：分别将宽度、高度排序，归并处理下一组最便宜的水平边或竖直边，同一组内逐条尝试并查集合并。这利用了网格最小生成树的特殊结构，无需显式存下全部边。它是对普通 Kruskal 的进一步优化，不能理解成任意带权图都可以随意重排节点对应的边权。
 
-这个金组做法用并查集处理 $O((n+1)(m+1))$ 次相邻合并，排序只针对两组间距。时间为
+这个金组做法用并查集处理 O((n+1)(m+1)) 次相邻合并，排序只针对两组间距。时间为
 
 $$
 O\left((n+1)\log(n+1)+(m+1)\log(m+1)
@@ -1197,6 +1255,8 @@ O\left((n+1)\log(n+1)+(m+1)\log(m+1)
 $$
 
 建议先掌握建模与 Kruskal，再学习这种按同权边成组生成的实现；本课不附该题完整程序，避免与模板入门混在一起。
+
+***
 
 ## 课后必做题
 
@@ -1213,5 +1273,3 @@ $$
 | 金组     | [Moo Network](https://usaco.org/index.php?page=viewproblem2&cpid=1211)-2022 February | 利用坐标特点减少候选边，再用 **Kruskal + 并查集**求最小生成树 |
 | 金组     | [Reachable Pairs](https://usaco.org/index.php?page=viewproblem2&cpid=1474)-2025 January | 转换删点规则，倒序处理；维护每个连通块中的**有效节点数与连通点对数** |
 | 银组     | [Deforestation](https://usaco.org/index.php?page=viewproblem2&cpid=1447)-2024 December | 在“从右向左补选树”的贪心中，可用并查集跳过已选位置，配合树状数组统计区间数量 |
-
-***
