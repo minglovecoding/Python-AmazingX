@@ -353,11 +353,9 @@ int main() {
 
 ## 4. 贪心：选择必须有理由
 
-贪心每次作出一个选择，都是在做每一次选择或决策时选择最优的状况。
+贪心每次作出一个选择，都是在做一次选择或决策时选择最优的状况。核心概念是：通过做出局部最优选择期望得到全局最优解。
 
-### 4.1 原例：P3817 小 A 的糖果
-
-[洛谷题目](https://www.luogu.com.cn/problem/P3817)
+### 4.1 [P3817](https://www.luogu.com.cn/problem/P3817) 小 A 的糖果
 
 相邻两盒糖果总数不能超过 x，求最少需要吃掉多少颗。这里的对象是糖果盒，不是苹果或按天输入的数据。
 
@@ -375,10 +373,6 @@ int main() {
     vector<long long> a(n);
     for (long long& value : a) cin >> value;
 
-    if (n == 1) { // 没有相邻盒约束
-        cout << 0 << '\n';
-        return 0;
-    }
     long long answer = 0;
     if (a[0] > x) {
         answer += a[0] - x;
@@ -394,11 +388,10 @@ int main() {
     cout << answer << '\n';
     return 0;
 }
+//时间复杂度 O(n)，此实现总空间 O(n)。
 ```
 
 对至少两盒的情况，任一盒超过 x 的部分都必须删除。处理当前盒前，前一盒已不超过 x，因此删除的 excess 不会超过当前盒数量。
-
-时间 O(n)，此实现总空间 O(n)。
 
 ### 4.2 USACO 真题：[Sleepy Cow Sorting](https://usaco.org/index.php?page=viewproblem2&cpid=892)
 
@@ -428,9 +421,9 @@ int main() {
 
 ### 4.3 原例：[P4995](https://www.luogu.com.cn/problem/P4995) 跳跳！
 
-原稿把标题写成“排队接水”，应改为“跳跳！”。目标是最大化平方高度差总和，而不是最小化。从高度 0 的地面出发，每块石头恰好访问一次，不能再跳回地面。
+题意：从高度 0 的地面出发，每块石头恰好访问一次，不能再跳回地面。计算耗费体力的最大值。
 
-常用方案是将石头排序，从最高开始，再取最低、次高、次低，交替访问两端。实现中使用整数乘法，不使用 pow 计算整数平方；每次仅取一块石头，避免指针交错时额外计算一次跳跃。
+常用方案：将石头排序，从最高开始，再取最低、次高、次低，交替访问两端。实现中使用整数乘法，不使用 pow 计算整数平方；每次仅取一块石头，避免指针交错时额外计算一次跳跃。
 
 ```cpp
 #include <bits/stdc++.h>
@@ -459,7 +452,7 @@ int main() {
 }
 ```
 
-时间 O(n log n)，总空间 O(n)。这道题的最优性论证较基础线性贪心更复杂，适合作为选练；不能把“先跳到最远处”当成通用贪心定理。主课建议先讲上一道有清晰下界与构造的 USACO 真题。
+时间 O(n log n)，总空间 O(n)。这道题的最优性论证较基础线性贪心更复杂，适合作为选练；不能把“先跳到最远处”当成通用贪心定理。
 
 | 专题           | 推荐顺序                                                     |
 | -------------- | ------------------------------------------------------------ |
@@ -488,13 +481,13 @@ using namespace std;
 
 long long iteration(int n) {
     if (n <= 1) return 1;
-    long long previous2 = 1, previous1 = 1;
+    long long a = 1, b = 1;
     for (int i = 2; i <= n; i++) {
-        long long current = previous2 + previous1;
-        previous2 = previous1;
-        previous1 = current;
+        long long current = a + b;
+        a = b;
+        b = current;
     }
-    return previous1;
+    return b;
 }
 
 long long recursion(int n){
@@ -580,6 +573,8 @@ int main() {
 #include <iostream>
 using namespace std;
 
+//1.大问题如何转换小问题
+//2.如何定义边界
 long long factorial(int n) {
     if (n == 0) return 1;
     return n * factorial(n - 1);
@@ -623,9 +618,9 @@ void search(int day, int milkA, vector<int> a, vector<int> b) {
         seen[milkA] = true;
         return;
     }
-
+    //day：0 1 2 3
     if (day % 2 == 0) { // A -> B
-        for (int i = 0; i < static_cast<int>(a.size()); i++) {
+        for (int i = 0; i < a.size(); i++) {
             int capacity = a[i];
             vector<int> nextA = a, nextB = b;
             nextA.erase(nextA.begin() + i);
@@ -633,7 +628,7 @@ void search(int day, int milkA, vector<int> a, vector<int> b) {
             search(day + 1, milkA - capacity, nextA, nextB);
         }
     } else { // B -> A
-        for (int i = 0; i < static_cast<int>(b.size()); i++) {
+        for (int i = 0; i < b.size(); i++) {
             int capacity = b[i];
             vector<int> nextA = a, nextB = b;
             nextB.erase(nextB.begin() + i);
@@ -645,6 +640,9 @@ void search(int day, int milkA, vector<int> a, vector<int> b) {
 
 int main() {
     vector<int> a(10), b(10);
+  
+    //freopen("backforth.in", "r", stdin);
+    //freopen("backforth.out", "w", stdout);
     for (int& x : a) cin >> x;
     for (int& x : b) cin >> x;
     search(0, 1000, a, b);
@@ -656,22 +654,7 @@ int main() {
 }
 ```
 
-**官方样例输入：**
-
-```text
-1 1 1 1 1 1 1 1 1 2
-5 5 5 5 5 5 5 5 5 5
-```
-
-**输出：**
-
-```text
-5
-```
-
-**易错点：**桶也要移动；相同容量的不同桶可以产生重复路径，但最终按牛奶量去重；统计的是不同终态数量，不是搬运方案数量。
-
-设每边初始桶数为 B，搬运次数固定为 4。本复制实现的枚举与复制成本上界为 O(B⁵)，递归路径上的桶数组占用 O(B)，另有用于标记最终奶量的数组。实际 B = 10，状态很小；不必为减少常数而牺牲讲解清晰度。若改为引用传参并原地修改，必须在每次递归返回后恢复桶的位置。
+桶也要移动；相同容量的不同桶可以产生重复路径，但最终按牛奶量去重；统计的是不同终态数量，不是搬运方案数量。
 
 ## 7. 真题使用
 
