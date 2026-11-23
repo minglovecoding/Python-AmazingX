@@ -13,6 +13,13 @@
 | **基础数学与几何**                                           | 奇偶、整除取整、取模、坐标、矩形、简单不等式                 | [Triangles](https://usaco.org/index.php?page=viewproblem2&cpid=1011)（2020.02）：坐标关系、直角三角形面积与整数计算；[Do You Know Your ABCs?](https://usaco.org/index.php?page=viewproblem2&cpid=1059)（2020.12）：利用大小关系与加法等式恢复未知数 |
 | **分类讨论与构造**                                           | 不变量、逆向思考、必要条件、构造合法方案                     | [Reverse Engineering](https://usaco.org/index.php?page=viewproblem2&cpid=1253)（2022.12）：寻找可确定输出的分支，逐步消除样例；[Moo Operations](https://usaco.org/index.php?page=viewproblem2&cpid=1277)（2023.01）：根据中间字符与两端字符分类；[Feeding the Cows](https://usaco.org/index.php?page=viewproblem2&cpid=1252)（2022.12）：在求最少数量的同时构造合法布局 |
 
+### 旧题需添加文件读写（2020赛季前）：
+
+```cpp
+freopen("filename.in", "r", stdin);
+freopen("filename.out", "w", stdout);
+```
+
 ***
 
 ## 📚1. 时间复杂度与空间复杂度

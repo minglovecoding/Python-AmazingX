@@ -1,4 +1,4 @@
-## 📚USACO 铜组专题：字符串、矩形几何
+## 📚铜组专题：字符串、矩形几何
 
 ## 1.字符与字符串
 
@@ -20,12 +20,6 @@ string s = "USACO";
 | `s == t` | 内容是否相同 |
 | `s < t` | 按字典序比较 |
 
-字符串下标从 `0` 开始。
-
-| 字符 | U | S | A | C | O |
-|---|---|---|---|---|---|
-| 下标 | 0 | 1 | 2 | 3 | 4 |
-
 ```cpp
 string s = "USACO";
 for (int i = 0; i < (int)s.size(); i++) {
@@ -36,6 +30,7 @@ for (int i = 0; i < (int)s.size(); i++) {
 只读取字符，不需要下标时：
 
 ```cpp
+//增强型for循环
 for (char c : s) {
     cout << c << '\n';
 }
@@ -55,15 +50,13 @@ getline(cin, line); // 读取整行，可以包含空格
 
 ```cpp
 cin >> n;
-cin.ignore(numeric_limits<streamsize>::max(), '\n');
-getline(cin, line);
+cin.ignore();  //丢弃换行符
+getline(cin, line);  //也可以用cin >> ws代替cin跳过所有前导空白，但会跳过空格、换行和空行。
 ```
-
-上例需要 `<limits>`。不能在不看输入格式的情况下随意添加 `ignore()`，否则可能跳过有效数据。
 
 ### 字典序
 
-在本讲义的大写字母或小写字母范围内，可按字母顺序理解。逐个比较对应字符；第一次不同决定大小。一个字符串是另一个的前缀时，短的更小。
+逐个比较对应字符；第一次不同决定大小。一个字符串是另一个的前缀时，短的更小。
 
 ```cpp
 // "ABC" < "ABD"
@@ -102,28 +95,9 @@ for (char c : s) {
 
 两组各有 `N` 个长度为 `M` 的基因字符串。求有多少个位置，能仅凭该位置的字符区分两组。
 
-本题练习：`vector<string>`、按列遍历、出现标记。
-
-### 手算示例
-
-| 组别 | 字符串 1 | 字符串 2 |
-|---|---|---|
-| 斑点组 | `ACG` | `ATG` |
-| 普通组 | `CCA` | `CTA` |
-
-逐列比较：
-
-- 第 1 列：`{A}` 与 `{C}`，可以区分。
-- 第 2 列：`{C,T}` 与 `{C,T}`，不能区分。
-- 第 3 列：`{G}` 与 `{A}`，可以区分。
-
-答案为 `2`。
-
 ### 思路
 
 枚举列 `j`，记录第一组在该列出现的所有字符，再检查第二组是否出现相同字符。
-
-**正确性：**两组字符集合有交集时，同一个字符可能来自任意一组；没有交集时，字符即可确定组别。
 
 ### 参考代码
 
@@ -157,16 +131,13 @@ int main() {
     }
     cout << answer << '\n';
 }
+//时间复杂度O(NM)
 ```
-
-复杂度：时间 `O(NM)`；存储输入 `O(NM)`，额外标记空间 `O(26)`。
-
-**易错点：**不是只比较“对应编号的两头牛”，而是比较两组在这一列的全部可能字符。
 
 ### 1.4 子串、子序列与连续片段
 
-- **子串**必须连续。
-- **子序列**保持原顺序，可以跳过部分字符。
+- **子串(substring)**必须连续。
+- **子序列(subsequence)**保持原顺序，可以跳过部分字符。
 
 例如在 `ABCDE` 中，`BCD` 是子串；`ACE` 是子序列，但不是子串。
 
@@ -187,9 +158,11 @@ for (int i = 0; i + k <= n; i++) {
 set<string> seen;
 for (int i = 0; i + k <= (int)s.size(); i++) {
     string sub = s.substr(i, k);
-    if (!seen.insert(sub).second) {
-        // 当前 sub 之前出现过
+    if (seen.count(sub) > 0) {
+    // 当前 sub 之前出现过
     }
+    seen.insert(sub);
+    //也可以用if (!seen.insert(sub).second) .first是指向该元素的迭代器 .second返回是否成功插入
 }
 ```
 
@@ -200,26 +173,15 @@ for (int i = 0; i + k <= (int)s.size(); i++) {
 
 ### 1.5 真题 2：Where Am I?——枚举长度，检查重复子串
 
-- 比赛：2019 December，Bronze，Problem 2。
-- [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=964)
-- [官方题解](https://usaco.org/current/data/sol_whereami_bronze_dec19.html)
+- 比赛：2019 December，Bronze，[Problem 2](https://usaco.org/index.php?page=viewproblem2&cpid=964)。
 
 ### 题意
 
 找最小的 `K`，使所有长度为 `K` 的连续子串互不相同。
 
-自编示例：`ABABA`。
-
-| K | 所有长度为 K 的子串 | 是否可行 |
-|---|---|---|
-| 1 | A、B、A、B、A | 否 |
-| 2 | AB、BA、AB、BA | 否 |
-| 3 | ABA、BAB、ABA | 否 |
-| 4 | ABAB、BABA | 是 |
-
 ### 思路与正确性
 
-从 `K=1` 到 `N` 依次检查；若有重复子串，该长度不合法。第一个合法长度就是最小答案，且 `K=N` 一定合法。
+从 `K=1` 到 `N` 依次检查；若有重复子串，该长度不合法。第一个合法长度就是最小答案， `K=N` 一定合法。
 
 ### 参考代码
 
@@ -250,34 +212,61 @@ int main() {
 }
 ```
 
-复杂度：考虑字符串构造及比较，一次检查保守估计为 `O(NK log N)`，全部长度合计 `O(N^3 log N)`；每次集合最多存储 `O(NK)` 个字符。题中 `N <= 100`，足够使用。
+时间复杂度分析如下：
 
-**易错点：**`substr(i, k)` 的第二个参数是长度；集合必须在每个新 `K` 开始时清空。
+1. 外层枚举长度 `k`：最多 \(n\) 次。
 
-## 1.6 真题 3：Moo Operations——先分析操作，再枚举
+2. 内层枚举子串起点：每次最多 \(n\) 次。
+
+3. 每次操作：
+
+   ```
+   seen.insert(s.substr(i, k))
+   ```
+
+   - `substr(i, k)` 复制 \(k\) 个字符：\(O(k)\)。
+   - `set` 插入需要 \(O(log n)\) 次字符串比较，每次比较最坏 \(O(k)\)，因此为 \(O(klog n)\)。
+
+合起来：
+$$
+O\left(\sum_{k=1}^{n}(n-k+1)\,k\log n\right) =O(n^3\log n)
+$$
+
+```c++
+//最长重复子串
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    string s;
+    cin >> n >> s;
+  
+    vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));
+    //从两个不同位置 i、`j` 出发，最多有多少个连续字符相同。
+    int longest = 0;
+    for (int i = n - 1; i >= 0; i--) {
+        for (int j = i + 1; j < n; j++) {
+            if (s[i] == s[j]) {
+                dp[i][j] = dp[i + 1][j + 1] + 1;
+                longest = max(longest, dp[i][j]);
+            }
+        }
+    }
+
+    cout << longest + 1 << '\n';
+    return 0;
+}
+```
+
+### 1.6 真题 3：Moo Operations——先分析操作，再枚举
 
 - 比赛：2023 January，Bronze，Problem 3。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=1277)
-- [官方题解](https://usaco.org/current/data/sol_prob3_bronze_jan23.html)
 
 ### 题意
 
 字符串只包含 M、O。每次可以删除首尾字符，或把首尾字符 M、O 互换；求变成 `MOO` 的最少操作数。
-
-### 关键观察
-
-1. 删除两端后，留下的是原串的一个连续子串。
-2. 最后必然保留三个字符，因此删除次数固定为 `n-3`。
-3. 保留下来的中间字符永远无法成为端点，必须原本就是 O。
-4. 左右两个字符可以在删除后分别修改。
-
-因此枚举长度为 3、中心为 O 的片段 `XYZ`，代价为：
-$$
-(n-3)+[X\ne M]+[Z\ne O]
-$$
-`[条件]` 表示条件成立为 1，否则为 0。没有合法片段则输出 `-1`。
-
-**正确性：**每个方案都必须承担删除费用和必要的端点修改费用；反过来，删除到选中片段再修改两端，就能达到这个代价。
 
 ### 参考代码
 
@@ -305,13 +294,10 @@ int main() {
         cout << (answer == n + 1 ? -1 : answer) << '\n';
     }
 }
+//复杂度：每个字符串时间 `O(n)`，除输入外额外空间 `O(1)`。
 ```
 
-复杂度：每个字符串时间 `O(n)`，除输入外额外空间 `O(1)`。
-
-**手算：**`OMOM` 可保留 `OMO`，中心是 M，不合法；但也可保留 `MOM`，中心是 O，删除 1 次、修改末尾 1 次，答案为 `2`。
-
-## 1.7 连续段与局部影响
+### 1.7 连续段与局部影响
 
 ### 将字符串分成连续相同字符段
 
@@ -334,17 +320,48 @@ for (int l = 0; l < (int)s.size(); ) {
 
 题目要找可能达到频率门槛的 `abb` 型子串，其中 `a != b`；允许原字符串至多有一个字符错误。
 
-**课堂重点：**修改位置 `p` 时，只有起点为 `p-2、p-1、p` 的长度为 3 子串可能改变。
+```c++
+#include <bits/stdc++.h>
+using namespace std;
 
-只保留满足 `0 <= start` 且 `start+2 < n` 的起点。可以：
+int main() {
 
-1. 统计原串所有合法子串的频率。
-2. 枚举修改位置及替换字母。
-3. 移除旧的局部贡献，加入新的局部贡献。
-4. 记录达到门槛的模式。
-5. 恢复字符与计数，再尝试下一个修改。
+    int N, F;
+    cin >> N >> F;
+    string S;
+    cin >> S;
 
-初始串也要检查，因为题目允许“不修改”。只更新常数个模式，可达到 `O(26N)` 级别；不要每尝试一次修改都重扫整个字符串。
+    set<string> moos;  // save different moos
+
+    auto find_moos = [&](const string &s) {
+        unordered_map<string, int> cnt; //hash map
+        for (int i = 0; i + 2 < N; ++i) {
+            if (s[i] != s[i + 1] && s[i + 1] == s[i + 2]) {
+                string t = s.substr(i, 3); //substr
+                if (++cnt[t] >= F) moos.insert(t);
+            }
+        }
+    };
+
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < 26; ++j) {
+            string T = S;
+            T[i] = char('a' + j);
+            find_moos(T);
+        }
+    }
+
+    cout << moos.size() << '\n';
+    for (const auto &moo : moos) cout << moo << '\n';
+    return 0;
+}
+//lambda函数
+//哈希表unordered_map<string,int>
+//set容器
+//string的substr用法
+```
+
+**常见的数据转换方法**：
 
 | 转换场景              | 常用写法                         | 注意事项                              |
 | --------------------- | -------------------------------- | ------------------------------------- |
@@ -358,11 +375,11 @@ for (int l = 0; l < (int)s.size(); ) {
 | 整数 → 更大的整数类型 | `1LL * a * b`                    | 在乘法发生前提升类型，避免 `int` 溢出 |
 | 容器长度 → `int`      | `int(v.size())`                  | 确认长度在 `int` 范围内               |
 
+***
+
 ## 2：矩形几何
 
-## 2.1 用坐标描述矩形
-
-本部分矩形的边都平行于坐标轴。
+### 2.1 用坐标描述矩形
 
 设左下角 `(x1,y1)`，右上角 `(x2,y2)`，且 `x1<x2、y1<y2`：
 
@@ -384,16 +401,6 @@ long long area(const Rect& r) {
 ```
 
 如果输入是任意两个对角顶点，应先用 `min/max` 规范化；如果题目已经保证左下、右上顺序，不需要额外交换。
-
-### 长度、格子数、格点数
-
-| 问题 | 横坐标从 2 到 5 的结果 |
-|---|---|
-| 连续线段长度 | `5-2=3` |
-| 单位小格的列数 | 3 列 |
-| 包含两端的整数坐标点数量 | `5-2+1=4` |
-
-**面积题通常不加 1。**
 
 ### 点是否在矩形内
 
@@ -441,22 +448,22 @@ $$
 using namespace std;
 
 int main() {
-    long long ax1, ay1, ax2, ay2;
-    long long bx1, by1, bx2, by2;
+    int ax1, ay1, ax2, ay2;
+    int bx1, by1, bx2, by2;
+    freopen("square.in","r",stdin);
+    freopen("square.out","w",stdout);
     cin >> ax1 >> ay1 >> ax2 >> ay2;
     cin >> bx1 >> by1 >> bx2 >> by2;
-    long long width = max(ax2, bx2) - min(ax1, bx1);
-    long long height = max(ay2, by2) - min(ay1, by1);
-    long long side = max(width, height);
+    int width = max(ax2, bx2) - min(ax1, bx1);
+    int height = max(ay2, by2) - min(ay1, by1);
+    int side = max(width, height);
     cout << side * side << '\n';
+    return 0;
 }
+//时间复杂度、额外空间均为 O(1)。
 ```
 
-时间、额外空间均为 `O(1)`。
-
-**自编练习：**矩形 `(0,0)-(2,1)`、`(4,2)-(5,4)`，外接矩形宽 5、高 4，最小正方形面积为 `25`。
-
-## 2.3 两个矩形的交集
+### 2.3 矩形的交集
 
 先把二维问题拆成横向与纵向的区间相交。
 
@@ -482,27 +489,7 @@ long long overlap(const Rect& a, const Rect& b) {
 }
 ```
 
-**必须先分别把宽、高截断为 0。**如果两个方向都不重叠，负宽乘负高也可能得到正数，不能最后才对面积取 `max(0,...)`。
-
-| 情况 | 重叠宽 | 重叠高 | 相交面积 |
-|---|---|---|---|
-| 部分重叠 | 正 | 正 | 正 |
-| 完全包含 | 正 | 正 | 较小矩形面积 |
-| 仅边接触 | 一个为 0 | 另一个非负 | 0 |
-| 仅角接触 | 0 | 0 | 0 |
-| 分离 | 至少一个被截为 0 | — | 0 |
-
-### 手算示例（自编）
-
-A：`(1,1)-(5,4)`，B：`(3,2)-(7,6)`。
-
-- 重叠横向为 `[3,5]`，宽为 2。
-- 重叠纵向为 `[2,4]`，高为 2。
-- 交集面积为 4。
-- A 可见面积为 `12-4=8`。
-- 两矩形并集面积为 `12+16-4=24`。
-
-## 2.4 真题 5：Blocked Billboard——可见面积
+### 2.4 真题 5：Blocked Billboard——可见面积
 
 - 比赛：2017 December，Bronze，Problem 1。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=759)
@@ -516,8 +503,6 @@ A：`(1,1)-(5,4)`，B：`(3,2)-(7,6)`。
 $$
 answer=S_A+S_B-S_{A\cap C}-S_{B\cap C}
 $$
-**正确性：**每块广告牌被遮挡的部分正是它与卡车的交集；两块广告牌没有重复面积，因此可以相加。
-
 ### 参考代码
 
 ```cpp
@@ -548,23 +533,14 @@ int main() {
 
 时间、额外空间均为 `O(1)`。
 
-## 2.5 真题 6：Blocked Billboard II——可见面积不等于所需遮盖面积
+### 2.5 真题 6：Blocked Billboard II——可见面积不等于所需遮盖面积
 
 - 比赛：2018 January，Bronze，Problem 1。
 - [官方题目](https://usaco.org/index.php?page=viewproblem2&cpid=783)
 
 ### 题意
 
-A 被 B 挡住一部分，要再用一块轴对齐的矩形布盖住 A 的全部剩余部分，求布的最小面积。
-
-### 反例（自编）
-
-A 为 `(0,0)-(10,4)`，B 为 `(4,0)-(6,4)`。
-
-- 可见部分是左右两块，总面积 `40-8=32`。
-- 一块矩形布要同时盖住左右两块，仍需跨越整个 A，面积为 `40`。
-
-因此不能直接输出 `area(A)-overlap(A,B)`。
+A 被 B 挡住一部分，要再用一块轴对齐的矩形布盖住 A 的全部剩余部分，求布的最小面积。要考虑一块矩形布要同时盖住所有剩余部分，因此不能直接输出 `area(A)-overlap(A,B)`。
 
 ### 分类
 
@@ -572,8 +548,6 @@ A 为 `(0,0)-(10,4)`，B 为 `(4,0)-(6,4)`。
 2. B 贯穿 A 的整个高度，并盖住左边或右边：可缩短布的宽度。
 3. B 贯穿 A 的整个宽度，并盖住下边或上边：可缩短布的高度。
 4. 其他情况：仍需要 A 的完整外接范围。
-
-**正确性：**一个方向的外接范围只有在该侧整条带状区域都被遮住时才能缩短；中间遮挡或仅遮一角，不会同时消除该方向的全部极端位置。
 
 ### 参考代码
 
@@ -609,13 +583,10 @@ int main() {
     }
     cout << max(0LL, right - left) * max(0LL, top - bottom) << '\n';
 }
+//时间、额外空间均为 O(1)。
 ```
 
-时间、额外空间均为 `O(1)`。
-
-**画图检查：**完全分离、边接触、完全覆盖、左侧整条遮住、中间整条遮住、只遮一个角。
-
-## 2.6 小坐标范围：用网格验证几何关系
+### 2.6 小坐标范围：用网格验证几何关系
 
 把数组 `covered[x][y]` 解释为单位小格 `[x,x+1) × [y,y+1)` 是否覆盖，而不是坐标点是否覆盖。
 
@@ -634,7 +605,7 @@ for (int x = x1; x < x2; x++) {
 
 ## 3 真题训练
 
-**字符串**相关真题：主要结合枚举、计数、连续段、贪心和构造
+1.**字符串**相关真题：主要结合枚举、计数、连续段、贪心和构造
 
 | 比赛          | 题目                                                         | 主要考点                       |
 | ------------- | ------------------------------------------------------------ | ------------------------------ |
@@ -653,7 +624,7 @@ for (int x = x1; x < x2; x++) {
 | 2026 第 1 场  | [COW Splits](https://usaco.org/index.php?page=viewproblem2&cpid=1540) | 循环移位、子序列、构造         |
 | 2026 第 2 场  | [It’s Mooin’ Time IV](https://usaco.org/index.php?page=viewproblem2&cpid=1563) | 字符翻转、逆向推理、构造       |
 
-**矩形几何**相关真题：
+2.**矩形几何**相关真题：
 
 | 比赛          | 题目                                                         | 准确分类             |
 | ------------- | ------------------------------------------------------------ | -------------------- |
@@ -662,11 +633,4 @@ for (int x = x1; x < x2; x++) {
 | 2024 US Open  | [Walking Along a Fence](https://usaco.org/index.php?page=viewproblem2&cpid=1420) | 坐标几何：正交多边形 |
 | 2025 January  | [Astral Superposition](https://usaco.org/index.php?page=viewproblem2&cpid=1467) | 网格几何：平移与叠加 |
 | 2025 February | [Reflection](https://usaco.org/index.php?page=viewproblem2&cpid=1491) | 网格几何：轴对称     |
-
-## 4. 旧题输入
-
-```cpp
-freopen("whereami.in", "r", stdin);
-freopen("whereami.out", "w", stdout);
-```
 
