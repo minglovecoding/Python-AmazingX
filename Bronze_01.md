@@ -349,7 +349,111 @@ int main() {
 
 时间 O(min(n, m))，辅助空间 O(1)。n、m 和乘积使用 long long。输入 2 3，输出 8 10。
 
-**课堂提问：**优化来自数学计数和减少枚举维度，不是只把循环语法写得更短。
+### 3.4 2020 December-[Stuck in a Rut](https://usaco.org/index.php?page=viewproblem2&cpid=1061)
+
+>  核心：枚举可能发生的阻挡事件，按发生时间从早到晚处理。
+
+1. 枚举一头向东的牛 E、一头向北的牛 N。若路径相交，交点为 `(N.x, E.y)`。
+2. 两头牛到交点的时间分别为：
+   - `tE = N.x - E.x`
+   - `tN = E.y - N.y`
+3. 先到的牛留下足迹，可能阻挡后到的牛；同时到达则互不阻挡。[usaco.org](https://usaco.org/index.php?cpid=1061&page=viewproblem2&utm_source=chatgpt.com)
+4. 按后到时间排序。处理事件时，确认先到的牛确实在交点留下过足迹，再更新后到牛的停止时间。
+
+用 `stop[i]` 表示第 i 头牛停止的时间，也是它吃草的格数。
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const ll INF = (1LL << 60);
+
+struct Cow {
+    char direction;
+    ll x, y;
+};
+
+struct Event {
+    int blocker;       // 可能留下足迹、阻挡别人的牛
+    int victim;        // 可能被阻挡的牛
+    ll arriveTime;     // blocker 到达交点的时间
+    ll stopTime;       // victim 到达交点的时间
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    vector<Cow> cows(n);
+    for (auto &cow : cows) {
+        cin >> cow.direction >> cow.x >> cow.y;
+    }
+
+    vector<Event> events;
+
+    // 枚举向东的牛 e 和向北的牛 u
+    for (int e = 0; e < n; e++) {
+        if (cows[e].direction != 'E') continue;
+
+        for (int u = 0; u < n; u++) {
+            if (cows[u].direction != 'N') continue;
+
+            // 交点必须在两头牛各自前方
+            if (cows[e].x > cows[u].x ||
+                cows[u].y > cows[e].y) {
+                continue;
+            }
+
+            ll tE = cows[u].x - cows[e].x;
+            ll tN = cows[e].y - cows[u].y;
+
+            if (tE < tN) {
+                events.push_back({e, u, tE, tN});
+            } else if (tN < tE) {
+                events.push_back({u, e, tN, tE});
+            }
+            // 同时到达，不产生阻挡事件
+        }
+    }
+
+    sort(events.begin(), events.end(),
+         [](const Event &a, const Event &b) {
+             return a.stopTime < b.stopTime;
+         });
+
+    vector<ll> stop(n, INF);
+
+    for (const auto &event : events) {
+        int u = event.blocker;
+        int v = event.victim;
+
+        // v 已经停止，无须再次更新
+        if (stop[v] != INF) continue;
+
+        // u 必须在交点吃过草，才能留下阻挡 v 的足迹
+        if (stop[u] > event.arriveTime) {
+            stop[v] = event.stopTime;
+        }
+    }
+
+    for (ll time : stop) {
+        if (time == INF) cout << "Infinity\n";
+        else cout << time << '\n';
+    }
+
+    return 0;
+}
+```
+
+关键判断是：stop[u] > event.arriveTime
+
+如果 u 到交点之前就停止了，这次阻挡不会发生；如果 u 经过交点后才停止，留下的足迹仍然有效。
+
+最多有 \(O(N^2)\) 个事件，排序后总时间复杂度为 \(O(N^2\log N)\)。
 
 ## 4. 贪心：选择必须有理由
 

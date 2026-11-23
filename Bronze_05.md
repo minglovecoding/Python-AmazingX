@@ -1,4 +1,4 @@
-## USACO 铜组专题：字符串、矩形几何
+## 📚USACO 铜组专题：字符串、矩形几何
 
 ## 1.字符与字符串
 
@@ -346,6 +346,18 @@ for (int l = 0; l < (int)s.size(); ) {
 
 初始串也要检查，因为题目允许“不修改”。只更新常数个模式，可达到 `O(26N)` 级别；不要每尝试一次修改都重扫整个字符串。
 
+| 转换场景              | 常用写法                         | 注意事项                              |
+| --------------------- | -------------------------------- | ------------------------------------- |
+| 数字字符 → 整数       | `c - '0'`                        | `c` 必须是 `'0'`～`'9'`               |
+| 整数 → 数字字符       | `char(x + '0')`                  | `x` 必须在 0～9                       |
+| 字母 → 数组下标       | `c - 'a'`                        | 小写字母映射为 0～25                  |
+| 字符串 → 数字         | `stoi(s)`、`stoll(s)`、`stod(s)` | 分别得到 `int`、`long long`、`double` |
+| 数字 → 字符串         | `to_string(x)`                   | 如 `123` 变成 `"123"`                 |
+| 整数 → 浮点数         | `double(a) / b`                  | 避免整数除法                          |
+| 浮点数 → 整数         | `int(x)`                         | 向零截断，不是四舍五入                |
+| 整数 → 更大的整数类型 | `1LL * a * b`                    | 在乘法发生前提升类型，避免 `int` 溢出 |
+| 容器长度 → `int`      | `int(v.size())`                  | 确认长度在 `int` 范围内               |
+
 ## 2：矩形几何
 
 ## 2.1 用坐标描述矩形
@@ -620,69 +632,36 @@ for (int x = x1; x < x2; x++) {
 - 坐标范围巨大时，不能直接开数组模拟全部格子。
 - 二维数组只是存储方式，不代表一定要用二维前缀和或 BFS。
 
-**课堂练习（自编）：**A 为 `(0,0)-(3,2)`，B 为 `(2,1)-(4,3)`。用格子标记或公式都应得到交集 1、并集 9。
+## 3 真题训练
 
-## 3.1 基础练习
+**字符串**相关真题：主要结合枚举、计数、连续段、贪心和构造
 
-### 练习 A：子串去重
+| 比赛          | 题目                                                         | 主要考点                       |
+| ------------- | ------------------------------------------------------------ | ------------------------------ |
+| 2021 December | [Lonely Photo](https://usaco.org/index.php?page=viewproblem2&cpid=1155) | 二元字符串、子串计数           |
+| 2022 January  | [Herdle](https://usaco.org/index.php?page=viewproblem2&cpid=1179) | 字符比较、频次数组             |
+| 2022 February | [Blocks](https://usaco.org/index.php?page=viewproblem2&cpid=1205) | 字符查找、排列枚举、回溯       |
+| 2022 US Open  | [Photoshoot](https://usaco.org/index.php?page=viewproblem2&cpid=1227) | 二元字符串、前缀翻转、贪心     |
+| 2022 December | [Feeding the Cows](https://usaco.org/index.php?page=viewproblem2&cpid=1252) | 字符串扫描、覆盖贪心、构造     |
+| 2023 January  | [Moo Operations](https://usaco.org/index.php?page=viewproblem2&cpid=1277) | 子串枚举、字符修改             |
+| 2023 US Open  | [FEB](https://usaco.org/index.php?page=viewproblem2&cpid=1323) | 连续段、相邻字符、奇偶性       |
+| 2023 US Open  | [Moo Language](https://usaco.org/index.php?page=viewproblem2&cpid=1324) | 单词分类、枚举、输出构造       |
+| 2023 December | [Cowntact Tracing 2](https://usaco.org/index.php?page=viewproblem2&cpid=1348) | 01 字符串、连续段、逆向推理    |
+| 2024 US Open  | [Logical Moos](https://usaco.org/index.php?page=viewproblem2&cpid=1419) | 关键词序列、逻辑表达式、预处理 |
+| 2024 December | [It’s Mooin’ Time](https://usaco.org/index.php?page=viewproblem2&cpid=1445) | 短子串计数、枚举修改、局部更新 |
+| 2025 US Open  | [It’s Mooin’ Time III](https://usaco.org/index.php?page=viewproblem2&cpid=1517) | 字符位置索引、区间查询、二分   |
+| 2026 第 1 场  | [COW Splits](https://usaco.org/index.php?page=viewproblem2&cpid=1540) | 循环移位、子序列、构造         |
+| 2026 第 2 场  | [It’s Mooin’ Time IV](https://usaco.org/index.php?page=viewproblem2&cpid=1563) | 字符翻转、逆向推理、构造       |
 
-字符串 `ABAB`，最小的 K 是多少，才能使所有长度为 K 的子串互不相同？
+**矩形几何**相关真题：
 
-### 练习 B：矩形交集
-
-A 为 `(0,0)-(4,3)`，B 为 `(2,-1)-(5,2)`。求相交面积、并集面积。
-
-### 练习 C：遮挡后最小矩形
-
-A 为 `(0,0)-(10,6)`，分别考虑：
-
-1. B 为 `(0,-1)-(3,7)`。
-2. B 为 `(3,-1)-(7,7)`。
-3. B 为 `(-1,-1)-(11,7)`。
-
-求盖住 A 剩余部分的一块轴对齐矩形的最小面积。
-
-### 练习 D：入度与出度
-
-有向边为 `1→2、3→2、2→4`。列出每个点的入度、出度，并找出所有点都能到达的点。
-
-### 练习 E：贪心染色
-
-无向边为 `{1,2}、{1,3}、{2,3}、{3,4}`。按编号从小到大，用颜色 1 至 4 贪心染色，结果是什么？
-
-### 练习 F：必要条件能否直接当充分条件？
-
-在一般有向图中，若恰好一个点出度为 0，是否一定所有点都能到它？给出理由或反例。
-
-## 3.2 参考答案
-
-| 题号 | 答案 | 关键理由 |
-|---|---|---|
-| A | 3 | K=2 时 AB 重复；K=3 时 ABA 与 BAB 不同 |
-| B | 交集 4；并集 17 | A 面积 12、B 面积 9，交集宽 2、高 2 |
-| C1 | 42 | 左侧被整条遮住，剩余宽 7、高 6 |
-| C2 | 60 | 左右两块仍然保留，外接范围未缩小 |
-| C3 | 0 | 完全覆盖 |
-| D | 入度依次 0、2、0、1；出度依次 1、1、1、0；答案 4 | 沿有向路径判断 |
-| E | 1231 | 每次取未被已染色邻居使用的最小颜色 |
-| F | 否 | 1→2、2→1、1→3、3→1，另有 4→5；5 为唯一零出度点，但 1、2、3 到不了 5 |
-
-练习 F 也有 5 个点、5 条边且底层不连通，正好说明不能把有向树中的结论无条件推广到一般图。
-
-## 3.3 真题训练顺序
-
-| 顺序 | 真题 | 本次训练目标 | 建议定位 |
-|---|---|---|---|
-| 1 | [Bovine Genomics](https://usaco.org/index.php?page=viewproblem2&cpid=736) | 字符标记、按列检查 | 基础 |
-| 2 | [Where Am I?](https://usaco.org/index.php?page=viewproblem2&cpid=964) | 子串、枚举与 set | 基础 |
-| 3 | [Moo Operations](https://usaco.org/index.php?page=viewproblem2&cpid=1277) | 分析操作性质 | 综合 |
-| 4 | [Square Pasture](https://usaco.org/index.php?page=viewproblem2&cpid=663) | 坐标与外接范围 | 基础 |
-| 5 | [Blocked Billboard](https://usaco.org/index.php?page=viewproblem2&cpid=759) | 相交与可见面积 | 基础 |
-| 6 | [Blocked Billboard II](https://usaco.org/index.php?page=viewproblem2&cpid=783) | 遮挡分类讨论 | 综合 |
-| 7 | [The Great Revegetation](https://usaco.org/index.php?page=viewproblem2&cpid=916) | 邻接表与贪心 | 综合 |
-| 8 | [Milk Factory](https://usaco.org/index.php?page=viewproblem2&cpid=940) | 度数、树的性质与证明 | 综合 |
-| 9 | [Livestock Lineup](https://usaco.org/index.php?page=viewproblem2&cpid=965) | 相邻约束与全排列 | 综合 |
-| 10 | [It's Mooin' Time](https://usaco.org/index.php?page=viewproblem2&cpid=1445) | 字符串局部更新 | 提高 |
+| 比赛          | 题目                                                         | 准确分类             |
+| ------------- | ------------------------------------------------------------ | -------------------- |
+| 2026 第 1 场  | [Photoshoot](https://usaco.org/index.php?page=viewproblem2&cpid=1541) | 正方形区域统计       |
+| 2023 February | [Stamp Grid](https://usaco.org/index.php?page=viewproblem2&cpid=1300) | 网格几何：旋转与覆盖 |
+| 2024 US Open  | [Walking Along a Fence](https://usaco.org/index.php?page=viewproblem2&cpid=1420) | 坐标几何：正交多边形 |
+| 2025 January  | [Astral Superposition](https://usaco.org/index.php?page=viewproblem2&cpid=1467) | 网格几何：平移与叠加 |
+| 2025 February | [Reflection](https://usaco.org/index.php?page=viewproblem2&cpid=1491) | 网格几何：轴对称     |
 
 ## 4. 旧题输入
 

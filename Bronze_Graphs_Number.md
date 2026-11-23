@@ -13,7 +13,6 @@
 | 数论迁移 | 模 10、回文性质、必胜与必败 | [Palindrome Game，2024 February Bronze P1](https://usaco.org/index.php?page=viewproblem2&cpid=1395) | 先证明规律，再把大整数问题缩成末位判断 |
 | 数学迁移 | 数轴、绝对值、倍增序列 | [The Lost Cow，2017 US Open Bronze P1](https://usaco.org/index.php?page=viewproblem2&cpid=735) | 区分“相对最初起点的目标”和“本轮移动距离” |
 | 数论提高 | 十进制、进位、区间计数 | [Roundabout Rounding，2024 December Bronze P1](https://usaco.org/index.php?page=viewproblem2&cpid=1443) | 从小数据暴力发现区间，并证明边界 |
-| 补充基础 | 整除、约数、gcd、lcm、质数判定 | 自编练习 | 理解适用条件与整数溢出 |
 
 ---
 
