@@ -302,9 +302,9 @@ int main() {
 ### 将字符串分成连续相同字符段
 
 ```cpp
-for (int l = 0; l < (int)s.size(); ) {
+for (int l = 0; l < s.size(); ) {
     int r = l;
-    while (r < (int)s.size() && s[r] == s[l]) r++;
+    while (r < s.size() && s[r] == s[l]) r++;
     // 当前段为 [l, r)，长度为 r-l
     cout << s[l] << ' ' << r - l << '\n';
     l = r;
@@ -374,6 +374,8 @@ int main() {
 | 浮点数 → 整数         | `int(x)`                         | 向零截断，不是四舍五入                |
 | 整数 → 更大的整数类型 | `1LL * a * b`                    | 在乘法发生前提升类型，避免 `int` 溢出 |
 | 容器长度 → `int`      | `int(v.size())`                  | 确认长度在 `int` 范围内               |
+
+- 2024 December Bronze-Roundabout Rounding
 
 ***
 
