@@ -1,4 +1,4 @@
-## 📚铜组专题：字符串、矩形几何
+## 📚铜组专题：字符串、矩形几何、坐标几何
 
 ## 1.字符与字符串
 
@@ -602,6 +602,68 @@ for (int x = x1; x < x2; x++) {
 - 若坐标可能为负，可统一加偏移量，但数组大小也要覆盖平移后的所有下标。
 - 坐标范围巨大时，不能直接开数组模拟全部格子。
 - 二维数组只是存储方式，不代表一定要用二维前缀和或 BFS。
+
+### 2.7  坐标几何
+
+### 2025 Feb Bronze-Reflection
+
+![](../Python-AmazingX/images/11.png)
+
+```c++
+//1.将所有奶牛按照 (x+y) 从大到小排序。
+//2.第一头奶牛不可能被其他奶牛阻挡，因此答案一定为 Infinity。
+//3.依次遍历后面的奶牛，只需要与前面已经确定最终状态的奶牛比较。
+//4.判断轨迹是否相交，以及前面的奶牛是否能够吃到交点。
+//5.取所有有效阻挡点中的最小距离；不存在有效阻挡点则为 Infinity。
+//6.按照原始输入顺序输出答案。
+#include <bits/stdc++.h>
+using namespace std;
+const int INF = 1e9 + 1;
+struct Cow {
+    char dir;
+    int x, y, id;
+};
+int main() {
+    int n;
+    cin >> n;
+    vector<Cow> cow(n);
+    vector<int> ans(n, INF);
+    for (int i = 0; i < n; i++) {
+        cin >> cow[i].dir >> cow[i].x >> cow[i].y;
+        cow[i].id = i;
+    }
+
+    // 按照 x + y 降序排序
+    sort(cow.begin(), cow.end(), [](Cow a, Cow b) {
+        return a.x + a.y > b.x + b.y;
+    });
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (cow[i].dir == cow[j].dir) continue;
+            int ti, tj;
+            if (cow[i].dir == 'E') {
+                ti = cow[j].x - cow[i].x;
+                tj = cow[i].y - cow[j].y;
+            } else {
+                ti = cow[j].y - cow[i].y;
+                tj = cow[i].x - cow[j].x;
+            }
+            // 判断轨迹是否相交及阻挡关系
+            if (ti < 0 || tj < 0 || ti <= tj) continue;
+            // 判断奶牛 j 是否吃到了交点
+            if (ans[cow[j].id] > tj) {
+                ans[cow[i].id] = min(ans[cow[i].id], ti);
+            }
+        }
+    }
+    for (int x : ans) {
+        if (x == INF) cout << "Infinity\n";
+        else cout << x << '\n';
+    }
+    return 0;
+}
+```
 
 ## 3 真题训练
 
