@@ -148,6 +148,8 @@ public class Main {
 
 6. ##### Casting和instanceof
 
+**编译时看引用的声明类型，运行时看对象的实际类型。**
+
 ```java
 public class Main {
     static class A {
@@ -240,7 +242,7 @@ System.out.println(a.equals(b)); // true（内容相等）
 9. 字段隐藏
 
 ```java
-//字段看“引用类型”，方法看“对象类型”。
+//字段看“引用类型”，method看“对象类型”。
 class A {
   public int x = 1;
   public int getX() { return x; }

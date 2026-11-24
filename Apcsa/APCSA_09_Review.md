@@ -9,222 +9,11 @@
 
 ## 2. 核心知识与易错点
 
-### 2.1 【AP 主线】构造器初始化对象，不是普通方法
+参考原稿./Apcsa/1/apcsa_09.md
 
-```java
-class Wallet {
-    private int money;
-
-    public Wallet(int money) {
-        this.money = money;
-    }
-
-    public int getMoney() {
-        return money;
-    }
-}
-```
-
-- 构造器与类同名，没有返回类型，连 void 也不写。
-- `this.money` 是当前对象的字段；右侧 money 是形参。
-- `money = money;` 只把形参赋给自己，不初始化字段。
-- int 实例字段默认 0，不等于未赋值局部变量可以直接使用。
-- 编写了有参构造器后，编译器不会再自动补一个无参构造器。
-
-### 2.2 【AP 主线】private、对象状态与别名
-
-private 成员由所属类的代码访问；普通外部类不能直接读写它。需要通过类提供的 public 方法操作，不要为了调用方便把所有字段改成 public。
-
-```java
-Wallet a = new Wallet(50);
-Wallet b = a;
-// a、b 指向同一个对象；赋值没有复制 Wallet
-```
-
-两个独立 new 出来的对象通常各有自己的实例字段；static 字段才由类共享。引用重新赋值与修改被引用对象也不同。
-
-### 2.3 【AP 主线】重载与字符串比较
-
-重载 overloading 是同名方法具有不同参数列表；不能只靠返回类型区分。选用哪个重载要看编译时可见的方法和实参类型。
-
-```java
-class Printer {
-    public String format(int x) { return "I"; }
-    public String format(double x) { return "D"; }
-}
-// new Printer().format(5) -> "I"
-// new Printer().format(5.0) -> "D"
-```
-
-String 内容使用 equals；`==` 比较两个引用是否指向同一对象。不要根据字符串常量可能共享对象的现象来推导一般规则。
-
-### 2.4 【Java 拓展】继承：is-a 与 has-a
-
-```java
-class Vehicle {
-    private int speed;
-
-    public Vehicle(int speed) {
-        this.speed = speed;
-    }
-
-    public int getSpeed() { return speed; }
-}
-
-class Car extends Vehicle {
-    public Car(int speed) {
-        super(speed);
-    }
-}
-```
-
-Car is-a Vehicle 可以用继承表达；Wheel has-a/part-of Car 不应写 Wheel extends Car。学习小组保存若干成绩记录是 has-a 关系，用字段或集合保存即可，不必继承记录类。
-
-构造器不被继承。父类 private 字段不成为子类可直接访问的成员，但父类定义的状态仍存在于子类对象中，应通过父类构造器和可访问方法初始化、读取。
-
-| 修饰符 | 本章需要的准确理解 |
-| --- | --- |
-| public | 对可访问类的 public 成员，普通调用方可访问 |
-| private | 子类代码不能仅凭继承关系直接访问父类 private 成员 |
-| protected | 同包可访问；跨包的子类访问还受 Java 规则限制，不能理解成“任意父类引用都能访问” |
-
-本章示例不涉及跨包 protected 的复杂限定规则，也不靠嵌套类的特殊访问规则设置陷阱。
-
-### 2.5 【Java 拓展】构造链：super 与 this
-
-```java
-class A {
-    public A(int n) { System.out.print("A" + n + " "); }
-}
-
-class B extends A {
-    public B() {
-        super(3);
-        System.out.print("B ");
-    }
-}
-// new B() 输出 A3 B（末尾有空格）
-```
-
-在本稿 Java 17/21 基线下：
-
-- 显式 `super(...)` 或 `this(...)` 构造器调用放在构造器首条语句。
-- `super(...)` 调直接父类构造器；`this(...)` 调当前类的另一个构造器。
-- 没有显式构造器调用时，通常隐式调用 `super()`；直接父类必须有可访问的对应无参构造器。
-- 若父类仅有 A(int)，子类不能依赖不存在的 A()；可直接写 super(值)，也可通过 this(...) 委托给本类最终正确调用父类构造器的其他构造器。
-- 构造器参数不是字段；要观察状态是否正确赋值，不能只检查是否编译。
-
-### 2.6 【Java 拓展】重写与动态调用：分成两个阶段
-
-```java
-class Animal {
-    public String speak() { return "Animal"; }
-}
-class Dog extends Animal {
-    @Override
-    public String speak() { return "woof"; }
-    public String fetch() { return "ball"; }
-}
-
-// 在合法方法体中：
-// Animal a = new Dog();
-// a.speak();  // 可编译，运行 Dog.speak()
-// a.fetch();  // 编译错误：Animal 没有这个可调用方法
-```
-
-| 阶段 | 要解决的问题 | 依据 |
-| --- | --- | --- |
-| 编译期 | 这个调用是否存在、可访问？选中哪个参数签名？ | 引用表达式的编译时类型、实参类型、重载规则 |
-| 运行期 | 对已选定签名，执行哪个重写的实例方法实现？ | 接收对象的实际类型 |
-
-“方法看对象类型”只适用于这里讨论的重写实例方法分派，**不表示可以绕过编译检查，也不表示运行时重新选择重载**。static 方法不是这种动态分派，不在本章拓展训练中混入。
-
-@Override 帮助编译器检查是否确实重写了父类型方法；不写注解也可能发生重写。方法同名但参数类型不同通常形成重载，不是重写。重写还受返回类型兼容、访问权限等约束，不能只凭“名字一样”判断。
-
-### 2.7 【Java 拓展】原稿重载案例的正确结论
-
-```java
-class A {
-    public void print(int x) { System.out.print("A "); }
-}
-class B extends A {
-    public void print(double x) { System.out.print("B "); }
-}
-// A obj = new B();
-// obj.print(5.0); // 编译错误
-```
-
-编译时 obj 的类型是 A，只看到 print(int)，double 不能在此自动缩窄成 int，所以不会“运行 B.print(double)”。
-
-对照：`obj.print(5)` 调用继承的 A.print(int)。如果用 `B b = new B(); b.print(5.0);`，B 类型可见 print(double)，这时可以调用。即使写 `b.print(5)`，精确的 int 重载仍优先于把 5 扩大成 double。
-
-### 2.8 【Java 拓展】转型、instanceof 与 super.method()
-
-```java
-// 假设 B extends A，且 B 提供 n()
-A x = new B();
-((B) x).n(); // 安全：x 实际指向 B
-
-A y = new A();
-// B bad = (B) y; // 可能通过编译，但执行到这里发生 ClassCastException
-```
-
-转型改变表达式的静态类型视角，不把父类对象变成子类对象。`null instanceof B` 为 false；保护写法可以是：
-
-```java
-if (x instanceof B) {
-    B b = (B) x;
-    b.n();
-}
-```
-
-`super.method()` 在子类方法内部显式使用父类实现，不会创建新的父类对象。注意：父类实现内部如果又调用可重写实例方法，该内部调用仍可能分派到子类；FRQ 3 会专门追踪这一点。
-
-### 2.9 【Java 拓展】Object、字段隐藏与接口
-
-**toString 与 equals**：
-
-- 对非 null 对象，打印或与字符串拼接可以使用其字符串表示；编写 toString() 重写在此只作拓展。
-- Object 默认 equals 使用对象身份；具体类可以定义自己的相等规则，不能假定任何类的 equals 都比较所有字段。
-- 若要重写 Object.equals，签名应为 `public boolean equals(Object other)`。写成 equals(Point other) 是重载，不能替代 Object 版本。
-- 实际工程中重写 equals 还应配套满足 hashCode 合约；本章不把不完整的自定义值对象当作可复用示例。
-
-**字段隐藏**：
-
-```java
-class A {
-    public int x = 1;
-    public int getX() { return x; }
-}
-class B extends A {
-    public int x = 2;
-    @Override
-    public int getX() { return x; }
-}
-// A obj = new B();
-// obj.x -> 1；obj.getX() -> 2
-```
-
-字段访问依据引用表达式的编译时类型，不做实例方法式的动态分派。本章只用它澄清规则，不鼓励在实际设计中重复声明同名字段。
-
-**接口**：
-
-```java
-public interface Shape {
-    double getArea();
-    int compareTo(Shape other);
-}
-```
-
-此处这些无方法体的接口实例方法隐含 public abstract；实现类对应方法必须为 public。具体类需实现所要求的方法，或声明为 abstract。`Shape s = new Circle(5)` 可以，`new Shape()` 不能直接实例化接口。
-
-这里的 compareTo 是我们自己在 Shape 中声明的契约，**不等于已经实现 Java 的 Comparable<Shape>**，也不能据此直接断言可用 Collections.sort。接口还可以有其他 Java 特性，本章不扩展默认方法或静态接口方法。
-
-## 3. MCQ 训练（原创）
+## 3. MCQ 训练
 
 ### A 组：现行 AP 主线（1—6）
-
-代码位于合法上下文。各题独立；外部调用类与被测类互不嵌套。题中用于更新状态的方法均按给出的实现执行。
 
 ### MCQ 1：构造器中的同名变量
 
@@ -329,10 +118,6 @@ A. `true true`
 B. `true false`  
 C. `false true`  
 D. `false false`
-
-### B 组：Java 继承与接口拓展（7—18）
-
-本组是 Java 拓展阅读题，不作为当前 AP 必考题库或分数评估。所有题使用本稿 Java 17/21 语言基线；每题的类名可以重复，但各题须独立编译。
 
 ### MCQ 7：重写实例方法
 
@@ -561,7 +346,7 @@ B. 正常编译，Square.getArea 自动成为 public
 C. 编译错误，因为类不能保存 double 字段  
 D. 编译错误，实现方法的权限不能低于 public
 
-## ✍️ 4. FRQ 训练（原创）
+## 4. FRQ 训练
 
 ### FRQ 1：ScoreRecord【AP 主线：完整类设计】
 
