@@ -1,4 +1,4 @@
-## USACO 铜组补充：数学推理、计数预处理、模拟优化与位掩码
+## 📚铜组补充：数学推理、计数预处理、模拟优化与位掩码
 
 ## 一、基础数学与推理
 
@@ -40,7 +40,7 @@ int previous = (i - 1 + n) % n;
 
 例如：
 
-```
+```c++
 A = {1, 2, 2}
 B = {2, 1, 2}  → 可以
 
@@ -52,7 +52,7 @@ B = {1, 1, 3}  → 不可以
 
 **不变量：无论交换多少次，每个数的出现次数都不会改变。**
 
-```
+```c++
 #include <algorithm>
 #include <iostream>
 #include <vector>
@@ -92,7 +92,7 @@ int main() {
 | `K >= d`，且 `K-d` 为奇数 | 不可以   | 多出的步数无法全部抵消 |
 | `K >= d`，且 `K-d` 为偶数 | 可以     | 多出的步数可以组成往返 |
 
-```
+```c++
 #include <cstdlib>
 #include <iostream>
 using namespace std;
@@ -141,7 +141,7 @@ $$
 
 **从右向左确定字符：**处理位置 `i` 时，如果当前值不对，就翻转前 `i+1` 个字符。之后只操作更短的前缀，已经确定的右侧不会再改变。
 
-```
+```c++
 #include <iostream>
 #include <string>
 #include <vector>
@@ -225,7 +225,7 @@ a = {1, 1, 2}
 - 不同的**下标组合**有 `3` 个。
 - 不同的**无序数值组合**有 `2` 个。
 
-```
+```c++
 #include <algorithm>
 #include <iostream>
 #include <set>
@@ -333,7 +333,7 @@ B → 1 2 3 4
 
 现在，“把 A 变成 B”就转化为“把新编号序列变成递增序列”。
 
-```
+```c++
 #include <iostream>
 #include <map>
 #include <vector>

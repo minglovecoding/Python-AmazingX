@@ -10,8 +10,6 @@
 | AP 编程迁移 | 用迭代实现相同任务，训练 String、数组、方法契约；FRQ 1—2 |
 | 递归编程拓展 | 独立写递归与 helper，检验理解；FRQ 3—4、参考算法实现 |
 
-不要把“必须递归实现”的原创题标成当前 AP 官方 FRQ 必考形式；也不要因为不要求写递归，就跳过递归阅读和归并排序。
-
 ## 2. 核心知识与易错点
 
 ### 2.1 递归的三个检查点
@@ -67,8 +65,6 @@ public static void show(int n) {
 | n=0 直接返回 | 无 |
 | 回到 n=1、2、3，执行递归后打印 | 1、2、3 |
 
-如果打印语句位于 if/else 之外，即使进入 base case、没有继续递归，也可能仍然打印。必须按给出的代码判断，不能套“最底层不输出”的口诀。
-
 ### 2.4 字符串递归：空串、单字符与代价
 
 ```java
@@ -77,12 +73,6 @@ public static String reverse(String s) {
     return reverse(s.substring(1)) + s.substring(0, 1);
 }
 ```
-
-s 不为 null。reverse("APCSA") 返回 `"ASCPA"`；reverse("") 返回空串。为贴近 AP 常用 String 方法，本章主线阅读使用 substring、equals；原稿 charAt 版本的反转逻辑也成立。
-
-回文判断应先处理长度 <= 1，再访问首尾；否则空串会越界。大小写规则必须写进契约：`"Racecar"` 在区分大小写时不是回文，忽略大小写时才是。
-
-原稿 substring 递归适合讲语义，不代表高效实现。按常见现代 Java 的字符串复制/拼接成本分析，反复复制长后缀或构造长结果可有 O(n²) 时间/累计复制量。虽然递归深度只有 O(n)，**不能据此认定包含字符串对象的总辅助内存一定为 O(n)**。用双下标可以避免每层复制子串，但独立编写该递归属于拓展。
 
 ### 2.5 数组 helper 与分支递归
 
@@ -101,8 +91,6 @@ private static int sumFrom(int[] a, int i) {
 
 a 不为 null；累计和保证在 int 范围。空数组直接返回 0。helper 的 i 表示“接下来处理的起始位置”，不创建新子数组。
 
-求最大值不能照搬“空数组返回 0”：全负数会错，而且空集最大值需要另定语义。本章 max 方法要求数组非空，以最后一个实际元素作为基准值。
-
 Fibonacci 的双分支会重复求相同子问题：
 
 ```java
@@ -112,8 +100,6 @@ public static int fibNaive(int n) {
     return fibNaive(n - 1) + fibNaive(n - 2);
 }
 ```
-
-阅读练习限定 n 为较小非负整数；实际运行本稿建议 n <= 30。fibNaive(4) 返回 3，却发生 **9 次方法调用**，包括最初调用和各个 base case 调用。返回值、叶子数、总调用数、最大深度是不同指标。
 
 线性 helper 可以避免重复子问题；尾递归形式也不能假定 JVM 自动消除调用栈。本章按每层调用占用栈帧分析，线性尾递归仍有 O(n) 栈深。数值优化不等于消除了 int 溢出风险。
 
@@ -180,49 +166,66 @@ flowchart TD
 
 ### 2.8 原稿 merge 的短路顺序错误
 
-原条件：
-
-```java
-if ((i1 < left.length && left[i1] <= right[i2]) || i2 >= right.length) {
-    // take left
-}
-```
-
-`||` 的右侧保护写得太晚。left 为 `{2}`、right 为 `{1}` 时：第一次取右侧 1，i2 变为 1；下一次 i1 < left.length 为 true，接着访问 right[1]，在检查“右侧已耗尽”之前就越界。
-
 如果保留原 for 循环结构，可改成：
 
 ```java
-if (i2 >= right.length || (i1 < left.length && left[i1] <= right[i2])) {
-    // take left
+import java.util.Arrays;
+public class MergeSortVersion {
+    // Merges the left/right elements into a sorted result.
+    // Precondition: left/right are sorted
+    public static void merge(int[] result, int[] left, int[] right) {
+        int i1 = 0; // index into left array
+        int i2 = 0; // index into right array
+        for (int i = 0; i < result.length; i++) {
+            if (i2 >= right.length || (i1 < left.length && left[i1] <= right[i2])) {
+                result[i] = left[i1]; // take from left
+                i1++;
+            } else {
+                result[i] = right[i2]; // take from right
+                i2++;
+            }
+        }
+    }
+    // Rearranges the elements of a into sorted order using the merge sort algorithm (recursive).
+    public static void mergeSort(int[] a) {
+        if (a.length >= 2) {
+            // split array into two halves
+            int[] left  = Arrays.copyOfRange(a, 0, a.length / 2);
+            int[] right = Arrays.copyOfRange(a, a.length / 2, a.length);
+            // sort the two halves
+            mergeSort(left);
+            mergeSort(right);
+            // merge the sorted halves into a sorted whole
+            merge(a, left, right);
+        }
+    }
+
+    // quick test
+    public static void main(String[] args) {
+        int[] a = {5, 2, 9, 1, 5, 6};
+        mergeSort(a);
+        System.out.println(Arrays.toString(a));
+    }
 }
+
 ```
 
 前提仍是结果长度恰好为两侧长度之和，左右有序，并且 result 不与输入别名。为了便于学生验证边界，参考实现采用“两边都未耗尽时比较 + 两段追加剩余项”的三个 while。
 
 原稿相对路径图片依赖仓库目录，独立发给学生可能丢图；本稿已改用内嵌关系图和追踪表。
 
-### 2.9 成本辨析（理解用，不要求背递推式）
-
-| 实现 | 时间 | 最大递归栈深 |
-| --- | --- | --- |
-| 阶乘、线性数组求和 | O(n) | O(n) |
-| 数位和/数位计数 | O(d)，d 为十进制位数 | O(d) |
-| 原始 Fibonacci | O(2ⁿ) 是可用上界，重复子问题很多 | O(n) |
-| 线性 Fibonacci helper | O(n) | 本课模型为 O(n) |
-| 递归二分查找 | 最坏 O(log n) | 最坏 O(log n) |
-| 合并两个有序数组 | O(p+q) | 无递归，O(1) 临时变量 |
-| 本章归并排序 | O(n log n)，n >= 2 | O(log n) |
-
-归并排序每一层总处理量约为 n，有约 log₂n 层；不是“递归一次就是 log n”。参考复制半区版本的峰值附加数组空间是 O(n)，累计分配/复制量可达 O(n log n)，两者不是同一个指标。以上按常见单位成本模型分析；字符串算法见 2.4 的单独说明。
-
-## 🎯 3. MCQ 训练（原创）
-
-每题只有一个正确选项。递归代码已给出，训练目标为阅读与分析。数组、字符串非 null；除故意错误题外，输入满足代码说明的前置条件。代码片段处于合法类或方法中，每题独立。
+## 3. MCQ 训练
 
 ### MCQ 1：阶乘返回值
 
-调用 2.1 中的 fact(4)，返回什么？
+下面中的 fact(4)，返回什么？	
+
+```c++
+public static int fact(int n) {
+    if (n <= 1) return 1;
+    return n * fact(n - 1);
+}
+```
 
 A. 10  
 B. 24  
@@ -231,7 +234,16 @@ D. 4
 
 ### MCQ 2：递归前后各打印一次
 
-调用 2.3 中的 show(3)，忽略末尾空格，输出什么？
+调用  show(3)，忽略末尾空格，输出什么？
+
+```c++
+public static void show(int n) {
+    if (n == 0) return;
+    System.out.print(n + " ");
+    show(n - 1);
+    System.out.print(n + " ");
+}
+```
 
 A. `1 2 3`  
 B. `3 2 1`  
@@ -302,7 +314,7 @@ public static int power(int a, int b) {
 }
 ```
 
-power(2,5) 返回什么？
+power(2, 5) 返回什么？
 
 A. 32  
 B. 10  
@@ -339,7 +351,18 @@ D. false，因为给定方法区分大小写
 
 ### MCQ 9：helper 的起点
 
-调用 2.5 的 sumFrom，a 为 `{2,4,6}`，i 为 1，结果是什么？
+调用sumFrom，a 为 `{2,4,6}`，i 为 1，结果是什么？
+
+```c++
+public static int sum(int[] a) {
+    return sumFrom(a, 0);
+}
+
+private static int sumFrom(int[] a, int i) {
+    if (i == a.length) return 0;
+    return a[i] + sumFrom(a, i + 1);
+}
+```
 
 A. 12  
 B. 10  
@@ -364,7 +387,15 @@ D. -5
 
 ### MCQ 11：返回值与调用次数
 
-使用 2.5 的 fibNaive。fibNaive(4) 的“返回值、总调用次数”分别是什么？总次数包括最初调用和 base case 调用。
+fibNaive(4) 的“返回值、总调用次数”分别是什么？总次数包括最初调用和 base case 调用。
+
+```c++
+public static int fibNaive(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    return fibNaive(n - 1) + fibNaive(n - 2);
+}
+```
 
 A. 3、9  
 B. 3、4  
@@ -405,7 +436,21 @@ D. 参数变负后自动返回
 
 ### MCQ 14：递归二分的 mid
 
-使用 2.6 的 binSearch，a 为 `{1,4,7,10,13,16,19}`，target 为 4。依次访问的 mid 是什么？
+使用binSearch，a 为 `{1,4,7,10,13,16,19}`，target 为 4。依次访问的 mid 是什么？
+
+```c++
+public static int binSearch(int[] a, int target) {
+    return binSearch(a, target, 0, a.length - 1);
+}
+
+private static int binSearch(int[] a, int target, int lo, int hi) {
+    if (lo > hi) return -1;
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] == target) return mid;
+    if (target < a[mid]) return binSearch(a, target, lo, mid - 1);
+    return binSearch(a, target, mid + 1, hi);
+}
+```
 
 A. 3、1  
 B. 3、2、1  
@@ -421,7 +466,7 @@ B. 3
 C. -1  
 D. 2
 
-### MCQ 16：合并有序半区
+### MCQ 16：Mergesort有序半区
 
 正确合并 left=`{1,5}`、right=`{2,4}`，结果是什么？
 
@@ -464,49 +509,78 @@ B. `{1,3,7,8}` 和 `{2,4,5,6}`
 C. `{1,2,3,4}` 和 `{5,6,7,8}`  
 D. `{3,8,1,7}` 和 `{2,6,4,5}`
 
-## 4. FRQ 训练（原创/原稿重编）
+## 4. FRQ 训练
 
-以下参数不为 null。FRQ 1—2 用迭代完成，属于编程迁移；FRQ 3—4 要求递归，明确作为拓展。所有题均为方法任务，无须 Scanner 或 main。
+### FRQ 1：StringAnalysis
 
-### FRQ 1：StringAnalysis【AP 编程迁移】
+**(a)** target 长度恰为 1，返回它在 s 中出现次数；区分大小写，空串返回 0。使用循环及 substring/equals，不调用递归。
 
-**(a)** `public static int countChar(String s, String target)`
-
-target 长度恰为 1，返回它在 s 中出现次数；区分大小写，空串返回 0。使用循环及 substring/equals，不调用递归。
+```c++
+public static int countChar(String s, String target)
+```
 
 示例：`countChar("banana","a")` 返回 3。
 
-**(b)** `public static boolean isPalindrome(String s)`
+**(b)** 用双下标和循环判断是否回文，区分大小写；空串、单字符返回 true。使用 substring/equals，不改变输入，不调用递归。
 
-用双下标和循环判断是否回文，区分大小写；空串、单字符返回 true。使用 substring/equals，不改变输入，不调用递归。
+```c++
+public static boolean isPalindrome(String s)
+```
 
 示例：`"level"` → true，`"Racecar"` → false。
 
-### FRQ 2：ArrayAlgorithms【AP 编程迁移】
+### FRQ 2：ArrayAlgorithms
 
-**(a)** `public static int[] mergeSorted(int[] left, int[] right)`
+**(a)** 
+
+```c++
+public static int[] mergeSorted(int[] left, int[] right)
+```
 
 两数组分别非递减有序，总长度不超过 1000，允许任一或两者为空。返回新的有序结果，保留重复值，输入不变；不得调用排序库。使用双指针和循环，总时间 O(left.length+right.length)。
 
-**(b)** `public static int binaryIndex(int[] a, int target)`
+**(b)** 
+
+```c++
+public static int binaryIndex(int[] a, int target)
+```
+
+```c++
+//BinarySearch参考代码
+public static int binSearch(int[] a, int target) {
+    return binSearch(a, target, 0, a.length - 1);
+}
+
+private static int binSearch(int[] a, int target, int lo, int hi) {
+    if (lo > hi) return -1;
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] == target) return mid;
+    if (target < a[mid]) return binSearch(a, target, lo, mid - 1);
+    return binSearch(a, target, mid + 1, hi);
+}
+```
 
 a 非递减有序，用迭代二分返回某个匹配索引；没有匹配或空数组返回 -1。不要求最左匹配，不改变输入。
 
-示例：`mergeSorted({1,4,4},{2,4})` → `{1,2,4,4,4}`；对结果查找 4，返回任何合法的匹配索引均可。
-
-### FRQ 3：DigitRecursion【递归编程拓展】
+### FRQ 3：DigitRecursion
 
 以下两个方法必须递归，不用循环或字符串转换。n 为 0 到 Integer.MAX_VALUE 的整数。
 
-**(a)** `public static int sumDigits(int n)`：返回各位数之和，0 返回 0。
+**(a)** 返回各位数之和，0 返回 0。示例：sumDigits(5029) → 16；
 
-**(b)** `public static int count7(int n)`：返回十进制表示中 7 的个数，0 返回 0。
+```c++
+public static int sumDigits(int n)
+```
 
-示例：sumDigits(5029) → 16；count7(77027) → 3。
+**(b)** 返回十进制表示中 7 的个数，0 返回 0。示例：count7(77027) → 3。
+
+```c++
+public static int count7(int n)
+```
 
 请解释：为什么用 n/10 推进，n%10 表示哪一位，为什么无需处理负数的取绝对值溢出问题？
 
-### FRQ 4：RecursiveChecks【递归编程拓展】
+### FRQ 4：RecursiveChecks
 
 a 长度 0..100，元素 -1000..1000。不得修改数组，不用循环；应编写 public 包装方法和 private helper。
 
@@ -526,12 +600,8 @@ a 长度 0..100，元素 -1000..1000。不得修改数组，不用循环；应�
 
 建议先打开原题独立作答。本题的调用从 (10,0) 开始，每次向 (j-2,k+2) 推进，直到不再满足 j>k。追踪时把每层保留的 j 写出来，再按返回方向输出。
 
-<details>
-<summary>官方样题订正提示（做完再展开）</summary>
 
 依次进入 (10,0)、(8,2)、(6,4)、(4,6)。最深层不再递归，但仍执行递归判断之后的打印；输出顺序为 4、6、8、10，对应 D。重点是“没有继续递归”不等于“这一层不打印”。
-
-</details>
 
 ### 5.2 历年 FRQ：训练同一字符串/集合能力，不要求递归
 
@@ -633,7 +703,7 @@ public class ArrayAlgorithms {
 
 总计 9 分。merge 时间 O(p+q)，结果空间 O(p+q)；迭代二分最坏 O(log n) 时间、O(1) 空间。
 
-### FRQ 3：DigitRecursion（拓展）
+### FRQ 3：DigitRecursion
 
 ```java
 public class DigitRecursion {
@@ -652,7 +722,7 @@ public class DigitRecursion {
 
 总计 9 分，仅用于拓展。n%10 取个位，n/10 删除个位；契约已排除负数，因此不需要 Math.abs(Integer.MIN_VALUE) 等额外处理。
 
-### FRQ 4：RecursiveChecks（拓展）
+### FRQ 4：RecursiveChecks
 
 ```java
 public class RecursiveChecks {
@@ -772,7 +842,9 @@ public class RecursionExamples {
 
 字符串/数组递归示例的课堂输入建议长度不超过 100，以便手推并避免把调用栈容量当作算法正确性本身。Fibonacci int 的 F(46)=1836311903，F(47) 超出 int；原尾递归版本在最后一步仍会算多余下一项，本稿增加 n==1 的返回以避免这一步。
 
-### 8.2 MergeSortVersion.java（修复版）
+### 8.2 MergeSortVersion.java
+
+![](/Users/zhoumingzhao/Desktop/Python-AmazingX/images/mergeSort.png)
 
 ```java
 import java.util.Arrays;
@@ -803,6 +875,4 @@ public class MergeSortVersion {
     }
 }
 ```
-
-本实现最终修改传入的 a 内容，但内部建立半区临时数组；“原地修改输入结果”不等于“只用 O(1) 辅助空间”。空数组、单元素、重复值、任一半区先耗尽都应正确。
 

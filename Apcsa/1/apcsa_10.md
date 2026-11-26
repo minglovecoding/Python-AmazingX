@@ -122,7 +122,7 @@ public static void mystery(int n) {
 
 归并排序
 
-![](../images/mergeSort.png)
+![](../../images/mergeSort.png)
 
 ```java
 import java.util.Arrays;

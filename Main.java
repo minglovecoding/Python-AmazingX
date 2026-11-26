@@ -1,12 +1,7 @@
 public class Main {
     public static void main(String[] args) {
+        String a="A";
+        String b="a";
+        System.out.println(a.equals(b));
 }
-}
-interface Shape {
-    double getArea();
-}
-class Square implements Shape {
-    private double side;
-    public Square(double side) { this.side = side; }
-    double getArea() { return side * side; }
 }
