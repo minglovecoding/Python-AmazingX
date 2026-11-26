@@ -612,3 +612,69 @@ int main() {
 ```
 
 **复杂度：**外层扫描 `N` 个位置，各供应链只在对应桶对处处理一次，所有 `while` 的累计扫描量为 `O(N)`。因此总时间 `O(N)`，空间 `O(N)`，不能因为存在嵌套循环就直接判断为 `O(N²)`。
+
+解法2:**将环形数组复制一遍，找到一个方向发生变化的位置作为起点，然后利用双指针处理连续同方向的区间**
+
+```c++
+//1.统计所有牛的初始牛奶总量 ans。
+//2.将方向字符串和容量数组倍长，断环成链。
+//3.找到方向发生变化的位置 start，若不存在，则直接输出 ans。
+//4.从 start 开始遍历 n 个元素，利用双指针划分连续同方向区间，并计算区间总量 sum。
+//5.R 区间减去最后一头牛的容量，L 区间减去第一头牛的容量。
+//6.计算每个区间的实际损失量 min(sum, m)，并从 ans 中减去。
+//7.输出最终剩余的牛奶总量 ans。
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    int n;
+    long long m;
+    cin >> n >> m;
+    string s;
+    cin >> s;
+    s += s;
+    vector<long long> a(2 * n);
+    long long ans = 0;
+    // 数组倍长
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        a[i + n] = a[i];
+        ans += a[i];
+    }
+    // 找到连续区间的起点
+    int start = -1;
+    for (int i = 1; i <= n; i++) {
+        if (s[i] != s[i - 1]) {
+            start = i;
+            break;
+        }
+    }
+    // 所有牛的方向相同
+    if (start == -1) {
+        cout << ans << '\n';
+        return 0;
+    }
+    // 双指针枚举连续区间
+    int i = start;
+    while (i < start + n) {
+        int j = i;
+        long long sum = 0;
+        // 找到连续同方向区间
+        while (j < start + n && s[j] == s[i]) {
+            sum += a[j];
+            j++;
+        }
+        // 去掉参与相互交换的牛
+        if (s[i] == 'R') {
+            sum -= a[j - 1];
+        } else {
+            sum -= a[i];
+        }
+        // 减去损失的牛奶
+        ans -= min(sum, m);
+        i = j;
+    }
+    cout << ans << '\n';
+    return 0;
+}
+```
+
