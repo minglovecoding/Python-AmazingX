@@ -36,18 +36,6 @@ deadline[i] = c[i] - t[i];
 deadline[i] > S
 ```
 
-### 特别注意“严格小于”
-
-如果 `deadline[i] = 5`：
-
-| 起床时间 `S` | 能否按时访问 |
-|---|---|
-| 4 | 可以 |
-| 5 | 不可以，恰好在关闭时到达 |
-| 6 | 不可以 |
-
-不要因为使用整数，就把严格不等号随意改成 `<=`。
-
 ###  什么时候值得做这种转化？
 
 - 查询很多，而原始数据不变。
@@ -58,7 +46,7 @@ deadline[i] > S
 
 ## 二、排序与二分：查找边界，不是只查找相等元素
 
-### ✔️ 两个函数的区别
+### 两个函数的区别
 
 对升序数组 `a`：
 
@@ -91,8 +79,6 @@ int greaterCount = (int)a.size() - right; // 大于 3 的数量：2
 | `>= x` | `n - L` |
 | `> x` | `n - U` |
 
-**前提：数组按相应规则有序。** 在本章使用升序排序和默认比较规则。
-
 ### 完整演示
 
 ```cpp
@@ -111,28 +97,14 @@ int main() {
     }
     return 0;
 }
+//输出：每行依次为 x、小于 x 的数量、等于 x 的数量、大于 x 的数量
 ```
-
-```text
-输出：每行依次为 x、小于 x 的数量、等于 x 的数量、大于 x 的数量
-0 0 0 5
-3 1 2 2
-9 5 0 0
-```
-
-### ✔️ 预处理不等于离线查询
-
-- **预处理后逐条回答**：先整理固定数据，每次读入一个查询就能回答，不依赖后面的查询。
-- **离线处理**：先保存查询，再按查询内容排序、分组或调整处理顺序，最后恢复原顺序输出。
-
-本章 Maximizing Productivity 的“差值排序 + 二分”属于前者。仅仅给数据排序，不足以称为离线查询。
 
 ## 三、真题：Maximizing Productivity
 
 📌 **USACO 2024 February，Bronze，Problem 3。**
 
 - [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=1397)
-- [官方题解](https://usaco.org/current/data/sol_prob3_bronze_feb24.html)
 
 ### 问题概括
 
@@ -153,14 +125,13 @@ int main() {
 3. 满足条件的农场数为 `N - pos`。
 4. 判断数量是否至少为 `V`。
 
+```c++
 例如：
-
-```text
 deadline：-1 3 4 4 6
 S = 3：满足条件的是 4、4、6，共 3 个
 ```
 
-#### 参考代码 A
+### 方法 A
 
 ```cpp
 // program: productivity_binary
@@ -193,129 +164,103 @@ int main() {
     }
     return 0;
 }
+//时间为 O(NlogN + QlogN)，保存数据空间为O(N)。
 ```
 
-时间为 `O(N log N + Q log N)`，保存数据空间为 `O(N)`。
+### 方法 B：直接检查第 V 大门槛
 
-### 3. 方法 B：直接检查第 V 大门槛
-
-题目只问“是否至少有 `V` 个”，并不要求输出准确数量。
-
-升序数组中，第 `V` 大元素的下标为：
-
-```cpp
-N - V
-```
-
-因此只需要判断：
-
-```cpp
-deadline[N - V] > S
-```
-
-**正确性：**如果第 `V` 大都大于 `S`，前 `V` 大全部满足；如果第 `V` 大不大于 `S`，则严格大于 `S` 的最多只有 `V-1` 个。
-
-例如：
-
-```text
-升序：-1 3 4 4 6
-第 3 大：4，所以下标为 5 - 3 = 2
-V = 3，S = 3：4 > 3，YES
-V = 4，S = 3：3 > 3 不成立，NO
-```
-
-#### 参考代码 B
-
-```cpp
-// program: productivity_kth
+```c++
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
     int N, Q;
     cin >> N >> Q;
-    vector<ll> deadline(N);
-    for (ll &value : deadline) cin >> value; // 暂时保存 c[i]
+    vector<int> close(N), difference(N);
+    for (int& x : close) cin >> x;
     for (int i = 0; i < N; i++) {
-        ll travel;
+        int travel;
         cin >> travel;
-        deadline[i] -= travel;
+        difference[i] = close[i] - travel;
     }
-    sort(deadline.begin(), deadline.end());
-
+    sort(difference.begin(), difference.end(), greater<int>());
     while (Q--) {
-        int V;
-        ll S;
-        cin >> V >> S;
-        cout << (deadline[N - V] > S ? "YES" : "NO") << '\n';
+        int V, S;
+        cin >> V >> S; // 输入顺序是 V、S。
+        cout << (difference[V - 1] > S ? "YES" : "NO") << '\n';
+    }
+}
+//时间为 O(NlogN + QlogN)，保存数据空间为O(N)。
+```
+
+## 四、模拟进阶：完整状态、同步与结束条件
+
+### 模拟仍然要分析复杂度
+
+模拟考查读题、状态建模和实现，但**不是不考复杂度**。同样的规则，可能要执行 `100` 次，也可能执行 `10^9` 次；后者通常需要规律或结构优化。
+
+### 📌USACO 2020 December Bronze- [Stuck in a Rut](https://usaco.org/index.php?page=viewproblem2&cpid=1061)
+
+```c++
+//贪心+模拟做法
+//1.将所有奶牛按照 (x+y) 从大到小排序。
+//2.第一头奶牛不可能被其他奶牛阻挡，因此答案一定为 Infinity。
+//3.依次遍历后面的奶牛，只需要与前面已经确定最终状态的奶牛比较。
+//4.判断轨迹是否相交，以及前面的奶牛是否能够吃到交点。
+//5.取所有有效阻挡点中的最小距离；不存在有效阻挡点则为 Infinity。
+//6.按照原始输入顺序输出答案。
+#include <bits/stdc++.h>
+using namespace std;
+const int INF = 1e9 + 1;
+struct Cow {
+    char dir;
+    int x, y, id;
+};
+int main() {
+    int n;
+    cin >> n;
+    vector<Cow> cow(n);
+    vector<int> ans(n, INF);
+    for (int i = 0; i < n; i++) {
+        cin >> cow[i].dir >> cow[i].x >> cow[i].y;
+        cow[i].id = i;
+    }
+
+    // 按照 x + y 降序排序
+    sort(cow.begin(), cow.end(), [](Cow a, Cow b) {
+        return a.x + a.y > b.x + b.y;
+    });
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (cow[i].dir == cow[j].dir) continue;
+            int ti, tj;
+            if (cow[i].dir == 'E') {
+                ti = cow[j].x - cow[i].x;
+                tj = cow[i].y - cow[j].y;
+            } else {
+                ti = cow[j].y - cow[i].y;
+                tj = cow[i].x - cow[j].x;
+            }
+            // 判断轨迹是否相交及阻挡关系
+            if (ti < 0 || tj < 0 || ti <= tj) continue;
+            // 判断奶牛 j 是否吃到了交点
+            if (ans[cow[j].id] > tj) {
+                ans[cow[i].id] = min(ans[cow[i].id], ti);
+            }
+        }
+    }
+    for (int x : ans) {
+        if (x == INF) cout << "Infinity\n";
+        else cout << x << '\n';
     }
     return 0;
 }
 ```
 
-题目保证 `1 ≤ V ≤ N`，所以这里的下标合法。时间为 `O(N log N + Q)`，保存数据空间为 `O(N)`。
-
-### 官方样例：两个版本都适用
-
-```text
-输入：
-5 5
-3 5 7 9 12
-4 2 3 3 8
-1 5
-1 6
-3 3
-4 2
-5 1
-
-输出：
-YES
-NO
-YES
-YES
-NO
-```
-
-## 四、模拟进阶：完整状态、同步与结束条件
-
-### ✔️ 模拟仍然要分析复杂度
-
-模拟考查读题、状态建模和实现，但**不是不考复杂度**。同样的规则，可能要执行 `100` 次，也可能执行 `10^9` 次；后者通常需要规律或结构优化。
-
-| 模型 | 先考虑的方法 | 需要进一步注意 |
-|---|---|---|
-| 操作次数很小 | 按规则逐步执行 | 更新顺序与边界 |
-| 状态有限、下一步唯一 | 模拟并记录完整状态 | 重复状态说明进入循环 |
-| 每分钟多个对象同时更新 | 保留旧状态，计算新状态 | 不能让先更新的对象影响同一分钟其他对象 |
-| 时间极大、存在结构规律 | 按段、按事件或按周期汇总 | 先证明规律，不能随意跳步骤 |
-
-### ✔️ 三个需要分清的问题
-
-1. **状态与答案不同**：想知道是否相遇，仍可能必须记录双方方向，而不只是位置。
-2. **没有变化与循环不同**：状态可以在多个时刻间循环，并不一定停在原地。
-3. **同步与顺序不同**：一次操作内产生的结果，是否能被同一步的其他对象立即使用？由题意决定。
-
-### ✔️ 正确的模拟框架
-
-```text
-初始化状态
-循环：
-    检查是否达到目标
-    检查是否出现重复状态（若此模型适用）
-    根据当前状态计算下一步
-    完成一次统一更新
-    时间增加
-```
-
-只有在“记录的状态足以决定全部后续行为、规则不随遗漏的时间信息变化”时，重复状态才能推出之后重复。
-
 ## 五、经典题：The Tamworth Two（两只塔姆沃斯牛）
-
-📌 **USACO Training Section 2.4。**
 
 [洛谷 P1518](https://www.luogu.com.cn/problem/P1518)
 
@@ -475,13 +420,9 @@ int main() {
 
 **复杂度：**地图固定时最多处理 `160000` 个不同联合状态，每步为常数操作；访问标记空间同为 `160000` 个布尔值。不需要自行猜测一个“模拟足够久”的时间上限。
 
-### ❗ 对原代码编码的修正
-
-原稿坐标采用 `1 ~ 10`，却按十进制位权累加，最大联合编码可达到 `161110`，超出 `bool zt[160005]`。现在统一零下标，并把每个对象编码为 `0 ~ 399`，联合状态直接用二维数组记录。
-
 ## 六、环形数组与同步传递
 
-### ✔️ 环形下标
+### 环形下标
 
 下标 `i` 在 `0 ~ N-1` 中：
 
@@ -492,27 +433,9 @@ int right = (i + 1) % N;
 
 不能直接写 `(i - 1) % N` 后用于下标，因为 C++ 的负数取余结果可能为负。
 
-### ✔️ 同步传递使用新数组
+📌 **USACO 2024 February，Bronze，Problem 2**
 
-一轮中，所有对象是否能发送，必须根据**这一轮开始时**的奶量判断，不能让某头牛把这一分钟刚收到的奶又继续发送。
-
-```text
-old：这一分钟开始时的状态
-next：统一记录发送和接收后的结果
-```
-
-另外，应该先完成所有发送和接收，再处理容量溢出。不能在接收时立刻截断，因为接收者在同一分钟也可能送出一单位，从而腾出空间。
-
-这一点将在下一道题的朴素代码中体现。
-
-## 七、真题：Milk Exchange——从同步模拟到连续段汇总
-
-📌 **USACO 2024 February，Bronze，Problem 2。**
-
-- [官方题面](https://usaco.org/index.php?page=viewproblem2&cpid=1396)
-- [官方题解](https://usaco.org/current/data/sol_prob2_bronze_feb24.html)
-
-> 本章只讨论铜组版本。同场金组也有一道同名题，不能混淆；本题不是银组题。
+[Milk Exchange](https://usaco.org/index.php?page=viewproblem2&cpid=1396) - 从同步模拟到连续段汇总
 
 ### 问题概括
 
@@ -526,8 +449,6 @@ next：统一记录发送和接收后的结果
 2. 根据当前旧奶量，决定每头牛是否发送，并在 `next` 上一减一加。
 3. 所有传递完成后，将 `next[i]` 截断到容量以内。
 4. 用 `next` 作为下一分钟状态。
-
-#### 参考代码：只用于小数据与理解规则
 
 ```cpp
 // program: milk_exchange_direct
@@ -691,35 +612,3 @@ int main() {
 ```
 
 **复杂度：**外层扫描 `N` 个位置，各供应链只在对应桶对处处理一次，所有 `while` 的累计扫描量为 `O(N)`。因此总时间 `O(N)`，空间 `O(N)`，不能因为存在嵌套循环就直接判断为 `O(N²)`。
-
-### 官方样例
-
-```text
-输入 1：
-3 1
-RRL
-1 1 1
-
-输出 1：
-2
-```
-
-```text
-输入 2：
-5 20
-LLLLL
-3 3 2 3 3
-
-输出 2：
-14
-```
-
-```text
-输入 3：
-9 5
-RRRLRRLLR
-5 8 4 9 3 4 9 5 4
-
-输出 3：
-38
-```
