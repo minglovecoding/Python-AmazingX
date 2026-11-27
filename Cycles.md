@@ -218,66 +218,7 @@ int main() {
 4. 最后根据题目要求，将“牛到的位置”转换为“位置上的牛”。
 
 
-## 三、环上的轨迹合并
-
-- [2021 January Silver — Dance Mooves](https://usaco.org/index.php?page=viewproblem2&cpid=1086)。仍然是反复交换，但这次问的是每头牛一共经过多少个不同位置。
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, k;
-    cin >> n >> k;
-    vector<int> cowAt(n + 1);
-    vector<vector<int>> visited(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cowAt[i] = i;
-        visited[i].push_back(i);
-    }
-    for (int t = 1; t <= k; t++) {
-        int a, b;
-        cin >> a >> b;
-        int cowA = cowAt[a], cowB = cowAt[b];
-        visited[cowA].push_back(b);
-        visited[cowB].push_back(a);
-        swap(cowAt[a], cowAt[b]);
-    }
-    vector<int> to(n + 1);
-    for (int pos = 1; pos <= n; pos++) to[cowAt[pos]] = pos;
-    vector<bool> used(n + 1, false);
-    vector<int> mark(n + 1, 0), answer(n + 1);
-    int cycleId = 0;
-    for (int start = 1; start <= n; start++) {
-        if (used[start]) continue;
-        cycleId++;
-        vector<int> cycle;
-        int u = start;
-        while (!used[u]) {
-            used[u] = true;
-            cycle.push_back(u);
-            u = to[u];
-        }
-        int count = 0;
-        for (int cow : cycle) {
-            for (int pos : visited[cow]) {
-                if (mark[pos] != cycleId) {
-                    mark[pos] = cycleId;
-                    count++;
-                }
-            }
-        }
-        for (int cow : cycle) answer[cow] = count;
-    }
-    for (int cow = 1; cow <= n; cow++) cout << answer[cow] << '\n';
-}
-//时间、空间复杂度均为 O(N+K)
-```
-
-
-## 四、一般函数图
+## 三、一般函数图
 
 * [2017 December Silver — The Bovine Shuffle](https://usaco.org/index.php?page=viewproblem2&cpid=764)
 
@@ -372,7 +313,7 @@ int main() {
 | 时间复杂度   | \(O(N)\)         | \(O(N)\)         |
 | 递归爆栈风险 | 有               | 无               |
 
-## 五、函数图上的贪心
+## 四、函数图上的贪心
 
 - [2022 US Open Silver — Visits](https://usaco.org/index.php?page=viewproblem2&cpid=1230)。
 
@@ -481,6 +422,64 @@ for (int start = 1; start <= n; start++) {
 例子：路径为 `1,2,3,4,5`，下一步回到 3，那么环是后缀 `3,4,5`，不是整条路径。
 
 总时间 O(N)，空间 O(N)。若还要求每个节点的答案，可在本次 path 上倒序回填。
+
+## 五、环上的轨迹合并
+
+- [2021 January Silver — Dance Mooves](https://usaco.org/index.php?page=viewproblem2&cpid=1086)。仍然是反复交换，但这次问的是每头牛一共经过多少个不同位置。
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n, k;
+    cin >> n >> k;
+    vector<int> cowAt(n + 1);
+    vector<vector<int>> visited(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cowAt[i] = i;
+        visited[i].push_back(i);
+    }
+    for (int t = 1; t <= k; t++) {
+        int a, b;
+        cin >> a >> b;
+        int cowA = cowAt[a], cowB = cowAt[b];
+        visited[cowA].push_back(b);
+        visited[cowB].push_back(a);
+        swap(cowAt[a], cowAt[b]);
+    }
+    vector<int> to(n + 1);
+    for (int pos = 1; pos <= n; pos++) to[cowAt[pos]] = pos;
+    vector<bool> used(n + 1, false);
+    vector<int> mark(n + 1, 0), answer(n + 1);
+    int cycleId = 0;
+    for (int start = 1; start <= n; start++) {
+        if (used[start]) continue;
+        cycleId++;
+        vector<int> cycle;
+        int u = start;
+        while (!used[u]) {
+            used[u] = true;
+            cycle.push_back(u);
+            u = to[u];
+        }
+        int count = 0;
+        for (int cow : cycle) {
+            for (int pos : visited[cow]) {
+                if (mark[pos] != cycleId) {
+                    mark[pos] = cycleId;
+                    count++;
+                }
+            }
+        }
+        for (int cow : cycle) answer[cow] = count;
+    }
+    for (int cow = 1; cow <= n; cow++) cout << answer[cow] << '\n';
+}
+//时间、空间复杂度均为 O(N+K)
+```
 
 
 ## 六、环上滑动窗口
