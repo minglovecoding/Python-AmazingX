@@ -13,7 +13,7 @@
 
 ## 一、普通图、置换、函数图区别
 
-![](/Users/mingo/Desktop/Python-AmazingX/images/13.png)
+![](./images/13.png)
 
 | 类型 | 节点的出边 | 节点的入边 | 典型结构 |
 | --- | --- | --- | --- |
@@ -109,120 +109,12 @@ for (auto [u, v] : edges) {
 //O(V+E*alpha(V))
 ```
 
-## 二、置换环与环长取模
 
-- 2020 February Silver —[Swapity Swapity Swap](https://usaco.org/index.php?page=viewproblem2&cpid=1014)
-
-### 1. 一轮
-
-本题一轮指完整执行全部 M 次区间翻转，然后把这一轮重复 K 次。
-
-翻转操作不增删奶牛，所以一轮后的映射一定是置换。
-
-### 2. 两个数组方向要区分
-
-```cpp
-cowAt[pos] // 这个位置当前是哪头牛
-to[cow]    // 初始在 cow 位置的牛，一轮后到了哪里
-```
-
-一轮模拟结束后：
-
-```cpp
-for (int pos = 1; pos <= n; pos++) {
-    to[cowAt[pos]] = pos;
-}
-```
-
-因为初始牛 i 就在位置 i，所以牛的初始编号同时标识了它的一轮出发位置。
-
-### 3. 为什么可以复用同一置换
-
-后续每轮仍然操作相同的位置区间。无论某位置上站的是谁，从这个位置出发，一整轮后的目标位置都固定。
-$$
-cycle=[c_0,c_1,\ldots,c_{L-1}],\qquad to[c_i]=c_{(i+1)\bmod L}
-$$
-
-从 c_i 走 K 步后：
-
-$$
-\boxed{c_{(i+K\bmod L)\bmod L}}
-$$
-
-每走 L 步回到原点，所以只需要处理 `K%L`。
-
-例如置换环 `(1,3,4,2)` 长度为 4，从 1 走 10 步，相当于走 2 步，到达 4。
-
-### 4. 输出方向
-
-题目问“每个位置上是哪头牛”，所以：
-
-```cpp
-answer[finalPosition] = cow;
-```
-
-不能把“每头牛到哪个位置”直接按牛编号输出。
-
-### 5. 完整代码
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-  
-    int n, m;
-    long long k;
-    cin >> n >> m >> k;
-    vector<int> cowAt(n + 1);  // 这个位置当前是哪头牛
-    iota(cowAt.begin(), cowAt.end(), 0);
-    for (int i = 0; i < m; i++) {
-        int l, r;
-        cin >> l >> r;
-        reverse(cowAt.begin() + l, cowAt.begin() + r + 1);
-    }
-    vector<int> to(n + 1);
-    for (int pos = 1; pos <= n; pos++) to[cowAt[pos]] = pos;// 初始在cow位置的牛，一轮后到了哪里
-    vector<bool> used(n + 1, false);
-    vector<int> answer(n + 1);
-    for (int start = 1; start <= n; start++) {
-        if (used[start]) continue;
-        vector<int> cycle;
-        int u = start;
-        while (!used[u]) {
-            used[u] = true;
-            cycle.push_back(u);
-            u = to[u];
-        }
-        int len = int(cycle.size());
-        int shift = int(k % len);
-        for (int i = 0; i < len; i++) {
-            int cow = cycle[i];
-            int finalPosition = cycle[(i + shift) % len];
-            answer[finalPosition] = cow;
-        }
-    }
-    for (int pos = 1; pos <= n; pos++) cout << answer[pos] << '\n';
-}
-```
-
-一轮翻转最坏 O(NM)；分环和输出 O(N)；总时间 O(NM+N)，空间 O(N)。
-
-### 本节建模总结
-
-1. 将一整轮操作压缩为 `to[pos]`。
-2. 因为映射是一一对应的，按置换环分别处理。
-3. 环长为 L，执行 K 轮等价于沿环走 `K%L` 步。
-4. 最后根据题目要求，将“牛到的位置”转换为“位置上的牛”。
-
-
-## 三、一般函数图
+## 二、一般函数图
 
 * [2017 December Silver — The Bovine Shuffle](https://usaco.org/index.php?page=viewproblem2&cpid=764)
 
-![](/Users/mingo/Desktop/Python-AmazingX/images/14.png)
+![](./images/14.png)
 
 **Kahn算法**思路：
 
@@ -313,7 +205,7 @@ int main() {
 | 时间复杂度   | \(O(N)\)         | \(O(N)\)         |
 | 递归爆栈风险 | 有               | 无               |
 
-## 四、函数图上的贪心
+## 三、函数图上的贪心
 
 - [2022 US Open Silver — Visits](https://usaco.org/index.php?page=viewproblem2&cpid=1230)。
 
@@ -353,6 +245,7 @@ $$
 先剥离环外节点，再逐环计算最小值。
 
 ```cpp
+//解法一：入度剥离
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -378,7 +271,7 @@ int main() {
     }
     vector<bool> used(n + 1, false);
     for (int start = 1; start <= n; start++) {
-        if (indegree[start] == 0 || used[start]) continue;
+        if (indegree[start] == 0 || used[start]) continue;//used[start]碰到环其他节点直接跳过
         ll minimum = LLONG_MAX;
         int u = start;
         do {
@@ -396,9 +289,10 @@ int main() {
 
 ### 补充工具：不做入度剥离，能怎样找环？
 
-Visits 也可以用路径时间戳枚举各个环。下面把“当前路径走回自身”与“进入以前走过的路径”区分开；它也能用于一般函数图找环。适合只给 `to[u]`、希望区分“本次路径”与“以前走过”的情况。
+下面把“当前路径走回自身”与“进入以前走过的路径”区分开；它也能用于一般函数图找环。适合只给 `to[u]`、希望区分“本次路径”与“以前走过”的情况。
 
 ```cpp
+//解法2:用路径时间戳枚举各个环
 vector<int> run(n + 1, 0), position(n + 1, -1);
 int runId = 0;
 for (int start = 1; start <= n; start++) {
@@ -422,6 +316,115 @@ for (int start = 1; start <= n; start++) {
 例子：路径为 `1,2,3,4,5`，下一步回到 3，那么环是后缀 `3,4,5`，不是整条路径。
 
 总时间 O(N)，空间 O(N)。若还要求每个节点的答案，可在本次 path 上倒序回填。
+
+## 四、置换环与环长取模
+
+- 2020 February Silver —[Swapity Swapity Swap](https://usaco.org/index.php?page=viewproblem2&cpid=1014)
+
+### 1. 一轮
+
+本题一轮指完整执行全部 M 次区间翻转，然后把这一轮重复 K 次。
+
+翻转操作不增删奶牛，所以一轮后的映射一定是置换。
+
+### 2. 两个数组方向要区分
+
+```cpp
+cowAt[pos] // 这个位置当前是哪头牛
+to[cow]    // 初始在 cow 位置的牛，一轮后到了哪里
+```
+
+一轮模拟结束后：
+
+```cpp
+for (int pos = 1; pos <= n; pos++) {
+    to[cowAt[pos]] = pos;
+}
+```
+
+因为初始牛 i 就在位置 i，所以牛的初始编号同时标识了它的一轮出发位置。
+
+### 3. 为什么可以复用同一置换
+
+后续每轮仍然操作相同的位置区间。无论某位置上站的是谁，从这个位置出发，一整轮后的目标位置都固定。
+$$
+cycle=[c_0,c_1,\ldots,c_{L-1}],\qquad to[c_i]=c_{(i+1)\bmod L}
+$$
+
+从 c_i 走 K 步后：
+
+$$
+\boxed{c_{(i+K\bmod L)\bmod L}}
+$$
+
+每走 L 步回到原点，所以只需要处理 `K%L`。
+
+例如置换环 `(1,3,4,2)` 长度为 4，从 1 走 10 步，相当于走 2 步，到达 4。
+
+### 4. 输出方向
+
+题目问“每个位置上是哪头牛”，所以：
+
+```cpp
+answer[finalPosition] = cow;
+```
+
+不能把“每头牛到哪个位置”直接按牛编号输出。
+
+### 5. 完整代码
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+  
+    int n, m;
+    long long k;
+    cin >> n >> m >> k;
+    vector<int> cowAt(n + 1);  // 这个位置当前是哪头牛
+    iota(cowAt.begin(), cowAt.end(), 0);
+  
+    for (int i = 0; i < m; i++) {
+        int l, r;
+        cin >> l >> r;
+        reverse(cowAt.begin() + l, cowAt.begin() + r + 1);
+    }
+    vector<int> to(n + 1);
+    for (int pos = 1; pos <= n; pos++) to[cowAt[pos]] = pos;// 初始在cow位置的牛，一轮后的位置
+    vector<bool> used(n + 1, false);
+    vector<int> answer(n + 1);
+    for (int start = 1; start <= n; start++) {
+        if (used[start]) continue;
+        vector<int> cycle;
+        int u = start;
+        while (!used[u]) {
+            used[u] = true;
+            cycle.push_back(u);
+            u = to[u];
+        }
+        int len = int(cycle.size());
+        int shift = int(k % len);
+        for (int i = 0; i < len; i++) {
+            int cow = cycle[i];
+            int finalPosition = cycle[(i + shift) % len];
+            answer[finalPosition] = cow;
+        }
+    }
+    for (int pos = 1; pos <= n; pos++) cout << answer[pos] << '\n';
+}
+```
+
+一轮翻转最坏 O(NM)；分环和输出 O(N)；总时间 O(NM+N)，空间 O(N)。
+
+### 本节建模总结
+
+1. 将一整轮操作压缩为 `to[pos]`。
+2. 因为映射是一一对应的，按置换环分别处理。
+3. 环长为 L，执行 K 轮等价于沿环走 `K%L` 步。
+4. 最后根据题目要求，将“牛到的位置”转换为“位置上的牛”。
 
 ## 五、环上的轨迹合并
 

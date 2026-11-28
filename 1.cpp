@@ -1,35 +1,92 @@
-#include <algorithm>
-#include <iostream>
+//1.模拟第一轮的K次交换，记录每头奶牛经过的位置及对应时间。
+//2.根据第一轮结束后每头奶牛所在的位置，建立置换图，并进行环分解。
+//3.在每个置换环上使用滑动窗口，统计每头奶牛经过的不同位置数量。
+#include <bits/stdc++.h>
 using namespace std;
 
-struct Rect {
-    long long x1, y1, x2, y2;
-};
 int main() {
-    freopen("billboard.in","r",stdin);
-    freopen("billboard.out","w",stdout);
-    
-    Rect a, b;
-    cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
-    cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
-    long long left = a.x1, right = a.x2;
-    long long bottom = a.y1, top = a.y2;
-
-    if (b.x1 <= a.x1 && b.x2 >= a.x2 &&
-        b.y1 <= a.y1 && b.y2 >= a.y2) {
-        cout << 0 << '\n';
-        return 0;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+  
+    int n, k;
+    long long minutes;
+    cin >> n >> k >> minutes;
+    //1.模拟第一轮交换，记录移动路径
+    vector<int> cowAt(n + 1);
+    // {位置, 首轮中到达该位置的时间t}；允许重复记录。
+    vector<vector<pair<int, int>>> path(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cowAt[i] = i;
+        path[i].push_back({i, 0});
     }
-    // B 贯穿 A 的整个高度，检查能否去掉左侧或右侧。
-    if (b.y1 <= a.y1 && b.y2 >= a.y2) {
-        if (b.x1 <= a.x1 && b.x2 > a.x1) left = b.x2;//min(a.x2, b.x2);
-        if (b.x2 >= a.x2 && b.x1 < a.x2) right = a.x1;//max(a.x1, b.x1);
+    for (int t = 1; t <= k; t++) {
+        int a, b;
+        cin >> a >> b;
+        path[cowAt[a]].push_back({b, t});
+        path[cowAt[b]].push_back({a, t});
+        swap(cowAt[a], cowAt[b]);
     }
-    // B 贯穿 A 的整个宽度，检查能否去掉下侧或上侧。
-    if (b.x1 <= a.x1 && b.x2 >= a.x2) {
-        if (b.y1 <= a.y1 && b.y2 > a.y1) bottom = min(a.y2, b.y2);
-        if (b.y2 >= a.y2 && b.y1 < a.y2) top = max(a.y1, b.y1);
+    //2.建立置换图并进行环分解
+    vector<int> to(n + 1);
+    for (int pos = 1; pos <= n; pos++) to[cowAt[pos]] = pos;
+    vector<bool> used(n + 1, false);
+    //使用频率数组统计不同位置
+    //当前窗口中的路径记录包含位置 pos 的次数。
+    //当前窗口中不同位置的总数
+    vector<int> frequency(n + 1, 0), answer(n + 1);
+    int distinct = 0;
+    auto modify = [&](int node, int timeLimit, int delta) {
+        //操作哪一个节点的路径；考虑该路径前多少分钟；1 表示加入，-1 表示删除
+        for (auto [pos, time] : path[node]) {
+            if (time > timeLimit) break;
+            if (delta == 1) {
+                if (frequency[pos] == 0) distinct++;
+                frequency[pos]++;
+            } else {
+                frequency[pos]--;
+                if (frequency[pos] == 0) distinct--;
+            }
+        }
+    };
+    //3.将总时间拆分为完整轮和剩余时间
+    long long rounds = minutes / k;
+    int remainder = int(minutes % k);
+    for (int start = 1; start <= n; start++) {
+        if (used[start]) continue;
+        vector<int> cycle;
+        int u = start;
+        while (!used[u]) {
+            used[u] = true;
+            cycle.push_back(u);
+            u = to[u];
+        }
+        int len = int(cycle.size());
+        //情况一：完整轮数大于等于环长
+        if (rounds >= len) {
+            for (int node : cycle) modify(node, k, 1);
+            for (int node : cycle) answer[node] = distinct;
+            for (int node : cycle) modify(node, k, -1);
+            continue;
+        }
+        //情况二：完整轮数小于环长
+        int full = int(rounds);
+        //第一步：初始化完整窗口
+        for (int j = 0; j < full; j++) modify(cycle[j], k, 1);
+        for (int i = 0; i < len; i++) {
+            //第二步：临时加入部分路径
+            int next = cycle[(i + full) % len];
+            modify(next, remainder, 1);
+            answer[cycle[i]] = distinct;
+            modify(next, remainder, -1);
+            //第三步：移动完整窗口
+            if (full > 0) {
+                modify(cycle[i], k, -1);
+                modify(next, k, 1);
+            }
+        }
+        // 绕环一圈后，完整窗口回到初始位置，清空其贡献。
+        for (int j = 0; j < full; j++) modify(cycle[j], k, -1);
     }
-    cout << max(0LL, right - left) * max(0LL, top - bottom) << '\n';
+    for (int cow = 1; cow <= n; cow++) cout << answer[cow] << '\n';
 }
-//时间、额外空间均为 O(1)。
+//每条首轮记录只被常数次加入、删除，因此总时间 O(N+K)，空间 O(N+K)。
